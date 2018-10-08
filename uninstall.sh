@@ -12,8 +12,12 @@ if [ -e ~/.tmux.conf ]; then
 fi
 
 # vim
-if [ -e ~/vimfiles ]; then
-    cd ~/vimfiles
+if [ -e ~/dotfiles/vimfiles ]; then
+    cd ~/dotfiles/vimfiles
+    chmod +x ./uninstall.sh
     ./uninstall.sh
-    rm -rf ~/vimfiles
+    cd ~/dotfiles
+    rm -rf ./vimfiles
 fi
+
+printf "\e[30;42;1mdotfiles uninstalled completed \e[m\n"
