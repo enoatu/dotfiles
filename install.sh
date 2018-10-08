@@ -21,10 +21,6 @@ cd vimfiles
 chmod +x ./install.sh
 ./install.sh
 
-if [ -e ./vimfiles ]; then
-    rm -rf ./vimfiles
-fi
-
 sed -i '/let s:dein_dir/s/~\//~\/dotfiles\//' vimrc
 ln -s ~/dotfiles/vimfiles/vimrc ~/.vimrc
 
