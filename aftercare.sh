@@ -17,3 +17,5 @@ else
     exit
 fi
 
+chmod +x aftercare.sh
+./aftercare.sh
