@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -eu
+set -exu
 
 cd ~/dotfiles
 
@@ -10,8 +10,8 @@ if [ -e ~/.my.cnf ]; then
 fi
 
 # tmux
-if [ -e ~/.my.tmux.conf ]; then
-    rm ~/.my.tmux.conf
+if [ -e ~/.tmux.conf ]; then
+    rm ~/.tmux.conf
     ln -s ~/dotfiles/tmux.cnf ~/.tmux.conf
 fi
 
@@ -33,6 +33,12 @@ if [ -e ~/.vimrc ]; then
     rm ~/.vimrc
 fi
 
+if [ -e ~/.dein.toml ]; then
+    rm ~/.dein.toml
+fi
+
 ln -s ~/dotfiles/vimfiles/vimrc ~/.vimrc
+ln -s ~/dotfiles/vimfiles/dein.toml ~/.dein.toml
+
 vim +:q
 printf "\e[30;42;1dotfiles setup completed\e[m\n"
