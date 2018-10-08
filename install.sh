@@ -16,12 +16,17 @@ if [ -e ~/.my.tmux.conf ]; then
 fi
 
 # vim
+if [ -e ./vimfiles ]; then
+    rm -rf ./vimfiles
+fi
+
 git clone https://github.com/enoatu/vimfiles.git
 cd vimfiles
 chmod +x ./install.sh
 ./install.sh
 
-sed -i '/let s:dein_dir/s/~\//~\/dotfiles\//' vimrc
+# sed -i '/let s:dein_dir/s/~\//~\/dotfiles\//' vimrc 
+sed -i "" '/let s:dein_dir/s/~\//~\/dotfiles\//' vimrc
 ln -s ~/dotfiles/vimfiles/vimrc ~/.vimrc
 
 printf "\e[30;42;1dotfiles setup completed\e[m\n"
