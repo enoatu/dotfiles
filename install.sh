@@ -27,6 +27,11 @@ chmod +x ./install.sh
 
 # sed -i '/let s:dein_dir/s/~\//~\/dotfiles\//' vimrc 
 sed -i "" '/let s:dein_dir/s/~\//~\/dotfiles\//' vimrc
+
+if [ -e ~/.vimrc ]; then
+    rm ~/.vimrc
+fi
+
 ln -s ~/dotfiles/vimfiles/vimrc ~/.vimrc
 
 printf "\e[30;42;1dotfiles setup completed\e[m\n"
