@@ -4,16 +4,10 @@ set -exu
 cd ~/dotfiles
 
 # mysql
-if [ -e ~/.my.cnf ]; then
-    rm ~/.my.cnf
-    ln -s ~/dotfiles/my.cnf ~/.my.cnf
-fi
+ln -sf ~/dotfiles/my.cnf ~/.my.cnf
 
 # tmux
-if [ -e ~/.tmux.conf ]; then
-    rm ~/.tmux.conf
-    ln -s ~/dotfiles/tmux.cnf ~/.tmux.conf
-fi
+ln -sf ~/dotfiles/tmux.cnf ~/.tmux.conf
 
 # vim
 if [ -e ./vimfiles ]; then
@@ -27,18 +21,8 @@ chmod +x ./install.sh
 
 # sed -i '/let s:dein_dir/s/~\//~\/dotfiles\//' vimrc
 sed -i "" '/let s:dein_dir/s/~\//~\/dotfiles\//' vimrc
-sed -i "" '/let s:toml/s/~\//~\/dotfiles\//' vimrc
 
-if [ -e ~/.vimrc ]; then
-    rm ~/.vimrc
-fi
+ln -sf ~/dotfiles/vimfiles/vimrc ~/.vimrc
+ln -sf ~/dotfiles/vimfiles/dein.toml ~/.dein.toml
 
-if [ -e ~/.dein.toml ]; then
-    rm ~/.dein.toml
-fi
-
-ln -s ~/dotfiles/vimfiles/vimrc ~/.vimrc
-ln -s ~/dotfiles/vimfiles/dein.toml ~/.dein.toml
-
-vim +:q
 printf "\e[30;42;1dotfiles setup completed\e[m\n"
