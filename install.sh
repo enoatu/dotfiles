@@ -29,7 +29,7 @@ chmod +x ./install.sh
 sed -i "" '/let s:dein_dir/s/~\//~\/dotfiles\//' vimrc
 
 if [ -e ~/.vimrc ]; then
-    rm ~/.vimrc
+    unlink ~/.vimrc
 fi
 
 ln -s ~/dotfiles/vimfiles/vimrc ~/.vimrc
