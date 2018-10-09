@@ -16,6 +16,3 @@ else
     printf "\e[37;41;1m Couldn't find vimproc.so \e[m\n"
     exit
 fi
-
-chmod +x aftercare.sh
-./aftercare.sh
