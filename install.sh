@@ -3,6 +3,9 @@ set -e
 
 cd ~/dotfiles
 
+# zsh
+ln -sf ~/dotfiles/zshrc ~/.zshrc
+
 # mysql
 ln -sf ~/dotfiles/my.cnf ~/.my.cnf
 
