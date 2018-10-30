@@ -7,7 +7,7 @@ cd ~/dotfiles
 ln -sf ~/dotfiles/my.cnf ~/.my.cnf
 
 # tmux
-ln -sf ~/dotfiles/tmux.cnf ~/.tmux.conf
+ln -sf ~/dotfiles/tmux.conf ~/.tmux.conf
 
 # vim
 if [ -e ./vimfiles ]; then
