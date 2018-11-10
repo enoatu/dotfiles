@@ -25,7 +25,9 @@ sed -i '/let s:dein_dir/s/~\//~\/dotfiles\//' vimrc || sed -i "" '/let s:dein_di
 
 ln -sf ~/dotfiles/vimfiles/vimrc ~/.vimrc
 ln -sf ~/dotfiles/vimfiles/dein.toml ~/.dein.toml
-
+cd ~/dotfiles/vimfiles/dein/repos/github.com/Shougo/dein.vim
+git checkout a80906f
+cd -
 vim +:q
 
 mkdir -p dein/.cache/.vimrc/.dein/lib
