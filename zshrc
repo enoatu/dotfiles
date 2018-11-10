@@ -1,6 +1,8 @@
 # 補完
-autoload -U compinit
-compinit
+autoload -U compinit && compinit -u
+
+bindkey "^p" history-beginning-search-backward
+bindkey "^n" history-beginning-search-forward
 
 setopt COMPLETE_IN_WORD
 
@@ -39,17 +41,19 @@ setopt pushd_ignore_dups
 # コマンドミスを修正
 setopt correct
 
+# 日本語ファイル名を表示可能にする
+setopt print_eight_bit
+
+# ビープ音を消す
+setopt no_beep
 # エイリアス
 alias la='ls -la --color=auto'
 alias ll='ls -l --color=auto'
 alias so='source'
 alias v='vim'
 alias vi='vim'
-alias vz='vim ~/.zshrc'
 
 # historyに日付を表示
-alias h='fc -lt '%F %T' 1'
-alias mkdir='mkdir -p'
 alias diff='diff -U1'
 alias sudovim='sudo vim -u ~/.vimrc'
 
@@ -58,11 +62,18 @@ stty erase '^H'
 stty erase '^?'
 
 # プロンプトを2行で:表示、時刻を表示
-PROMPT="%(?.%{${fg[green]}%}.%{${fg[red]}%})%n${reset_color}@${fg[blue]}enotiru.moove.bz${reset_color}(%*%) %~
+PROMPT="%(?.%{${fg[green]}%}.%{${fg[red]}%})%n${reset_color}@${fg[blue]}${HOST}${reset_color}(%*%) %~
  %# "
 
 # 補完後、メニュー選択モードになり左右キーで移動が出来る
 zstyle ':completion:*:default' menu select=2
+
+# 補完候補のメニュー選択で、矢印キーの代わりにhjklで移動出来るようにする。
+zmodload zsh/complist
+bindkey -M menuselect 'h' vi-backward-char
+bindkey -M menuselect 'j' vi-down-line-or-history
+bindkey -M menuselect 'k' vi-up-line-or-history
+bindkey -M menuselect 'l' vi-forward-char
 
 # 補完で大文字にもマッチ
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
@@ -70,8 +81,3 @@ zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 # コマンドを途中まで入力後、historyから絞り込み
 # 例 ls まで打ってCtrl+pでlsコマンドをさかのぼる、Ctrl+bで逆順
 autoload -Uz history-search-end
-
-# <Tab> でパス名の補完候補を表示したあと、
-# 続けて <Tab> を押すと候補からパス名を選択できるようになる
-# 候補を選ぶには <Tab> か Ctrl-N,B,F,P
-zstyle ':completion:*:default' menu select=1
