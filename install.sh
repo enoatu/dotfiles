@@ -44,9 +44,10 @@ fi
 
 cd ~/dotfiles/vimfiles/dein/repos/github.com/Shougo/dein.vim
 git checkout a80906f
+cd -
 
 printf "\e[30;42;1m vim setup for dotfiles completed \e[m\n"
 
 printf "\e[30;42;1m dotfiles setup completed\e[m\n"
 
-exec $SHELL -l
+exec zsh -l
