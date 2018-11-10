@@ -48,3 +48,5 @@ git checkout a80906f
 printf "\e[30;42;1m vim setup for dotfiles completed \e[m\n"
 
 printf "\e[30;42;1m dotfiles setup completed\e[m\n"
+
+exec $SHELL -l
