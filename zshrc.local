@@ -1,2 +1,2 @@
-PROMPT="%(?.%{${fg[green]}%}.%{${fg[red]}%})(%D %*%)%n${reset_color}@${fg[red]}未設定${reset_color}%~
+PROMPT="%(?.%{${fg[green]}%}.%{${fg[red]}%})(%D %*%)%n${reset_color}@${fg[red]}${HOST}${reset_color}%~
 %# "
