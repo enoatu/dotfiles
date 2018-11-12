@@ -74,10 +74,6 @@ stty erase '^?'
 ##ctrl+sのロック, Ctrl+qのロック解除を無効にする
 setopt no_flow_control
 
-# プロンプトを2行で:表示、時刻を表示
-PROMPT="%(?.%{${fg[green]}%}.%{${fg[red]}%})(%D %*%)%n${reset_color}@${fg[red]}${HOST}${reset_color}%~
-%# "
-
  # 補完後、メニュー選択モードになり左右キーで移動が出来る
  zstyle ':completion:*:default' menu select=2
 
