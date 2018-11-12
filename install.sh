@@ -5,7 +5,7 @@ cd ~/dotfiles
 
 # zsh
 ln -sf ~/dotfiles/zshrc ~/.zshrc
-[ -f ~/.zshrc.local ] && ln -sf ~/dotfiles/zshrc.local ~/.zshrc.local
+[ ! -e ~/.zshrc.local ] && cp ~/dotfiles/zshrc.local ~/.zshrc.local
 
 # mysql
 ln -sf ~/dotfiles/my.cnf ~/.my.cnf
@@ -50,5 +50,3 @@ cd -
 printf "\e[30;42;1m vim setup for dotfiles completed \e[m\n"
 
 printf "\e[30;42;1m dotfiles setup completed\e[m\n"
-
-exec zsh -l
