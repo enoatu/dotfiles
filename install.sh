@@ -5,7 +5,7 @@ cd ~/dotfiles
 
 # zsh
 ln -sf ~/dotfiles/zshrc ~/.zshrc
-[ ! -e ~/.zshrc.local] & ln -sf ~/dotfiles/zshrc.local ~/.zshrc.local
+[ -f ~/.zshrc.local ] && ln -sf ~/dotfiles/zshrc.local ~/.zshrc.local
 
 # mysql
 ln -sf ~/dotfiles/my.cnf ~/.my.cnf
