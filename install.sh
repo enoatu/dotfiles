@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -eux
+set -eu
 
 main () {
     cd ~/dotfiles
@@ -33,6 +33,10 @@ setup_mysql () {
 
 setup_tmux () {
     ln -sf ~/dotfiles/tmux.conf ~/.tmux.conf
+}
+
+setup_gitconfig () {
+    ln -sf ~/dotfiles/company/gitconfig ~/.gitconfig
 }
 
 select_vim_setup_style () {
