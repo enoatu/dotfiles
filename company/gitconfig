@@ -4,7 +4,7 @@
 [core]
   editor = vi
 [commit]
-  template = ~/dotfiles/.gitmessages
+  template = ~/dotfiles/company/gitmessages
 [color]
   ui = true
 [alias]
