@@ -40,7 +40,7 @@ setup_tmux () {
     case "$tmux_answer" in
     1)
         echo 'selected :1'
-        ln -sf ~/dotfiles/tmux.conf ~/.tmux.local.conf
+        ln -sf ~/dotfiles/tmux.local.conf ~/.tmux.conf
         ;;
     2)
         echo 'selected :2'
