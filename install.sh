@@ -7,6 +7,7 @@ main () {
     setup_zsh
     setup_mysql
     setup_tmux
+    setup_gitconfig
     echo 'vimをセットアップしますか? (y or n) '
     read vim_answer
     case "$vim_answer" in
@@ -32,7 +33,23 @@ setup_mysql () {
 }
 
 setup_tmux () {
-    ln -sf ~/dotfiles/tmux.conf ~/.tmux.conf
+    echo 'tmuxのセットアップスタイルを選択したください。 (1 or 2 or cansel) '
+    echo '1: local環境'
+    echo '2: リモート環境'
+    read tmux_answer
+    case "$tmux_answer" in
+    1)
+        echo 'selected :1'
+        ln -sf ~/dotfiles/tmux.conf ~/.tmux.local.conf
+        ;;
+    2)
+        echo 'selected :2'
+        ln -sf ~/dotfiles/tmux.conf ~/.tmux.conf
+        ;;
+    *)
+        echo 'tmux setup canseled'
+        ;;
+    esac
 }
 
 setup_gitconfig () {
