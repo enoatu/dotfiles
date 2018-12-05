@@ -44,7 +44,7 @@ setup_tmux () {
         ;;
     2)
         echo 'selected :2'
-        ln -sf ~/dotfiles/tmux.conf ~/.tmux.conf
+        ln -sf ~/dotfiles/tmux.remote.conf ~/.tmux.conf
         ;;
     *)
         echo 'tmux setup canseled'
