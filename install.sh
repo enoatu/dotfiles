@@ -3,18 +3,33 @@ set -eu
 
 main () {
     cd ~/dotfiles
-
-    setup_zsh
-    setup_mysql
-    setup_tmux
-    setup_gitconfig
-    echo 'vimをセットアップしますか? (y or n) '
-    read vim_answer
-    case "$vim_answer" in
-    y)
+    echo '? (all or vim or zsh or mysql or tmux or git) '
+    read answer
+    case "$answer" in
+    all)
+        select_vim_setup_style
+        setup_zsh
+        setup_mysql
+        setup_tmux
+        setup_gitconfig
+        ;;
+    vim)
         select_vim_setup_style
         ;;
+    zsh)
+        setup_zsh
+        ;;
+    mysql)
+        setup_mysql
+        ;;
+    tmux)
+        setup_tmux
+        ;;
+    git)
+        setup_gitconfig
+        ;;
     *)
+        printf "\e[30;42;1m exit\e[m\n"
         ;;
     esac
 
@@ -22,42 +37,67 @@ main () {
 }
 
 setup_zsh () {
-    ln -sf ~/dotfiles/zshrc ~/.zshrc
+    ln -sf ~/dotfiles/zsh/zshrc ~/.zshrc
     if [ ! -e ~/.zshrc.local ]; then
-        cp ~/dotfiles/zshrc.local ~/.zshrc.local
+        cp ~/dotfiles/zsh/zshrc.local ~/.zshrc.local
     fi
+    printf "\e[30;42;1m zsh setup completed\e[m\n"
 }
 
 setup_mysql () {
-    ln -sf ~/dotfiles/my.cnf ~/.my.cnf
+    ln -sf ~/dotfiles/mysql/my.cnf ~/.my.cnf
+    printf "\e[30;42;1m mysql setup completed\e[m\n"
 }
 
 setup_tmux () {
-    echo 'tmuxのセットアップスタイルを選択したください。 (1 or 2 or cansel) '
+    echo 'tmuxのセットアップスタイルを選択したください。 (1 or 2 or cancel) '
     echo '1: local環境'
     echo '2: リモート環境'
     read tmux_answer
     case "$tmux_answer" in
     1)
         echo 'selected :1'
-        ln -sf ~/dotfiles/tmux.local.conf ~/.tmux.conf
+        ln -sf ~/dotfiles/tmux/tmux.local.conf ~/.tmux.conf
         ;;
     2)
         echo 'selected :2'
-        ln -sf ~/dotfiles/tmux.remote.conf ~/.tmux.conf
+        ln -sf ~/dotfiles/tmux/tmux.remote.conf ~/.tmux.conf
         ;;
     *)
-        echo 'tmux setup canseled'
+        echo 'tmux setup canceled'
         ;;
     esac
+    printf "\e[30;42;1m tmux setup completed\e[m\n"
 }
 
 setup_gitconfig () {
-    ln -sf ~/dotfiles/company/gitconfig ~/.gitconfig
+    echo 'gitconfigのセットアップスタイルを選択したください。 (1 or 2 or 3 or cancel) '
+    echo '1: my環境'
+    echo '2: moove環境'
+    echo '3: moove proxy環境'
+    read git_answer
+    case "$git_answer" in
+    1)
+        echo 'selected :1'
+        ln -sf ~/dotfiles/git/gitconfig.my ~/.gitconfig
+        ;;
+    2)
+        echo 'selected :2'
+        ln -sf ~/dotfiles/git/gitconfig.moove ~/.gitconfig
+        ;;
+    3)
+        echo 'selected :3'
+        ln -sf ~/dotfiles/git/gitconfig.moove.proxy ~/.gitconfig
+        ;;
+    *)
+        echo 'tmux setup canceled'
+        ;;
+    esac
+    printf "\e[30;42;1m git setup completed\e[m\n"
 }
 
 select_vim_setup_style () {
-    echo 'vimのセットアップスタイルを選択したください。 (1 or 2 or cansel) '
+    echo 'vimのセットアップスタイルを選択したください。 (1 or 2 or cancel) '
     echo '1: vimrc + プラグイン のセットアップ'
     echo '2: vimrc              のセットアップ'
     read vim_plugin_answer
@@ -71,7 +111,7 @@ select_vim_setup_style () {
         setup_vim_only_vimrc
         ;;
     *)
-        echo 'vim setup canseled'
+        echo 'vim setup canceled'
         ;;
     esac
 }
@@ -110,7 +150,7 @@ setup_vim () {
     git checkout a80906f
     cd -
 
-    printf "\e[30;42;1m vim setup for dotfiles completed \e[m\n"
+    printf "\e[30;42;1m vim setup completed \e[m\n"
     cd ~/dotfiles
 }
 
@@ -126,7 +166,7 @@ setup_vim_only_vimrc () {
     sed -i '/let s:dein_dir/s/~\//~\/dotfiles\//' vimrc || sed -i "" '/let s:dein_dir/s/~\//~\/dotfiles\//' vimrc
     ln -sf ~/dotfiles/vimfiles/vimrc ~/.vimrc
     cd -
-
+    printf "\e[30;42;1m vim setup completed \e[m\n"
 }
 
 

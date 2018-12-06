@@ -1,0 +1,20 @@
+[core]
+  excludesfile = ~/.gitignore_global
+[user]
+  name = Atsushi ENOMOTO
+  email = enotiru@moove.co.jp
+[commit]
+  template = ~/dotfiles/company/gitmessages
+[color]
+  ui = true
+[alias]
+  a  = add
+  co = checkout
+[grep]
+  lineNumber = true
+[credential]
+  helper = cache --timeout=3600
+[http]
+  proxy = http://localhost:8080
+[https]
+  proxy = http://localhost:8080
