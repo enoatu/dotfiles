@@ -66,6 +66,7 @@ alias ..='c ../'
 alias back='pushd'
 alias diff='diff -U1'
 alias sudovim='sudo vim -u ~/.vimrc'
+alias exsh='exec $SHELL -l'
 # backspace,deleteキーを使えるように
 stty erase '^H'
 stty erase '^?'

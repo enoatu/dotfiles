@@ -1,0 +1,49 @@
+#!/bin/bash
+
+set -eu
+
+PARAM=${1:?}
+main() {
+    case $PARAM in
+    git)
+        change_gitconfig
+        ;;
+    *)
+        printf "\e[30;42;1mexit\e[m\n"
+        ;;
+    esac
+}
+
+change_gitconfig() {
+    echo '? (my or moove(m) or moove.proxy(mp)) '
+    read git_answer
+    case "$git_answer" in
+    my)
+        ln -sf ~/dotfiles/git/gitconfig.my ~/.gitconfig
+        printf "\e[30;42;1mchanged\e[m\n"
+        ;;
+    m)
+        ln -sf ~/dotfiles/git/gitconfig.moove ~/.gitconfig
+        printf "\e[30;42;1mchanged\e[m\n"
+        ;;
+    moove)
+        ln -sf ~/dotfiles/git/gitconfig.moove ~/.gitconfig
+        printf "\e[30;42;1mchanged\e[m\n"
+        ;;
+    mp)
+        ln -sf ~/dotfiles/git/gitconfig.moove.proxy ~/.gitconfig
+        printf "\e[30;42;1mchanged\e[m\n"
+        ;;
+    moove.proxy)
+        ln -sf ~/dotfiles/git/gitconfig.moove.proxy ~/.gitconfig
+        printf "\e[30;42;1mchanged\e[m\n"
+        ;;
+    *)
+        printf "\e[30;42;1mexit\e[m\n"
+        ;;
+    esac
+}
+
+main
+
+exit 0

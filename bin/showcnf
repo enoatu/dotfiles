@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+set -eu
+
+PARAM=${1:?}
+main() {
+    case $PARAM in
+    git)
+        readlink ~/.gitconfig
+        ;;
+    *)
+        printf "\e[30;42;1mexit\e[m\n"
+        ;;
+    esac
+}
+
+main
+
+exit 0
