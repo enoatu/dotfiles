@@ -29,6 +29,8 @@ HISTFILE=~/.zsh_history
 HISTSIZE=10000
 SAVEHIST=10000
 
+HISTTIMEFORMAT="%Y/%m/%d(%a) %T  " history 
+
 # cdコマンドを省略して、ディレクトリ名のみの入力で移動
 setopt auto_cd
 
