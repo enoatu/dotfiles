@@ -39,9 +39,21 @@ main () {
 setup_zsh () {
     ln -sf ~/dotfiles/zsh/zshrc ~/.zshrc
     if [ ! -e ~/.zshrc.local ]; then
-        cp ~/dotfiles/zsh/zshrc.local ~/.zshrc.local
-    fi
-    printf "\e[30;42;1m zsh setup completed\e[m\n"
+        ln -sf ~/dotfiles/zsh/zshrc.local ~/.zshrc.local
+    else
+        echo 'プロンプト反映しますか。 (y or n) '
+        read zsh_answer
+        case "$zsh_answer" in
+        y)
+            echo 'selected :1'
+            ln -sf ~/dotfiles/zsh/zshrc.local ~/.zshrc.local
+            printf "\e[30;42;1m zsh setup completed\e[m\n"
+            ;;
+        *)
+            echo 'zsh setup canceled'
+            ;;
+        esac
+   fi
 }
 
 setup_mysql () {
