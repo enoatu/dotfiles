@@ -71,7 +71,7 @@ alias gb='git branch'
 alias gc='git checkout'
 alias gpm='git pull --rebase origin master'
 alias ta='tmux attach'
-alias e='exit'
+
 # backspace,deleteキーを使えるように
 stty erase '^H'
 stty erase '^?'
@@ -116,3 +116,6 @@ PROMPT="%(?.%{${fg[green]}%}.%{${fg[red]}%})(%D %*%)%n${reset_color}@${hostcolor
 [[ -n "$VIMRUNTIME" ]] && \
 PROMPT="${bg[blue]}vim${reset_color}%(?.%{${fg[green]}%}.%{${fg[red]}%})(%D %*%)%n${reset_color}@${hostcolor}${host}${reset_color}${fg[green]}[%j]${reset_color}%~
 %# "
+
+[[ -n "$VIMRUNTIME" ]] && \
+alias e='exit'
