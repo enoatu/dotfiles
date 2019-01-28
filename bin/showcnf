@@ -3,6 +3,14 @@ set -eu
 
 PARAM=${1:?}
 main() {
+    while getopts ab: opt
+    do
+    case $opt in
+    a) a=1 ;;
+    b) b=1
+    b_value=$OPTARG ;;
+    esac
+    done
     case $PARAM in
     git)
         readlink ~/.gitconfig
