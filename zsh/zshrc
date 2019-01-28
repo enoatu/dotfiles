@@ -69,6 +69,7 @@ alias exsh='exec $SHELL -l'
 alias gs='git status'
 alias gb='git branch'
 alias gc='git checkout'
+alias gcm='git commit -m'
 alias gpm='git pull --rebase origin master'
 alias ta='tmux attach'
 
@@ -78,38 +79,54 @@ stty erase '^?'
 ##ctrl+sのロック, Ctrl+qのロック解除を無効にする
 setopt no_flow_control
 
- # 補完後、メニュー選択モードになり左右キーで移動が出来る
- zstyle ':completion:*:default' menu select=2
+# 補完後、メニュー選択モードになり左右キーで移動が出来る
+zstyle ':completion:*:default' menu select=2
 
- # 補完で大文字にもマッチ
- zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
+# 補完で大文字にもマッチ
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 
- # Ctrl+rでヒストリーのインクリメンタルサーチ、Ctrl+sで逆順
- #bindkey '^r' history-incremental-pattern-search-backward
- #bindkey '^s' history-incremental-pattern-search-forward
+# Ctrl+rでヒストリーのインクリメンタルサーチ、Ctrl+sで逆順
+#bindkey '^r' history-incremental-pattern-search-backward
+#bindkey '^s' history-incremental-pattern-search-forward
 
- # コマンドを途中まで入力後、historyから絞り込み
- # 例 ls まで打ってCtrl+pでlsコマンドをさかのぼる、Ctrl+bで逆順
- autoload -Uz history-search-end
+# コマンドを途中まで入力後、historyから絞り込み
+# 例 ls まで打ってCtrl+pでlsコマンドをさかのぼる、Ctrl+bで逆順
+autoload -Uz history-search-end
 
- # cdrコマンドを有効 ログアウトしても有効なディレクトリ履歴
- # cdr タブでリストを表示
- autoload -Uz add-zsh-hook
- autoload -Uz chpwd_recent_dirs cdr
- add-zsh-hook chpwd chpwd_recent_dirs
- # cdrコマンドで履歴にないディレクトリにも移動可能に
- zstyle ":chpwd:*" recent-dirs-default true
+# cdrコマンドを有効 ログアウトしても有効なディレクトリ履歴
+# cdr タブでリストを表示
+autoload -Uz add-zsh-hook
+autoload -Uz chpwd_recent_dirs cdr
+add-zsh-hook chpwd chpwd_recent_dirs
+# cdrコマンドで履歴にないディレクトリにも移動可能に
+zstyle ":chpwd:*" recent-dirs-default true
 
- # 複数ファイルのmv 例　zmv *.txt *.txt.bk
- autoload -Uz zmv
- alias zmv='noglob zmv -W'
+# 複数ファイルのmv 例　zmv *.txt *.txt.bk
+autoload -Uz zmv
+alias zmv='noglob zmv -W'
 export PERL5LIB=$HOME/work/Moove/lib:$HOME/work/moove/lib:$PERL5LIB
 export PATH="$HOME/dotfiles/bin:$PATH"
-
+#autoload -Uz vcs_info
+#setopt prompt_subst
+#zstyle ':vcs_info:git:*' check-for-changes true
+#zstyle ':vcs_info:git:*' stagedstr "%F{yellow}!"
+#zstyle ':vcs_info:git:*' unstagedstr "%F{red}+"
+#zstyle ':vcs_info:*' formats "%F{green}%c%u[%b]%f"
+#zstyle ':vcs_info:*' actionformats '[%b|%a]'
+#precmd () { vcs_info }
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
 
-#black red green yellow blue magenta cyan white
+autoload -Uz vcs_info
+setopt prompt_subst
+zstyle ':vcs_info:git:*' check-for-changes true
+zstyle ':vcs_info:git:*' stagedstr "%F{yellow}!"
+zstyle ':vcs_info:git:*' unstagedstr "%F{red}+"
+zstyle ':vcs_info:*' formats "%F{green}%c%u[%b]%f"
+zstyle ':vcs_info:*' actionformats '[%b|%a]'
+precmd () { vcs_info }
+RPROMPT=$RPROMPT'${vcs_info_msg_0_}'
 
+#black red green yellow blue magenta cyan white
 PROMPT="%(?.%{${fg[green]}%}.%{${fg[red]}%})(%D %*%)%n${reset_color}@${hostcolor}${host}${reset_color}${fg[green]}[%j]${reset_color}%~
 %# "
 

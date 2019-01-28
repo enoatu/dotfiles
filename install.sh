@@ -180,8 +180,6 @@ setup_vim_only_vimrc () {
     cd -
     printf "\e[30;42;1m vim setup completed \e[m\n"
 }
-
-
 main
 
 exit 0
