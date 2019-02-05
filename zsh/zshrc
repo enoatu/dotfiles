@@ -70,6 +70,7 @@ alias gs='git status'
 alias gb='git branch'
 alias gc='git checkout'
 alias gcm='git commit -m'
+alias gl='git log'
 alias gpm='git pull --rebase origin master'
 alias ta='tmux attach'
 
@@ -124,14 +125,14 @@ zstyle ':vcs_info:git:*' unstagedstr "%F{red}+"
 zstyle ':vcs_info:*' formats "%F{green}%c%u[%b]%f"
 zstyle ':vcs_info:*' actionformats '[%b|%a]'
 precmd () { vcs_info }
-RPROMPT=$RPROMPT'${vcs_info_msg_0_}'
+GIT='${vcs_info_msg_0_}'
 
 #black red green yellow blue magenta cyan white
-PROMPT="%(?.%{${fg[green]}%}.%{${fg[red]}%})(%D %*%)%n${reset_color}@${hostcolor}${host}${reset_color}${fg[green]}[%j]${reset_color}%~
+PROMPT="%(?.%{${fg[green]}%}.%{${fg[red]}%})(%D %*%)%n${reset_color}@${hostcolor}${host}${reset_color}${fg[green]}[%j]${reset_color}${GIT}%~
 %# "
 
 [[ -n "$VIMRUNTIME" ]] && \
-PROMPT="${bg[blue]}vim${reset_color}%(?.%{${fg[green]}%}.%{${fg[red]}%})(%D %*%)%n${reset_color}@${hostcolor}${host}${reset_color}${fg[green]}[%j]${reset_color}%~
+PROMPT="${bg[blue]}vim${reset_color}%(?.%{${fg[green]}%}.%{${fg[red]}%})(%D %*%)%n${reset_color}@${hostcolor}${host}${reset_color}${fg[green]}[%j]${reset_color}${GIT}%~
 %# "
 
 [[ -n "$VIMRUNTIME" ]] && \
