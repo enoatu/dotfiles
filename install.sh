@@ -129,11 +129,7 @@ select_vim_setup_style () {
 }
 
 setup_vim () {
-    if [ -e ./vimfiles ]; then
-        rm -rf ./vimfiles
-    fi
-
-    cd ~/dotfiles/vimfiles
+    cd ~/dotfiles/vim
 
     ln -sf ~/dotfiles/vimrc ~/.vimrc
     ln -sf ~/dotfiles/dein.toml ~/.dein.toml
@@ -154,7 +150,7 @@ setup_vim () {
         exit
     fi
 
-    cd ~/dotfiles/vimfiles/dein/repos/github.com/Shougo/dein.vim
+    cd ~/dotfiles/vim/dein/repos/github.com/Shougo/dein.vim
     git checkout a80906f
     cd -
 
@@ -163,16 +159,16 @@ setup_vim () {
 }
 
 setup_vim_only_vimrc () {
-    if [ -e ./vimfiles/vimrc ]; then
-        rm ./vimfiles/vimrc
+    if [ -e ./vim/vimrc ]; then
+        rm ./vim/vimrc
     fi
-    cd ~/dotfiles/vimfiles
+    cd ~/dotfiles/vim
 
     git fetch
     git checkout HEAD -- vimrc
 
     sed -i '/let s:dein_dir/s/~\//~\/dotfiles\//' vimrc || sed -i "" '/let s:dein_dir/s/~\//~\/dotfiles\//' vimrc
-    ln -sf ~/dotfiles/vimfiles/vimrc ~/.vimrc
+    ln -sf ~/dotfiles/vim/vimrc ~/.vimrc
     cd -
     printf "\e[30;42;1m vim setup completed \e[m\n"
 }
