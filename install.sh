@@ -133,14 +133,10 @@ setup_vim () {
         rm -rf ./vimfiles
     fi
 
-    git clone https://github.com/enoatu/vimfiles.git
-
     cd ~/dotfiles/vimfiles
 
-    sed -i '/let s:dein_dir/s/~\//~\/dotfiles\//' vimrc || sed -i "" '/let s:dein_dir/s/~\//~\/dotfiles\//' vimrc
-
-    ln -sf ~/dotfiles/vimfiles/vimrc ~/.vimrc
-    ln -sf ~/dotfiles/vimfiles/dein.toml ~/.dein.toml
+    ln -sf ~/dotfiles/vimrc ~/.vimrc
+    ln -sf ~/dotfiles/dein.toml ~/.dein.toml
 
     vim +:q
 

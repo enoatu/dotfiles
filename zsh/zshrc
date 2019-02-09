@@ -107,6 +107,8 @@ autoload -Uz zmv
 alias zmv='noglob zmv -W'
 export PERL5LIB=$HOME/work/Moove/lib:$HOME/work/moove/lib:$PERL5LIB
 export PATH="$HOME/dotfiles/bin:$PATH"
+export PATH="/usr/bin:/usr/local:/usr/local/bin:$PATH"
+export PATH="/usr/lib:$PATH"
 #autoload -Uz vcs_info
 #setopt prompt_subst
 #zstyle ':vcs_info:git:*' check-for-changes true
