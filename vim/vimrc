@@ -3,7 +3,7 @@ set fileencodings=utf-8,iso-2022-jp,euc-jp,sjis
 set fileformats=unix,dos,mac
 "dein Scripts-----------------------------
 " dein.vim がなければ github から落としてくる
-let s:dein_dir = expand('~/dotfiles/vimfiles/dein')
+let s:dein_dir = expand('~/dotfiles/vim/dein')
 let s:dein_repo_dir = s:dein_dir . '/repos/github.com/Shougo/dein.vim'
 if &runtimepath !~# '/dein.vim'
   if !isdirectory(s:dein_repo_dir)
@@ -185,8 +185,8 @@ set backspace=indent,eol,start
 " ===================airline_theme====================
 let g:airline_theme = 'molokai'
 " ===================Yggdroot/indentLine==============
-let g:indentLine_char = '¦'
-let g:indentLine_conceallevel  =  2
+"let g:indentLine_char = '¦'
+"let g:indentLine_conceallevel  =  2
 "====================neocomplcache====================
 " ~Disable AutoComplPop. neocomplcashe~
 let g:acp_enableAtStartup = 0
@@ -268,8 +268,20 @@ let g:vim_json_syntax_conceal = 0
 "====================nerdtree============================
 map <C-n> :NERDTreeToggle<CR>
 "======================indentline===================
-set ts=2 sw=2 et
-let g:indent_guides_start_level=2
+nmap <C-a> :set sw=4 st=4<CR>:IndentGuidesEnable<CR>
+nmap <C-x> :set sw=2 st=2<CR>:IndentGuidesEnable<CR>
+"自動起動
+let g:indent_guides_enable_on_vim_startup=1
+"ガイドをスタートするインデントの量
+let g:indent_guides_start_level = 1
+"自動カラー無効
+let g:indent_guides_auto_colors=0
+"奇数番目のインデントの色
+autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd   ctermbg=16
+autocmd VimEnter,Colorscheme * :hi IndentGuidesEven  ctermbg=16
+let g:indent_guides_exclude_filetypes = ['help', 'nerdtree', 'buf']
+" ガイドの幅
+let g:indent_guides_guide_size=1
 "======================gitgutter===================
 "画面をガタガタ言わせない
 "set signcolumn=yes
