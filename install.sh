@@ -130,24 +130,23 @@ select_vim_setup_style () {
 
 setup_vim () {
     cd ~/dotfiles/vim
-
-    ln -sf ~/dotfiles/vimrc ~/.vimrc
-    ln -sf ~/dotfiles/dein.toml ~/.dein.toml
-
+    ln -sf ~/dotfiles/vim/vimrc ~/.vimrc
+    ln -sf ~/dotfiles/vim/dein.toml ~/.dein.toml
     vim +:q
-
-    mkdir -p dein/.cache/.vimrc/.dein/lib
-    cd ./dein/.cache/.vimrc/.dein/lib
-    git clone https://github.com/Shougo/vimproc.vim.git
-    cd vimproc.vim
-    make
-    if [ -e ./lib/vimproc_linux64.so ]; then
-        ln -s vimproc.vim/lib/vimproc_linux64.so ..
-    elif [ -e ./lib/vimproc_mac.so ]; then
-        ln -s vimproc.vim/lib/vimproc_mac.so .. #TODO
-    else
-        printf "\e[37;41;1m Couldn't find vimproc.so \e[m\n"
-        exit
+    if [ ! -e ./dein/.cache/.vimrc/.dein/lib/vimproc.vim ]; then
+      mkdir -p dein/.cache/.vimrc/.dein/lib
+      cd ./dein/.cache/.vimrc/.dein/lib
+      git clone https://github.com/Shougo/vimproc.vim.git
+      cd vimproc.vim
+      make
+      if [ -e ./lib/vimproc_linux64.so ]; then
+          ln -s vimproc.vim/lib/vimproc_linux64.so ..
+      elif [ -e ./lib/vimproc_mac.so ]; then
+          ln -s vimproc.vim/lib/vimproc_mac.so .. #TODO
+      else
+          printf "\e[37;41;1m Couldn't find vimproc.so \e[m\n"
+          exit
+      fi
     fi
 
     cd ~/dotfiles/vim/dein/repos/github.com/Shougo/dein.vim
