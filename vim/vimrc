@@ -56,8 +56,6 @@ endif
  "set cursorcolumn
  " 行末の1文字先までカーソルを移動できるように
  set virtualedit=onemore
- " インデントはスマートインデント
- set smartindent
 
 "通常モードはブロック型点滅有り
 "挿入モードはライン型点滅有り
@@ -108,14 +106,9 @@ set wrap
 set number
 set clipboard+=autoselect
 set clipboard+=unnamed
-" Tab文字を半角スペースにする
-set expandtab
 
 set hidden
-"set tabstop=4
 set whichwrap=b,s,<,>,[,]
-set tabstop=4
-set shiftwidth=4
 vnoremap <silent> <C-p> "0p<CR>
 map <C-b> :call BufferList()<CR>
 syntax on
@@ -267,9 +260,26 @@ let g:user_emmet_leader_key='<C-t>'
 let g:vim_json_syntax_conceal = 0
 "====================nerdtree============================
 map <C-n> :NERDTreeToggle<CR>
+"======================indent===================
+"自動インデント
+set smartindent
+" Tab文字を半角スペースにする
+set expandtab
+
+set sw=4 "shiftwidth
+set ts=4 "tabstop
+noremap <C-i> :call SwitchIndent()<CR>
+function! SwitchIndent()
+    if (&sw == 2)
+        set sw=4
+        set ts=4
+    else
+        set sw=2
+        set ts=2
+    endif
+    :IndentGuidesEnable
+endfunction
 "======================indentline===================
-nmap <C-a> :set sw=4 st=4<CR>:IndentGuidesEnable<CR>
-nmap <C-x> :set sw=2 st=2<CR>:IndentGuidesEnable<CR>
 "自動起動
 let g:indent_guides_enable_on_vim_startup=1
 "ガイドをスタートするインデントの量
@@ -277,13 +287,11 @@ let g:indent_guides_start_level = 1
 "自動カラー無効
 let g:indent_guides_auto_colors=0
 "奇数番目のインデントの色
-autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd   ctermbg=16
-autocmd VimEnter,Colorscheme * :hi IndentGuidesEven  ctermbg=16
-let g:indent_guides_exclude_filetypes = ['help', 'nerdtree', 'buf']
+autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd   ctermbg=210
+autocmd VimEnter,Colorscheme * :hi IndentGuidesEven  ctermbg=80
+let g:indent_guides_exclude_filetypes = ['help', 'nerdtree']
 " ガイドの幅
 let g:indent_guides_guide_size=1
 "======================gitgutter===================
 "画面をガタガタ言わせない
 "set signcolumn=yes
-"タイピング終了後すぐに反映する
-set updatetime=200
