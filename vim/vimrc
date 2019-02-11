@@ -106,7 +106,9 @@ set wrap
 set number
 set clipboard+=autoselect
 set clipboard+=unnamed
-
+set showmatch
+set matchtime=1
+set matchpairs& matchpairs+=<:>
 set hidden
 set whichwrap=b,s,<,>,[,]
 vnoremap <silent> <C-p> "0p<CR>
@@ -287,11 +289,13 @@ let g:indent_guides_start_level = 1
 "自動カラー無効
 let g:indent_guides_auto_colors=0
 "奇数番目のインデントの色
-autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd   ctermbg=210
-autocmd VimEnter,Colorscheme * :hi IndentGuidesEven  ctermbg=80
+autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd   ctermbg=236
+autocmd VimEnter,Colorscheme * :hi IndentGuidesEven  ctermbg=235
 let g:indent_guides_exclude_filetypes = ['help', 'nerdtree']
 " ガイドの幅
 let g:indent_guides_guide_size=1
 "======================gitgutter===================
 "画面をガタガタ言わせない
 "set signcolumn=yes
+"タイピング終了後すぐに反映する
+set updatetime=200
