@@ -55,6 +55,9 @@ repo = 'airblade/vim-gitgutter'
 [[plugins]]
 repo = 'nathanaelkane/vim-indent-guides'
 
+#vueシンタックスハイライト
+[[plugins]]
+repo = 'posva/vim-vue'
 #:Gdiffと打つとHEADと現在の状態を比較できる
 #:Glog = git log
 #:Gdiff コミット番号でそのdiffをとれる
