@@ -112,7 +112,7 @@ set matchpairs& matchpairs+=<:>
 set hidden
 set whichwrap=b,s,<,>,[,]
 vnoremap <silent> <C-p> "0p<CR>
-map <C-b> :call BufferList()<CR>
+map <C-k> :call BufferList()<CR>
 syntax on
 colorscheme molokai
 "colorscheme random
