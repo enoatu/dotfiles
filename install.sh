@@ -65,6 +65,7 @@ setup_tmux () {
     echo 'tmuxのセットアップスタイルを選択したください。 (1 or 2 or cancel) '
     echo '1: local環境'
     echo '2: リモート環境'
+    echo '3: 踏み台環境'
     read tmux_answer
     case "$tmux_answer" in
     1)
@@ -74,6 +75,10 @@ setup_tmux () {
     2)
         echo 'selected :2'
         ln -sf ~/dotfiles/tmux/tmux.remote.conf ~/.tmux.conf
+        ;;
+    2)
+        echo 'selected :3'
+        ln -sf ~/dotfiles/tmux/tmux.humidai.conf ~/.tmux.conf
         ;;
     *)
         echo 'tmux setup canceled'
