@@ -1,0 +1,14 @@
+source-file ~/dotfiles/tmux/tmux.common.conf
+
+# C-bのキーバインドを解除
+unbind C-b
+
+#prefixキーをC-sに変更
+set -g prefix C-s
+
+# 左パネル
+#'#S'はセッション名
+set -g status-left-length 60
+set -g status-left-fg "colour0"
+set -g status-left-bg "colour94"
+set -g status-left "humidai: #S"
