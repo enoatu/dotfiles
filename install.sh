@@ -76,7 +76,7 @@ setup_tmux () {
         echo 'selected :2'
         ln -sf ~/dotfiles/tmux/tmux.remote.conf ~/.tmux.conf
         ;;
-    2)
+    3)
         echo 'selected :3'
         ln -sf ~/dotfiles/tmux/tmux.humidai.conf ~/.tmux.conf
         ;;
