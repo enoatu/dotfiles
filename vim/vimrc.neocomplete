@@ -168,6 +168,10 @@ map <silent> [Tag]n :tabnext<CR>
 " tn 次のタブ
 map <silent> [Tag]p :tabprevious<CR>
 " tp 前のタブ
+
+"visulaモードで選択してからのインデント調整で調整後に選択範囲を開放しない
+vnoremap > >gv
+vnoremap < <gv
 "===================space red========================
 augroup HighlightTraijingSpaces
     autocmd!

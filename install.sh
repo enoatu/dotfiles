@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-set -eu
+set -ux
 
 main () {
-    cd ~/dotfiles
+    cd ${HOME}/dotfiles
     echo '? (all or vim or zsh or mysql or tmux or git) '
     read answer
     case "$answer" in
@@ -135,9 +135,17 @@ select_vim_setup_style () {
 
 setup_vim () {
     cd ~/dotfiles/vim
-    ln -sf ~/dotfiles/vim/vimrc ~/.vimrc
-    ln -sf ~/dotfiles/vim/dein.toml ~/.dein.toml
-    vim +:q
+    ispython=$(vim --version | grep '\+python')
+    if [ -n "$ispython" ]; then
+        echo "set YouCompleteMe"
+        ln -sf ~/dotfiles/vim/vimrc.youcompleteme ~/.vimrc
+        ln -sf ~/dotfiles/vim/dein.toml.youcompleteme ~/.dein.toml
+    else
+        echo "set neocomplete"
+        ln -sf ~/dotfiles/vim/vimrc.neocomplete ~/.vimrc
+        ln -sf ~/dotfiles/vim/dein.toml.neocomplete ~/.dein.toml
+    fi
+    vim +qall
     if [ ! -e ./dein/.cache/.vimrc/.dein/lib/vimproc.vim ]; then
       mkdir -p dein/.cache/.vimrc/.dein/lib
       cd ./dein/.cache/.vimrc/.dein/lib
