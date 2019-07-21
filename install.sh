@@ -147,6 +147,7 @@ setup_vim () {
     echo $(vim --version | head -n5)
     echo ''
     ispython=$(vim --version | grep '\+python')
+    VIM=vim
     if [ -n "$ispython" ]; then
         echo "set YouCompleteMe"
         ln -sf ~/dotfiles/vim/vimrc.youcompleteme ~/.vimrc
@@ -205,8 +206,9 @@ setup_vim () {
             echo "alias view=${DOTFILES}/vim/bin/view"       >> ${HOME}/.zshrc.local
             echo "alias vimdiff=${DOTFILES}/vim/bin/vimdiff" >> ${HOME}/.zshrc.local
             cd ..
-            $VIM="${DOTFILES}/vim/bin/vim"
+            VIM="${DOTFILES}/vim/bin/vim"
             rm -rf ${DOTFILES}/v8*
+            rm -rf ${DOTFILES}/vim-8.1.1722
             ;;
         *)
             echo 'vim setup canceled'
