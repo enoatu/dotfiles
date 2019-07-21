@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 set -ux
 
+DOTFILES="${HOME}/dotfiles"
+ANYENV_DIR="${HOME}/.anyenv"
+ANYENV="${ANYENV_DIR}/bin/anyenv"
+
 main () {
     cd ${HOME}/dotfiles
     echo '? (all or vim or zsh or mysql or tmux or git) '
@@ -135,15 +139,72 @@ select_vim_setup_style () {
 
 setup_vim () {
     cd ~/dotfiles/vim
+    echo ''
+    echo '[入っているvim]'
+    echo $(vim --version | head -n5)
+    echo ''
     ispython=$(vim --version | grep '\+python')
     if [ -n "$ispython" ]; then
         echo "set YouCompleteMe"
         ln -sf ~/dotfiles/vim/vimrc.youcompleteme ~/.vimrc
         ln -sf ~/dotfiles/vim/dein.toml.youcompleteme ~/.dein.toml
     else
-        echo "set neocomplete"
-        ln -sf ~/dotfiles/vim/vimrc.neocomplete ~/.vimrc
-        ln -sf ~/dotfiles/vim/dein.toml.neocomplete ~/.dein.toml
+        echo 'pythonインターフェイスが使用できないvimを使用しています。'
+        echo 'vimのプラグインをえらんでください。 (1 or 2 or cancel) '
+        echo '1: neocomplete+neosnippets+neosnippets環境(簡単に使える補完)'
+        echo '2: TabNine環境(ディープラーニングを使用した高度な補完)'
+        echo '   (dotfiles以下に環境を構築します)'
+        read vim_answer2
+        case "$vim_answer2" in
+        1)
+            echo 'selected :1'
+            ln -sf ~/dotfiles/vim/vimrc.neocomplete ~/.vimrc
+            ln -sf ~/dotfiles/vim/dein.toml.neocomplete ~/.dein.toml
+            ;;
+        2)
+            echo 'selected :2'
+            PYTHON_VER=3.7.2
+            if [ ! -e $ANYENV_DIR ]; then
+                setup_anyenv
+            fi
+            PYENV="${ANYENV_DIR}/envs/pyenv/bin/pyenv"
+            if [ ! -e $PYENV ]; then
+                $ANYENV install pyenv
+                $PYENV install $PYTHON_VER
+                $PYENV global $PYTHON_VER
+                $PYENV rehash
+            fi
+            wget https://github.com/vim/vim/archive/v8.1.1722.tar.gz
+            tar -xvf v8.1.1722.tar.gz
+            cd v8.1.1722.tar.gz
+            ./configure --prefix=/home/enotiru/dotfiles \
+                --localstatedir=/home/enotiru/dotfiles \
+                --with-features=huge \
+                --enable-gpm \
+                --enable-acl \
+                --with-x=yes \
+                --enable-gui=gtk2 \
+                --enable-multibyte \
+                --enable-cscope \
+                --enable-netbeans \
+                --enable-perlinterp \
+                --enable-pythoninterp \
+                --enable-python3interp \
+                --enable-rubyinterp \
+                --enable-luainterp
+            make
+            make install
+            echo "alias vim=${DOTFILES}/bin/vim"         >> ${HOME}/.zshrc.local
+            echo "alias view=${DOTFILES}/bin/view"       >> ${HOME}/.zshrc.local
+            echo "alias vimdiff=${DOTFILES}/bin/vimdiff" >> ${HOME}/.zshrc.local
+            $VIM="${DOTFILES}/bin/vim"
+            rm -rf ${DOTFILES}/v8*
+            ;;
+        *)
+            echo 'vim setup canceled'
+            return 0
+            ;;
+        esac
     fi
     vim +qall
     if [ ! -e ./dein/.cache/.vimrc/.dein/lib/vimproc.vim ]; then
@@ -168,6 +229,13 @@ setup_vim () {
 
     printf "\e[30;42;1m vim setup completed \e[m\n"
     cd ~/dotfiles
+}
+
+setup_anyenv() {
+    git clone https://github.com/riywo/anyenv $ANYENV_DIR
+    echo 'export PATH="$HOME/.anyenv/bin:$PATH"' >> ~/.zshrc.local
+    $ANYENV init
+    $ANYENV install --init -y
 }
 
 setup_vim_only_vimrc () {
