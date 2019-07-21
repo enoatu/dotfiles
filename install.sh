@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -ux
+set -u
 
 DOTFILES="${HOME}/dotfiles"
 ANYENV_DIR="${HOME}/.anyenv"
