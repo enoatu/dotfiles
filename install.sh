@@ -32,6 +32,9 @@ main () {
     git)
         setup_gitconfig
         ;;
+    anyenv)
+        setup_anyenv
+        ;;
     *)
         printf "\e[30;42;1m exit\e[m\n"
         ;;
@@ -138,7 +141,7 @@ select_vim_setup_style () {
 }
 
 setup_vim () {
-    cd ~/dotfiles/vim
+    cd ${DOTFILES}/vim
     echo ''
     echo '[入っているvim]'
     echo $(vim --version | head -n5)
@@ -149,8 +152,10 @@ setup_vim () {
         ln -sf ~/dotfiles/vim/vimrc.youcompleteme ~/.vimrc
         ln -sf ~/dotfiles/vim/dein.toml.youcompleteme ~/.dein.toml
     else
+        echo ''
         echo 'pythonインターフェイスが使用できないvimを使用しています。'
-        echo 'vimのプラグインをえらんでください。 (1 or 2 or cancel) '
+        echo ''
+        echo 'vimの環境をえらんでください。 (1 or 2 or cancel) '
         echo '1: neocomplete+neosnippets+neosnippets環境(簡単に使える補完)'
         echo '2: TabNine環境(ディープラーニングを使用した高度な補完)'
         echo '   (dotfiles以下に環境を構築します)'
@@ -174,11 +179,13 @@ setup_vim () {
                 $PYENV global $PYTHON_VER
                 $PYENV rehash
             fi
-            wget https://github.com/vim/vim/archive/v8.1.1722.tar.gz
-            tar -xvf v8.1.1722.tar.gz
-            cd v8.1.1722.tar.gz
-            ./configure --prefix=/home/enotiru/dotfiles \
-                --localstatedir=/home/enotiru/dotfiles \
+            if [ ! -e vim-8.1.1722 ]; then
+                wget https://github.com/vim/vim/archive/v8.1.1722.tar.gz
+                tar -xvf v8.1.1722.tar.gz
+            fi
+            cd vim-8.1.1722
+            ./configure --prefix=${DOTFILES}/vim \
+                --localstatedir=${DOTFILES}/vim \
                 --with-features=huge \
                 --enable-gpm \
                 --enable-acl \
@@ -194,10 +201,11 @@ setup_vim () {
                 --enable-luainterp
             make
             make install
-            echo "alias vim=${DOTFILES}/bin/vim"         >> ${HOME}/.zshrc.local
-            echo "alias view=${DOTFILES}/bin/view"       >> ${HOME}/.zshrc.local
-            echo "alias vimdiff=${DOTFILES}/bin/vimdiff" >> ${HOME}/.zshrc.local
-            $VIM="${DOTFILES}/bin/vim"
+            echo "alias vim=${DOTFILES}/vim/bin/vim"         >> ${HOME}/.zshrc.local
+            echo "alias view=${DOTFILES}/vim/bin/view"       >> ${HOME}/.zshrc.local
+            echo "alias vimdiff=${DOTFILES}/vim/bin/vimdiff" >> ${HOME}/.zshrc.local
+            cd ..
+            $VIM="${DOTFILES}/vim/bin/vim"
             rm -rf ${DOTFILES}/v8*
             ;;
         *)
@@ -206,7 +214,7 @@ setup_vim () {
             ;;
         esac
     fi
-    vim +qall
+    $VIM +:q
     if [ ! -e ./dein/.cache/.vimrc/.dein/lib/vimproc.vim ]; then
       mkdir -p dein/.cache/.vimrc/.dein/lib
       cd ./dein/.cache/.vimrc/.dein/lib
