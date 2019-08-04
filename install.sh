@@ -148,6 +148,7 @@ setup_vim () {
     echo ''
     ispython=$(vim --version | grep '\+python')
     VIM=vim
+    rm -rf ${DOTFILES}/vim/dein
     if [ -n "$ispython" ]; then
         echo "set YouCompleteMe"
         ln -sf ~/dotfiles/vim/vimrc.youcompleteme ~/.vimrc
@@ -169,6 +170,8 @@ setup_vim () {
             ;;
         2)
             echo 'selected :2'
+            ln -sf ~/dotfiles/vim/vimrc.youcompleteme ~/.vimrc
+            ln -sf ~/dotfiles/vim/dein.toml.youcompleteme ~/.dein.toml
             PYTHON_VER=3.7.2
             if [ ! -e $ANYENV_DIR ]; then
                 setup_anyenv
@@ -184,14 +187,14 @@ setup_vim () {
                 wget https://github.com/vim/vim/archive/v8.1.1722.tar.gz
                 tar -xvf v8.1.1722.tar.gz
             fi
+            rm -rf ${DOTFILES}/vim/share
+            rm -rf ${DOTFILES}/vim/bin
             cd vim-8.1.1722
             ./configure --prefix=${DOTFILES}/vim \
                 --localstatedir=${DOTFILES}/vim \
-                --with-features=huge \
+                --with-features=normal \
                 --enable-gpm \
                 --enable-acl \
-                --with-x=yes \
-                --enable-gui=gtk2 \
                 --enable-multibyte \
                 --enable-cscope \
                 --enable-netbeans \
@@ -202,9 +205,12 @@ setup_vim () {
                 --enable-luainterp
             make
             make install
-            echo "alias vim=${DOTFILES}/vim/bin/vim"         >> ${HOME}/.zshrc.local
-            echo "alias view=${DOTFILES}/vim/bin/view"       >> ${HOME}/.zshrc.local
-            echo "alias vimdiff=${DOTFILES}/vim/bin/vimdiff" >> ${HOME}/.zshrc.local
+            isExistPath=$(grep 'alias vim' ${HOME}/.zshrc.local)
+            if [ ! -n "$isExistPath" ]; then
+                echo "alias vim=${DOTFILES}/vim/bin/vim"         >> ${HOME}/.zshrc.local
+                echo "alias view=${DOTFILES}/vim/bin/view"       >> ${HOME}/.zshrc.local
+                echo "alias vimdiff=${DOTFILES}/vim/bin/vimdiff" >> ${HOME}/.zshrc.local
+            fi
             cd ..
             VIM="${DOTFILES}/vim/bin/vim"
             rm -rf ${DOTFILES}/v8*
