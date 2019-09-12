@@ -56,22 +56,26 @@ alias so='source'
 alias v='vim'
 alias vi='vim'
 alias vz='vim ~/.zshrc'
-alias c='cdr'
+#alias c='cdr'
 # historyに日付を表示
 alias h='fc -lt '%F %T' 1'
 alias cp='cp -i'
 alias rm='rm -i'
 alias mkdir='mkdir -p'
-alias ..='c ../'
-alias back='pushd'
+#alias ..='c ../'
+alias p='pushd'
 alias diff='diff -U1'
 alias exsh='exec $SHELL -l'
 alias gs='git status'
+alias a='git add'
+alias c='git commit -m'
+alias am='git commit --amend'
 alias gb='git branch'
+alias gd='git diff'
+alias gds='git diff --staged'
 alias gc='git checkout'
-alias gcm='git commit -m'
 alias gl='git log'
-alias gpm='git pull --rebase origin master'
+alias gprom='git pull --rebase origin master'
 alias ta='tmux attach'
 
 # backspace,deleteキーを使えるように
@@ -87,8 +91,8 @@ zstyle ':completion:*:default' menu select=2
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 
 # Ctrl+rでヒストリーのインクリメンタルサーチ、Ctrl+sで逆順
-#bindkey '^r' history-incremental-pattern-search-backward
-#bindkey '^s' history-incremental-pattern-search-forward
+bindkey '^r' history-incremental-pattern-search-backward
+bindkey '^s' history-incremental-pattern-search-forward
 
 # コマンドを途中まで入力後、historyから絞り込み
 # 例 ls まで打ってCtrl+pでlsコマンドをさかのぼる、Ctrl+bで逆順
