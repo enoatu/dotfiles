@@ -70,6 +70,12 @@ alias gds='git diff --staged'
 alias gc='git checkout'
 alias gl='git log'
 alias gprom='git pull --rebase origin master'
+alias cmw='~/dotfiles/bin/gitcommit.sh wrench'
+alias cmp='~/dotfiles/bin/gitcommit.sh heavy_plus_sign'
+alias cmm='~/dotfiles/bin/gitcommit.sh heavy_minus_sign'
+alias cmr='~/dotfiles/bin/gitcommit.sh recycle'
+alias cms='~/dotfiles/bin/gitcommit.sh space_invader'
+alias cmb='~/dotfiles/bin/gitcommit.sh bug'
 
 alias ta='tmux attach'
 
