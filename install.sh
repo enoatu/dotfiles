@@ -153,11 +153,11 @@ setup_vim () {
         echo 'pythonインターフェイスが使用できないvimを使用しています。'
         echo ''
     fi
-    read vim_answer2
     echo 'vimの環境をえらんでください。 (1 or 2 or cancel) '
     echo '1: neocomplete+neosnippets+neosnippets環境(簡単に使える補完)'
     echo '2: TabNine環境(ディープラーニングを使用した高度な補完)'
     echo '   (dotfiles以下に環境を構築します)'
+    read vim_answer2
     case "$vim_answer2" in
     1)
         echo 'selected :1'
