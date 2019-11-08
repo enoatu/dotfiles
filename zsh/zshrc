@@ -80,6 +80,7 @@ alias cmb='~/dotfiles/bin/gitcommit.sh bug'
 alias ta='tmux attach'
 
 alias r="cd `cat /tmp/project_root`"
+alias m='sudo -umoove'
 
 # backspace,deleteキーを使えるように
 stty erase '^H'
