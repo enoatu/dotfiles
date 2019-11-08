@@ -148,9 +148,6 @@ setup_vim () {
     echo ''
     VIM=vim
     ispython=$(vim --version | grep '\+python')
-        echo "set YouCompleteMe"
-        ln -sf ~/dotfiles/vim/vimrc.youcompleteme ~/.vimrc
-        ln -sf ~/dotfiles/vim/dein.toml.youcompleteme ~/.dein.toml
     if [ ! -n "$ispython" ]; then
         echo ''
         echo 'pythonインターフェイスが使用できないvimを使用しています。'
