@@ -42,6 +42,7 @@ setopt pushd_ignore_dups
 setopt correct
 
 # エイリアス
+alias sudo='sudo ' #https://qiita.com/homines22/items/ba1a6d03df85e65fc85a
 alias lst='ls -ltr --color=auto'
 alias l='ls -ltr --color=auto'
 alias la='ls -la --color=auto'
@@ -67,9 +68,9 @@ alias am='git commit --amend'
 alias gb='git branch'
 alias gd='git diff'
 alias gds='git diff --staged'
-alias gc='git checkout'
+alias gco='git checkout'
 alias gl='git log'
-alias gprom='git pull --rebase origin master'
+alias gprom='git stash && git pull --rebase origin master && git stash pop'
 alias cmw='~/dotfiles/bin/gitcommit.sh wrench'
 alias cmp='~/dotfiles/bin/gitcommit.sh heavy_plus_sign'
 alias cmm='~/dotfiles/bin/gitcommit.sh heavy_minus_sign'
@@ -77,9 +78,17 @@ alias cmr='~/dotfiles/bin/gitcommit.sh recycle'
 alias cms='~/dotfiles/bin/gitcommit.sh space_invader'
 alias cmb='~/dotfiles/bin/gitcommit.sh bug'
 
+alias gcw='~/dotfiles/bin/gitcommit.sh wrench'
+alias gcp='~/dotfiles/bin/gitcommit.sh heavy_plus_sign'
+alias gcm='~/dotfiles/bin/gitcommit.sh heavy_minus_sign'
+alias gcr='~/dotfiles/bin/gitcommit.sh recycle'
+alias gcs='~/dotfiles/bin/gitcommit.sh space_invader'
+alias gcb='~/dotfiles/bin/gitcommit.sh bug'
+alias gcco='~/dotfiles/bin/gitcommit.sh construction'
+
 alias ta='tmux attach'
 
-alias r="cd `cat /tmp/project_root`"
+alias r="cd `cat ~/dotfiles/.project_root`"
 alias m='sudo -umoove'
 
 # backspace,deleteキーを使えるように
@@ -145,5 +154,7 @@ PROMPT="%(?.%{${fg[green]}%}.%{${fg[red]}%})(%D %*%)%n${reset_color}@${hostcolor
 PROMPT="${bg[blue]}vim${reset_color}%(?.%{${fg[green]}%}.%{${fg[red]}%})(%D %*%)%n${reset_color}@${hostcolor}${host}${reset_color}${fg[green]}[%j]${reset_color}${GIT}%~
 %# "
 
-[[ -n "$VIMRUNTIME" ]] && \
-alias e='exit'
+# tmux ログイン時起動
+[[ $- != *i* ]] && return
+[[ -z "$TMUX" ]] && exec tmux
+

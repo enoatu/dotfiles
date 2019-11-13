@@ -54,7 +54,7 @@ change_gitconfig() {
     esac
 }
 
-PR_PATH=/tmp/project_root
+PR_PATH=$HOME/dotfiles/.project_root
 
 change_project_root() {
     echo "current: `cat $PR_PATH`"
