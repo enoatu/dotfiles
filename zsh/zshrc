@@ -24,6 +24,7 @@ bindkey -e
 
 # 他のターミナルとヒストリーを共有
 setopt share_history
+setopt extended_history
 
 HISTFILE=~/.zsh_history
 HISTSIZE=10000
