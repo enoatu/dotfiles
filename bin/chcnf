@@ -12,12 +12,6 @@ main() {
     git)
         change_gitconfig
         ;;
-    project_root)
-        change_project_root
-        ;;
-    pr)
-        change_project_root
-        ;;
     *)
         printf "\e[30;42;1mexit\e[m\n"
         ;;
@@ -52,16 +46,6 @@ change_gitconfig() {
         printf "\e[30;42;1mexit\e[m\n"
         ;;
     esac
-}
-
-PR_PATH=$HOME/dotfiles/.project_root
-
-change_project_root() {
-    echo "current: `cat $PR_PATH`"
-    echo '新しいプロジェクトルートを入力'
-    read pr_answer
-    echo $pr_answer > $PR_PATH
-    echo "current: `cat $PR_PATH`"
 }
 
 main

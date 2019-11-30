@@ -89,7 +89,22 @@ alias gcco='~/dotfiles/bin/gitcommit.sh construction'
 
 alias ta='tmux attach'
 
-alias r="cd `cat ~/dotfiles/.project_root`"
+#project_root
+rr() {
+    cd `cat ~/dotfiles/.project_root`
+}
+rw() {
+    pwd > $HOME/dotfiles/.project_root
+}
+
+#current_dir
+dr() {
+    cd `cat ~/dotfiles/.current_dir`
+}
+dw() {
+    pwd > $HOME/dotfiles/.current_dir
+}
+
 alias m='sudo -umoove'
 
 # backspace,deleteキーを使えるように
