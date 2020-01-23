@@ -89,20 +89,34 @@ alias gcco='~/dotfiles/bin/gitcommit.sh construction'
 
 alias ta='tmux attach'
 
-#project_root
-rr() {
-    cd `cat ~/dotfiles/.project_root`
-}
-rw() {
-    pwd > $HOME/dotfiles/.project_root
+dr() {
+  local dirs=$HOME/dotfiles/.dirs
+  arg=$1
+  if [ -z "$arg" ]; then
+    return;
+  elif [ "$arg" = '--list' ]; then
+    cat $dirs
+  elif [ "$arg" = '-l' ]; then
+    cat $dirs
+  else
+    target_dir=$(awk -F"\t" -v arg=$arg '$1 == arg {print $2}' $dirs)
+    [ -z $target_dir ] && return 1
+    cd $target_dir
+  fi
 }
 
-#current_dir
-dr() {
-    cd `cat ~/dotfiles/.current_dir`
-}
 dw() {
-    pwd > $HOME/dotfiles/.current_dir
+  local dirs=$HOME/dotfiles/.dirs
+  arg=$1
+  if [ -z "$arg" ]; then
+    return;
+  elif [ "$arg" = '--list' ]; then
+    cat $dirs
+  elif [ "$arg" = '-l' ]; then
+    cat $dirs
+  else
+    echo "$arg\t`pwd`" >> $dirs
+  fi
 }
 
 alias m='sudo -umoove'
