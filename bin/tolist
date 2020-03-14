@@ -1,2 +1,21 @@
 #!/bin/sh
-echo `pbpaste` | tr -d '\r' | tr -d '\n'
+
+function convert () {
+    # example)
+    # tolist | xargs rm -rf
+    echo `pbpaste` | tr -d '\r' | tr -d '\n'
+}
+
+if [ -p /dev/stdin ]; then
+    # echo a | is_pipe
+    convert
+    cat -
+    exit 0
+elif [ -p /dev/stdout ]; then
+    # is_pipe | cat
+    convert
+    exit 0
+else
+    convert
+    exit 1
+fi
