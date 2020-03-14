@@ -3,8 +3,6 @@
 [user]
   name = enoatu
   email = acro1452@gmail.com
-[commit]
-  template = ~/dotfiles/company/gitmessages
 [color]
   ui = true
 [alias]

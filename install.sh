@@ -44,23 +44,33 @@ main () {
 }
 
 setup_zsh () {
-    ln -sf ~/dotfiles/zsh/zshrc ~/.zshrc
-    if [ ! -e ~/.zshrc.local ]; then
-        ln -sf ~/dotfiles/zsh/zshrc.local ~/.zshrc.local
-    else
-        echo 'プロンプト反映しますか。 (y or n) '
-        read zsh_answer
-        case "$zsh_answer" in
-        y)
-            echo 'selected :1'
+    (
+        cd ${HOME}/dotfiles/zsh
+        if [ ! -e ${HOME}/dotfiles/zsh/fzf.zsh ]; then
+            git clone https://github.com/junegunn/fzf.git ./fzf
+            ./fzf/install --no-fish --no-bash
+            mv ~/.fzf.zsh ${HOME}/dotfiles/zsh/fzf.zsh
+        fi
+        ln -sf ~/dotfiles/zsh/zshrc ~/.zshrc
+        if [ ! -e ~/.zshrc.local ]; then
             ln -sf ~/dotfiles/zsh/zshrc.local ~/.zshrc.local
-            printf "\e[30;42;1m zsh setup completed\e[m\n"
-            ;;
-        *)
-            echo 'zsh setup canceled'
-            ;;
-        esac
-   fi
+            [ `hostname` = "2018macbook.local" ] && ln -sf ~/dotfiles/zsh/zshrc.local.mac ~/.zshrc.local
+        else
+            echo 'プロンプト反映しますか。 (y or n) '
+            read zsh_answer
+            case "$zsh_answer" in
+            y)
+                echo 'selected :1'
+                ln -sf ~/dotfiles/zsh/zshrc.local ~/.zshrc.local
+                [ `hostname` = "2018macbook.local" ] && ln -sf ~/dotfiles/zsh/zshrc.local.mac ~/.zshrc.local
+                printf "\e[30;42;1m zsh setup completed\e[m\n"
+                ;;
+            *)
+                echo 'zsh setup canceled'
+                ;;
+            esac
+       fi
+    )
 }
 
 setup_mysql () {
@@ -165,6 +175,7 @@ setup_vim () {
         rm -rf ${DOTFILES}/vim/.local
         ln -sf ~/dotfiles/vim/vimrc.neocomplete ~/.vimrc
         ln -sf ~/dotfiles/vim/dein.toml.neocomplete ~/.dein.toml
+        [ `hostname` = "2018macbook.local" ] && ln -sf ~/dotfiles/vim/dein.toml.neocomplete.mac ~/.dein.toml
         ;;
     2)
         echo 'selected :2'
@@ -184,6 +195,7 @@ setup_vim () {
                 rm -rf ${DOTFILES}/vim/.local
                 ln -sf ~/dotfiles/vim/vimrc.neocomplete ~/.vimrc
                 ln -sf ~/dotfiles/vim/dein.toml.neocomplete ~/.dein.toml
+                [ `hostname` = "2018macbook.local" ] && ln -sf ~/dotfiles/vim/dein.toml.neocomplete.mac ~/.dein.toml
                 ;;
             2)
                 rm -rf ${DOTFILES}/vim/dein

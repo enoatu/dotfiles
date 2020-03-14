@@ -2,4 +2,7 @@
 /zsh/zshrc.local
 .project_root
 .current_dir
-
+/zsh/fzf
+/zsh/fzf.zsh
+.dirs
+/dein
