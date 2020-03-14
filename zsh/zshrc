@@ -1,6 +1,9 @@
 autoload -U compinit
 compinit
 
+# beep音消す
+setopt no_beep
+
 setopt COMPLETE_IN_WORD
 
 setopt IGNOREEOF

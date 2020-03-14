@@ -2,3 +2,4 @@ host=${HOST}
 hostcolor=${fg[white]}
 alias vim=/usr/local/bin/vim
 alias vimdiff=/usr/local/bin/vimdiff
+alias dc=/usr/local/bin/docker-compose
