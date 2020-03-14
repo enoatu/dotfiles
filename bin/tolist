@@ -1,0 +1,2 @@
+#!/bin/sh
+echo `pbpaste` | tr -d '\r' | tr -d '\n'
