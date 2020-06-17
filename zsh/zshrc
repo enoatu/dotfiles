@@ -52,7 +52,6 @@ alias l='ls -ltr --color=auto'
 alias la='ls -la --color=auto'
 alias ll='ls -l --color=auto'
 alias so='source'
-alias v='vim'
 alias vi='vim'
 alias vz='vim ~/.zshrc'
 #alias c='cdr'
@@ -65,7 +64,6 @@ alias mkdir='mkdir -p'
 alias p='pushd'
 alias diff='diff -U1'
 alias exsh='exec $SHELL -l'
-alias gs='git status'
 alias a='git add'
 alias c='git commit -m'
 alias am='git commit --amend'
@@ -90,7 +88,19 @@ alias gcs='~/dotfiles/bin/gitcommit.sh space_invader'
 alias gcb='~/dotfiles/bin/gitcommit.sh bug'
 alias gcco='~/dotfiles/bin/gitcommit.sh construction'
 
+alias d='docker'
+alias dc=/usr/local/bin/docker-compose
+
 alias ta='tmux attach'
+
+gitdiffls() {
+  cat <(git status --short | grep -E "^\?\?" | cut -d' ' -f 2) <(git diff --name-only master)
+}
+
+gs() {
+  #git diff master HEAD --name-only
+  git status
+}
 
 dr() {
   local dirs=$HOME/dotfiles/.dirs
@@ -194,3 +204,6 @@ PROMPT="${bg[blue]}vim${reset_color}%(?.%{${fg[green]}%}.%{${fg[red]}%})(%D %*%)
 [[ $- != *i* ]] && return
 [[ -z "$TMUX" ]] && exec tmux
 
+v() {
+  vim `gitdiffls`
+}
