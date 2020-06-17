@@ -85,6 +85,16 @@ set hlsearch
 " ESC連打でハイライト解除
 nmap <Esc><Esc> :nohlsearch<CR><Esc>
 
+"行頭
+nmap <C-h> 0
+nmap <C-a> 0
+"行末
+nmap <C-l> $
+nmap <C-e> $
+
+" タイポ修正
+inoremap <C-t> <Esc><Left>"zx"zpa
+
 vmap <BS> <Del>
 imap <BS> <BS>
 " 挿入モードーノーマルモード間移動を高速化
@@ -114,56 +124,6 @@ colorscheme molokai
 "colorscheme random
 set t_Co=256
 cnoremap w!! w !sudo tee > /dev/null %<CR>
-""================括弧補完===========
-"inoremap {<Enter> {}<Left><CR><BS><BS><BS><BS><ESC><S-o>
-"inoremap (<Enter> ()<Left><CR><ESC><S-o>
-"inoremap [<Enter> []<Left><CR><ESC><S-o>
-"
-"===============tab================
-" Anywhere SID.
-function! s:SID_PREFIX()
-  return matchstr(expand('<sfile>'), '<SNR>\d\+_\zeSID_PREFIX$')
-endfunction
-
-" Set tabline.
-function! s:my_tabline()  "{{{
-  let s = ''
-  for i in range(1, tabpagenr('$'))
-    let bufnrs = tabpagebuflist(i)
-    let bufnr = bufnrs[tabpagewinnr(i) - 1]  " first window, first appears
-    let no = i  " display 0-origin tabpagenr.
-    let mod = getbufvar(bufnr, '&modified') ? '!' : ' '
-    let title = fnamemodify(bufname(bufnr), ':t')
-    let title = '[' . title . ']'
-    let s .= '%'.i.'T'
-    let s .= '%#' . (i == tabpagenr() ? 'TabLineSel' : 'TabLine') . '#'
-    let s .= no . ':' . title
-    let s .= mod
-    let s .= '%#TabLineFill# '
-  endfor
-  let s .= '%#TabLineFill#%T%=%#TabLine#'
-  return s
-endfunction "}}}
-let &tabline = '%!'. s:SID_PREFIX() . 'my_tabline()'
-set showtabline=2 " 常にタブラインを表示
-
-" The prefix key.
-nnoremap    [Tag]   <Nop>
-nmap    m [Tag]
-" Tab jump
-for n in range(1, 9)
-  execute 'nnoremap <silent> [Tag]'.n  ':<C-u>tabnext'.n.'<CR>'
-endfor
-" t1 で1番左のタブ、t2 で1番左から2番目のタブにジャンプ
-
-map <silent> [Tag]c :tablast <bar> tabnew<CR>
-" tc 新しいタブを一番右に作る
-map <silent> [Tag]x :tabclose<CR>
-" tx タブを閉じる
-map <silent> [Tag]n :tabnext<CR>
-" tn 次のタブ
-map <silent> [Tag]p :tabprevious<CR>
-" tp 前のタブ
 
 "visulaモードで選択してからのインデント調整で調整後に選択範囲を開放しない
 vnoremap > >gv
@@ -179,11 +139,44 @@ set backspace=indent,eol,start
 
 " ===================airline_theme====================
 let g:airline_theme = 'molokai'
-" ===================Yggdroot/indentLine==============
-"let g:indentLine_char = '¦'
-"let g:indentLine_conceallevel  =  2
-"====================mattn/emmet-vim===============html補完
-let g:user_emmet_leader_key='<C-t>'
+"====================neosnippet====================
+" Plugin key-mappings.
+" Note: It must be "imap" and "smap".  It uses <Plug> mappings.
+imap <C-s>     <Plug>(neosnippet_expand_or_jump)
+smap <C-s>     <Plug>(neosnippet_expand_or_jump)
+xmap <C-s>     <Plug>(neosnippet_expand_target)
+
+" SuperTab like snippets behavior.
+" Note: It must be "imap" and "smap".  It uses <Plug> mappings.
+imap <C-s>     <Plug>(neosnippet_expand_or_jump)
+"imap <expr><TAB>
+" \ pumvisible() ? "\<C-n>" :
+" \ neosnippet#expandable_or_jumpable() ?
+" \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+\ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+
+ " For conceal markers.
+ "if has('conceal')
+ "  set conceallevel=2 concealcursor=niv
+ "endif
+
+ " ~ファイルタイプ毎 & gitリポジトリ毎にtagsの読み込みpathを変える~
+function! ReadTags(type)
+    try
+        execute "set tags=".$HOME."/dotfiles/tags_files/".
+           \ system("cd " . expand('%:p:h') . "; basename `git rev-parse --show-toplevel` | tr -d '\n'").
+          \ "/" . a:type . "_tags"
+     catch
+        execute "set tags=./tags/" . a:type . "_tags;"
+    endtry
+endfunction
+
+augroup TagsAutoCmd
+    autocmd!
+    autocmd BufEnter * :call ReadTags(&filetype)
+augroup END
+
 "====================vim-json=========================
 let g:vim_json_syntax_conceal = 0
 "====================nerdtree============================
@@ -225,3 +218,16 @@ let g:indent_guides_guide_size=1
 "set signcolumn=yes
 "タイピング終了後すぐに反映する
 set updatetime=200
+"master
+let s:switchGutter=1
+noremap <C-m> :call SwitchGutter()<CR>
+function! SwitchGutter()
+    if (s:switchGutter == 1)
+        let g:gitgutter_diff_base =  'master'
+        let s:switchGutter=2
+    else
+        let g:gitgutter_diff_base =  ''
+        let s:switchGutter=1
+    endif
+    :GitGutterAll
+endfunction

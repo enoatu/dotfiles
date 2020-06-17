@@ -1,5 +1,6 @@
 [core]
   excludesfile = ~/.gitignore_global
+  editor=/usr/local/bin/vim
 [user]
   name = Atsushi ENOMOTO
   email = enotiru@moove.co.jp
@@ -15,6 +16,6 @@
 [credential]
   helper = cache --timeout=3600
 [http]
-  proxy=socks5://127.0.0.1:1081
+    proxy=socks5://127.0.0.1:1081
 [https]
-  proxy=socks5://127.0.0.1:1081
+    proxy=socks5://127.0.0.1:1081
