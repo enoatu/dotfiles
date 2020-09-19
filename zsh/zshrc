@@ -1,3 +1,5 @@
+[ -f ~/.zshrc.local ] && source ~/.zshrc.local
+
 autoload -U compinit
 compinit
 
@@ -47,13 +49,16 @@ setopt correct
 
 # エイリアス
 alias sudo='sudo ' #https://qiita.com/homines22/items/ba1a6d03df85e65fc85a
-alias lst='ls -ltr --color=auto'
-alias l='ls -ltr --color=auto'
-alias la='ls -la --color=auto'
-alias ll='ls -l --color=auto'
+alias lst='ls -ltr'
+alias l='ls -ltr'
+alias la='ls -la'
+alias ll='ls -l'
 alias so='source'
 alias vi='vim'
 alias vz='vim ~/.zshrc'
+alias gba='git branch --sort=-authordate'
+alias gf="git for-each-ref --sort=committerdate refs/heads/ --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(contents:subject) - %(authorname) (%(color:green)%(committerdate:relative)%(color:reset))'"
+
 #alias c='cdr'
 # historyに日付を表示
 alias h='fc -lt '%F %T' 1'
@@ -93,8 +98,12 @@ alias dc=/usr/local/bin/docker-compose
 
 alias ta='tmux attach'
 
+gitstashpopreset() {
+  git checkout --ours . && git reset && git checkout .
+}
+
 gitdiffls() {
-  cat <(git status --short | grep -E "^\?\?" | cut -d' ' -f 2) <(git diff --name-only master)
+  cat <(git status --short | grep -E "^\?\?" | cut -d' ' -f 2) <(git diff --name-only origin/master)
 }
 
 gs() {
@@ -180,7 +189,6 @@ export PATH="/usr/lib:$PATH"
 #zstyle ':vcs_info:*' formats "%F{green}%c%u[%b]%f"
 #zstyle ':vcs_info:*' actionformats '[%b|%a]'
 #precmd () { vcs_info }
-[ -f ~/.zshrc.local ] && source ~/.zshrc.local
 
 autoload -Uz vcs_info
 setopt prompt_subst
@@ -200,10 +208,12 @@ PROMPT="%(?.%{${fg[green]}%}.%{${fg[red]}%})(%D %*%)%n${reset_color}@${hostcolor
 PROMPT="${bg[blue]}vim${reset_color}%(?.%{${fg[green]}%}.%{${fg[red]}%})(%D %*%)%n${reset_color}@${hostcolor}${host}${reset_color}${fg[green]}[%j]${reset_color}${GIT}%~
 %# "
 
-# tmux ログイン時起動
-[[ $- != *i* ]] && return
-[[ -z "$TMUX" ]] && exec tmux
+## tmux ログイン時起動
+#[[ $- != *i* ]] && return
+#[[ -z "$TMUX" ]] && exec tmux
+#
 
 v() {
   vim `gitdiffls`
 }
+

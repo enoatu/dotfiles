@@ -223,7 +223,7 @@ let s:switchGutter=1
 noremap <C-m> :call SwitchGutter()<CR>
 function! SwitchGutter()
     if (s:switchGutter == 1)
-        let g:gitgutter_diff_base =  'master'
+        let g:gitgutter_diff_base =  'origin/master'
         let s:switchGutter=2
     else
         let g:gitgutter_diff_base =  ''
