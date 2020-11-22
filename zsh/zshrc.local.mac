@@ -3,3 +3,6 @@ hostcolor=${fg[white]}
 alias vim=/usr/local/bin/vim
 alias vimdiff=/usr/local/bin/vimdiff
 alias dcc="/usr/local/bin/docker-compose -f /Users/enotiru/Development/mailscat/docker-compose.localdev.capture.yml"
+alias dcf="/usr/local/bin/docker-compose -f /Users/enotiru/Development/mailscat/docker-compose.locust.yml"
+
+. /usr/local/opt/asdf/asdf.sh

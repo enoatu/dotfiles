@@ -87,7 +87,6 @@ nmap <Esc><Esc> :nohlsearch<CR><Esc>
 
 "行頭
 nmap <C-h> 0
-nmap <C-a> 0
 "行末
 nmap <C-l> $
 nmap <C-e> $
