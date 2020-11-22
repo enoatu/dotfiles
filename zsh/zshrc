@@ -220,7 +220,7 @@ precmd () { vcs_info }
 GIT='${vcs_info_msg_0_}'
 
 #black red green yellow blue magenta cyan white
-PROMPT="%(?.%{${fg[green]}%}.%{${fg[red]}%})(%D %*%)%n${reset_color}@${hostcolor}${host}${reset_color}${fg[green]}[%j]${reset_color}${GIT}%~
+PROMPT="%(?.%{${fg[green]}%}.%{${fg[red]}%})(%D %*%)%n${reset_color}@${hostcolor}${host}${reset_color}${fg[cyan]}[$(readlink  ~/.gitconfig | cut -f 2 -d '.')]${reset_color}${fg[green]}[%j]${reset_color}${GIT}%~
 %# "
 
 [[ -n "$VIMRUNTIME" ]] && \
@@ -241,4 +241,3 @@ vm() {
 vom() {
   vim `gitdifflsom`
 }
-
