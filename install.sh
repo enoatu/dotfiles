@@ -45,23 +45,27 @@ main () {
 
 setup_zsh () {
     (
-        cd ${HOME}/dotfiles/zsh
-        if [ ! -e ${HOME}/dotfiles/zsh/fzf.zsh ]; then
+        cd ${DOTFILES}/zsh
+        if [ ! -e ${DOTFILES}/zsh/fzf.zsh ]; then
             git clone https://github.com/junegunn/fzf.git ./fzf
             ./fzf/install --no-fish --no-bash
-            mv ~/.fzf.zsh ${HOME}/dotfiles/zsh/fzf.zsh
+            mv ~/.fzf.zsh ${DOTFILES}/zsh/fzf.zsh
         fi
-        ln -sf ~/dotfiles/zsh/zshrc ~/.zshrc
+        if [ ! -e ${DOTFILES}/zsh/zsh-autosuggestions.zsh ]; then
+            git clone https://github.com/zsh-users/zsh-autosuggestions ./zsh-autosuggestions
+            mv ./zsh-autosuggestions/zsh-autosuggestions.zsh ${DOTFILES}/zsh/zsh-autosuggestions.zsh
+        fi
+        ln -sf ${DOTFILES}/zsh/zshrc ~/.zshrc
         if [ ! -e ~/.zshrc.local ]; then
-            ln -sf ~/dotfiles/zsh/zshrc.local ~/.zshrc.local
-            [ `hostname` = "2018macbook.local" ] && ln -sf ~/dotfiles/zsh/zshrc.local.mac ~/.zshrc.local
+            ln -sf ${DOTFILES}/zsh/zshrc.local ~/.zshrc.local
+            [ `hostname` = "2018macbook.local" ] && ln -sf ${DOTFILES}/zsh/zshrc.local.mac ~/.zshrc.local
         else
             echo 'プロンプト反映しますか。 (y or n) '
             read zsh_answer
             case "$zsh_answer" in
             y)
                 echo 'selected :1'
-                ln -sf ~/dotfiles/zsh/zshrc.local ~/.zshrc.local
+                ln -sf ${DOTFILES}/zsh/zshrc.local ~/.zshrc.local
                 [ `hostname` = "2018macbook.local" ] && ln -sf ~/dotfiles/zsh/zshrc.local.mac ~/.zshrc.local
                 printf "\e[30;42;1m zsh setup completed\e[m\n"
                 ;;
