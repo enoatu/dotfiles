@@ -16,6 +16,7 @@ main() {
         printf "\e[30;42;1mexit\e[m\n"
         ;;
     esac
+    exec $SHELL -l
 }
 
 change_gitconfig() {
@@ -35,11 +36,11 @@ change_gitconfig() {
         printf "\e[30;42;1mchanged\e[m\n"
         ;;
     mp)
-        ln -sf ~/dotfiles/git/gitconfig.moove.proxy ~/.gitconfig
+        ln -sf ~/dotfiles/git/gitconfig.mooveproxy ~/.gitconfig
         printf "\e[30;42;1mchanged\e[m\n"
         ;;
     moove.proxy)
-        ln -sf ~/dotfiles/git/gitconfig.moove.proxy ~/.gitconfig
+        ln -sf ~/dotfiles/git/gitconfig.mooveproxy ~/.gitconfig
         printf "\e[30;42;1mchanged\e[m\n"
         ;;
     *)
