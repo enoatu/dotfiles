@@ -81,14 +81,7 @@ alias cmm='~/dotfiles/bin/gitcommit.sh heavy_minus_sign'
 alias cmr='~/dotfiles/bin/gitcommit.sh recycle'
 alias cms='~/dotfiles/bin/gitcommit.sh space_invader'
 alias cmb='~/dotfiles/bin/gitcommit.sh bug'
-
-alias gcw='~/dotfiles/bin/gitcommit.sh wrench'
-alias gcp='~/dotfiles/bin/gitcommit.sh heavy_plus_sign'
-alias gcm='~/dotfiles/bin/gitcommit.sh heavy_minus_sign'
-alias gcr='~/dotfiles/bin/gitcommit.sh recycle'
-alias gcs='~/dotfiles/bin/gitcommit.sh space_invader'
-alias gcb='~/dotfiles/bin/gitcommit.sh bug'
-alias gcco='~/dotfiles/bin/gitcommit.sh construction'
+alias cmo='~/dotfiles/bin/gitcommit.sh construction'
 
 alias d='docker'
 alias dc=/usr/local/bin/docker-compose
