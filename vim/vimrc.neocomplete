@@ -89,6 +89,15 @@ set hlsearch
 " ESC連打でハイライト解除
 nmap <Esc><Esc> :nohlsearch<CR><Esc>
 
+"行頭
+nmap <C-h> 0
+"行末
+nmap <C-l> $
+nmap <C-e> $
+
+" タイポ修正
+inoremap <C-t> <Esc><Left>"zx"zpa
+
 vmap <BS> <Del>
 imap <BS> <BS>
 " 挿入モードーノーマルモード間移動を高速化
@@ -220,18 +229,34 @@ set smartindent
 " Tab文字を半角スペースにする
 set expandtab
 
+let s:switchTab=1
+let s:switchTabMessage="4スペ"
 set sw=4 "shiftwidth
 set ts=4 "tabstop
 noremap <C-i> :call SwitchIndent()<CR>
 function! SwitchIndent()
-    if (&sw == 2)
+    if (s:switchTab == 1)
+        let s:switchTab=2
+        set expandtab
         set sw=4
         set ts=4
-    else
+        let s:switchTabMessage="4スペ"
+    elseif (s:switchTab == 2)
+        let s:switchTab=3
+        set expandtab
         set sw=2
         set ts=2
+        let s:switchTabMessage="2スペ"
+    elseif (s:switchTab == 3)
+        "tab
+        let s:switchTab=1
+        set noexpandtab
+        set sw=4
+        set ts=4
+        let s:switchTabMessage="タブ"
     endif
     :IndentGuidesEnable
+    echo "SwitchIndent: " . s:switchTabMessage
 endfunction
 "======================indentline===================
 "自動起動
@@ -251,3 +276,18 @@ let g:indent_guides_guide_size=1
 "set signcolumn=yes
 "タイピング終了後すぐに反映する
 set updatetime=200
+"master
+let s:switchGutter=1
+noremap <C-m> :call SwitchGutter()<CR>
+function! SwitchGutter()
+    if (s:switchGutter == 1)
+        let g:gitgutter_diff_base =  'origin/dev'
+        let s:switchGutter=2
+        echo "switchGutter: origin/dev"
+    else
+        let g:gitgutter_diff_base =  ''
+        let s:switchGutter=1
+        echo "switchGutter: デフォルト"
+    endif
+    :GitGutterAll
+endfunction
