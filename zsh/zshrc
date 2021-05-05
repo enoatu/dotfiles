@@ -96,13 +96,18 @@ gitdiffls() {
   cat <(git status --short | grep -E "^\?\?" | cut -d' ' -f 2) <(git diff --name-only)
 }
 
-gitdifflso() {
+gitdifflsm() {
   cat <(git status --short | grep -E "^\?\?" | cut -d' ' -f 2) <(git diff --name-only master)
 }
 
 gitdifflsom() {
   cat <(git status --short | grep -E "^\?\?" | cut -d' ' -f 2) <(git diff --name-only origin/master)
 }
+
+gitdifflsod() {
+  cat <(git status --short | grep -E "^\?\?" | cut -d' ' -f 2) <(git diff --name-only origin/dev)
+}
+
 
 gs() {
   #git diff master HEAD --name-only
@@ -229,4 +234,7 @@ vm() {
 }
 vom() {
   vim `gitdifflsom`
+}
+vod() {
+  vim `gitdifflsod`
 }
