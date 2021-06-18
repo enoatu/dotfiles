@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# ディレクトリ内のすべてのファイルをループする
+# 使用法 _EXEC=./etc/mysqldef/import_migrate.sh && _DIR=app/mailscat/misc/migrate direxec
+
+while read -d $'\0' file; do $_EXEC $file; done << (find $_DIR -mindepth 1 -maxdepth 1 -print0)
