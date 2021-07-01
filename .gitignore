@@ -1,5 +1,5 @@
 /vim/dein
-/zsh/zshrc.local
+/zsh/zshrc.local*
 .project_root
 .current_dir
 /zsh/fzf*

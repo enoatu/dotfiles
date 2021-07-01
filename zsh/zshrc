@@ -66,7 +66,9 @@ alias mkdir='mkdir -p'
 alias p='pushd'
 alias diff='diff -U1'
 alias exsh='exec $SHELL -l'
-alias a='git add'
+alias s='git status'
+alias a='git add . && git status'
+alias r='git reset && git status'
 alias c='git commit -m'
 alias am='git commit --amend'
 alias gb='git branch'
@@ -212,14 +214,22 @@ setopt prompt_subst
 zstyle ':vcs_info:git:*' check-for-changes true
 zstyle ':vcs_info:git:*' stagedstr "%F{yellow}!"
 zstyle ':vcs_info:git:*' unstagedstr "%F{red}+"
-zstyle ':vcs_info:*' formats "%F{green}%c%u[%b]%f"
-zstyle ':vcs_info:*' actionformats '[%b|%a]'
+zstyle ':vcs_info:*' formats "%F{cyan}[%m]%f%F{green}%c%u[%b]%f"
+zstyle ':vcs_info:*' actionformats '[%b|%a] %m'
+zstyle ':vcs_info:git+set-message:*' hooks git-config-user
 precmd () { vcs_info }
 GIT='${vcs_info_msg_0_}'
 
 #black red green yellow blue magenta cyan white
-PROMPT="%(?.%{${fg[green]}%}.%{${fg[red]}%})(%D %*%)%n${reset_color}@${hostcolor}${host}${reset_color}${fg[cyan]}[$(readlink  ~/.gitconfig | cut -f 2 -d '.')]${reset_color}${fg[green]}(%j)${reset_color}${GIT}%~
+PROMPT="%(?.%{${fg[green]}%}.%{${fg[red]}%})(%D %*%)%n${reset_color}@${hostcolor}${host}${reset_color}${fg[green]}(%j)${reset_color}${GIT}%~
 %# "
+
+# gitリポジトリにいる場合、set-messageフックでgit-config-user関数が呼び出されるように登録
+
+# "+vi-<フック名>"関数で、hook_com[misc]にgit config user.emailの結果を代入する
+function +vi-git-config-user(){
+  hook_com[misc]+=`readlink  ~/.gitconfig | cut -f 2 -d '.'`
+}
 
 ## tmux ログイン時起動
 #[[ $- != *i* ]] && return
