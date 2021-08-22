@@ -162,7 +162,7 @@ setup_vim () {
     echo ''
     VIM=vim
     ispython=$(vim --version | grep '\+python')
-    if [ ! -n "$ispython" ]; then
+    if [ -n "$ispython" ]; then
         echo ''
         echo 'pythonインターフェイスが使用できないvimを使用しています。'
         echo ''
@@ -183,7 +183,7 @@ setup_vim () {
         ;;
     2)
         echo 'selected :2'
-        if [ ! -n "$ispython" ]; then
+        if [ -n "$ispython" ]; then
             echo ''
             echo 'pythonインターフェイスが使用できないvimを使用しています。'
             echo ''

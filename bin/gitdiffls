@@ -1,0 +1,22 @@
+#!/usr/bin/env zx
+$.verbose = false
+
+if (argv.staged || argv.s) {
+  // show diff staging files
+  const result = await $`git diff --name-only --staged`
+  console.log(result.stdout)
+  process.exit()
+}
+
+let arg = ''
+if (argv._[1]) {
+  // show diff branch etc..
+  arg = argv._[1]
+} else {
+  // show diff default remote branch
+  const defaultRemoteBranch = await $`git remote show origin | grep 'HEAD branch' | awk '{print $NF}'`
+  arg = `origin/${defaultRemoteBranch}`.trim()
+}
+
+const result = await $`cat <(git status -u --short | grep "^\?\?" | cut -d' ' -f 2) <(git diff --name-only ${arg})`
+console.log(result.stdout)

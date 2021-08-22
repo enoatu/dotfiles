@@ -45,14 +45,12 @@ setopt pushd_ignore_dups
 setopt correct
 
 # エイリアス
-alias sudo='sudo ' #https://qiita.com/homines22/items/ba1a6d03df85e65fc85a
+alias sudo='sudo ' # sudo ll など、sudo してもaliasを引き継げる
 alias lst='ls -ltr'
 alias l='ls -ltr'
 alias la='ls -la'
 alias ll='ls -l'
 alias so='source'
-alias vi='vim'
-alias vz='vim ~/.zshrc'
 alias gba='git branch --sort=-authordate'
 alias gf="git for-each-ref --sort=committerdate refs/heads/ --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(contents:subject) - %(authorname) (%(color:green)%(committerdate:relative)%(color:reset))'"
 
@@ -94,22 +92,7 @@ gitstashpopreset() {
   git checkout --ours . && git reset && git checkout .
 }
 
-gitdiffls() {
-  cat <(git status --short | grep -E "^\?\?" | cut -d' ' -f 2) <(git diff --name-only)
-}
-
-gitdifflsm() {
-  cat <(git status --short | grep -E "^\?\?" | cut -d' ' -f 2) <(git diff --name-only master)
-}
-
-gitdifflsom() {
-  cat <(git status --short | grep -E "^\?\?" | cut -d' ' -f 2) <(git diff --name-only origin/master)
-}
-
-gitdifflsod() {
-  cat <(git status --short | grep -E "^\?\?" | cut -d' ' -f 2) <(git diff --name-only origin/dev)
-}
-
+alias v='(){vim $(gitdiffls $1)}'
 
 gs() {
   #git diff master HEAD --name-only
@@ -235,16 +218,3 @@ function +vi-git-config-user(){
 #[[ $- != *i* ]] && return
 #[[ -z "$TMUX" ]] && exec tmux
 #
-
-v() {
-  vim `gitdiffls`
-}
-vm() {
-  vim `gitdifflsm`
-}
-vom() {
-  vim `gitdifflsom`
-}
-vod() {
-  vim `gitdifflsod`
-}
