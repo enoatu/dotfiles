@@ -1,0 +1,25 @@
+#!/bin/bash
+
+authKey=$DeepLKey # DeepLから認証キーを取得し、環境変数にセットしておく
+toLang="EN"
+
+arg=""
+if [ -p /dev/stdin ]; then # パイプで標準入力が渡されたか
+  # echo hoge | deepl
+  arg=`cat -` # 標準入力取得
+else
+  # deepl hoge
+  arg=$@ # 全引数取得
+fi
+
+text=$arg
+# -sでダウンロード状況表示させない
+# -Sでエラーは表示するように
+resp=`curl -sS https://api-free.deepl.com/v2/translate \
+  -d "auth_key=${authKey}" \
+  -d "target_lang=${toLang}" \
+  -d "text=${text}"`
+# -rでダブルクオーテーションが消える
+echo $resp | jq -r ".translations[].text"
+
+exit 0
