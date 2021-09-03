@@ -12,10 +12,13 @@ let arg = ''
 if (argv._[1]) {
   // show diff branch etc..
   arg = argv._[1]
-} else {
+} else if (argv.default || argv.d) {
   // show diff default remote branch
   const defaultRemoteBranch = await $`git remote show origin | grep 'HEAD branch' | awk '{print $NF}'`
   arg = `origin/${defaultRemoteBranch}`.trim()
+} else {
+  // show diff HEAD in default
+  arg = 'HEAD'
 }
 
 const result = await $`cat <(git status -u --short | grep "^\?\?" | cut -d' ' -f 2) <(git diff --name-only ${arg})`
