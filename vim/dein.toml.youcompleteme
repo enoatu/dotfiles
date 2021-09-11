@@ -11,6 +11,10 @@ depends = ['vim-airline-themes']
 [[plugins]]
 repo = 'vim-airline/vim-airline-themes'
 
+# markdown
+[[plugins]]
+repo = 'plasticboy/vim-markdown'
+
 #インデント可視化
 #[[plugins]]
 #repo = 'Yggdroot/indentLine'
