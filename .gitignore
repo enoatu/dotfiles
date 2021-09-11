@@ -1,4 +1,6 @@
 /vim/dein
+/vim/vim-*
+/vim/v8*
 /zsh/zshrc.local*
 .project_root
 .current_dir
