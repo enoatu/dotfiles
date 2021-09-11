@@ -131,7 +131,7 @@ dw() {
 
 ga() {
   local selected
-  selected=$(\git status -s | fzf -m --ansi --preview="echo {} | awk '{print \$2}' | xargs \git diff --color origin/master" | awk '{print $2}')
+  selected=$(\git status -s | fzf -m --ansi --preview="echo {} | awk '{print \$2}' | xargs \git diff" | awk '{print $2}')
   if [[ -n "$selected" ]]; then
     git add `paste -s - <<< $selected`
   fi
