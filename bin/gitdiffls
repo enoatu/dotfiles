@@ -3,7 +3,7 @@ $.verbose = false
 
 if (argv.staged || argv.s) {
   // show diff staging files
-  const result = await $`git diff --name-only --staged`
+  const result = await $`git diff --name-only --staged | sort`
   console.log(result.stdout)
   process.exit()
 }
@@ -21,5 +21,5 @@ if (argv._[1]) {
   arg = 'HEAD'
 }
 
-const result = await $`cat <(git status -u --short | grep "^\?\?" | cut -d' ' -f 2) <(git diff --name-only ${arg})`
+const result = await $`cat <(git status -u --short | grep "^\?\?" | cut -d' ' -f 2) <(git diff --name-only ${arg}) | sort`
 console.log(result.stdout)
