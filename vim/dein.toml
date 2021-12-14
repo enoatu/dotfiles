@@ -1,0 +1,53 @@
+
+# 基本は github.com のレポジトリーを指定するだけ
+[[plugins]]
+repo = 'Shougo/dein.vim'
+
+#かっこよく
+[[plugins]]
+repo    = 'vim-airline/vim-airline'
+depends = ['vim-airline-themes']
+
+#見やすく
+[[plugins]]
+repo = 'vim-airline/vim-airline-themes'
+
+#テーマ
+[[plugins]]
+repo = 'rakr/vim-one'
+
+#アイコン for テーマ
+[[plugins]]
+repo = 'ryanoasis/vim-devicons'
+
+# インデント
+[[plugins]]
+repo = 'Yggdroot/indentLine'
+
+#プラグインによってjsonの表示がおかしくなるものがあるため入れる
+[[plugins]]
+repo = 'elzr/vim-json'
+
+#ノードツリーをひらく デフォルトはctl + n
+[[plugins]]
+repo = 'scrooloose/nerdtree'
+
+# bufferlist(lazyではできない)
+[[plugins]]
+repo = 'vim-scripts/bufferlist.vim'
+
+#gitで管理してる場合、左側に差分を表示
+[[plugins]]
+repo = 'airblade/vim-gitgutter'
+
+[[plugins]]
+repo = 'juliosueiras/vim-terraform-completion'
+
+[[plugins]]
+repo = 'peitalin/vim-jsx-typescript'
+
+[[plugins]]
+repo = 'leafgarland/typescript-vim'
+
+[[plugins]]
+repo = 'rust-lang/rust.vim'

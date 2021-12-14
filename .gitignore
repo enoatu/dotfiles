@@ -1,4 +1,5 @@
 /vim/dein
+/vim/neo-dein
 /vim/vim-*
 /vim/v8*
 /zsh/zshrc.local*
@@ -8,3 +9,4 @@
 /zsh/zsh-autosuggestions*
 .dirs
 /dein
+bin/setlocalgit

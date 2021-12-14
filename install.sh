@@ -138,6 +138,7 @@ select_vim_setup_style () {
     echo 'vimのセットアップスタイルを選択したください。 (1 or 2 or cancel) '
     echo '1: vimrc + プラグイン のセットアップ'
     echo '2: vimrc              のセットアップ'
+    echo '3: new vim のセットアップ'
     read vim_plugin_answer
     case "$vim_plugin_answer" in
     1)
@@ -147,6 +148,10 @@ select_vim_setup_style () {
     2)
         echo 'selected :2'
         setup_vim_only_vimrc
+        ;;
+    3)
+        echo 'selected :3'
+        setup_new_vim
         ;;
     *)
         echo 'vim setup canceled'
@@ -179,7 +184,6 @@ setup_vim () {
         rm -rf ${DOTFILES}/vim/.local
         ln -sf ~/dotfiles/vim/vimrc.neocomplete ~/.vimrc
         ln -sf ~/dotfiles/vim/dein.toml.neocomplete ~/.dein.toml
-        [ `hostname` = "2018macbook.local" ] && ln -sf ~/dotfiles/vim/dein.toml.neocomplete.mac ~/.dein.toml
         ;;
     2)
         echo 'selected :2'
@@ -199,7 +203,6 @@ setup_vim () {
                 rm -rf ${DOTFILES}/vim/.local
                 ln -sf ~/dotfiles/vim/vimrc.neocomplete ~/.vimrc
                 ln -sf ~/dotfiles/vim/dein.toml.neocomplete ~/.dein.toml
-                [ `hostname` = "2018macbook.local" ] && ln -sf ~/dotfiles/vim/dein.toml.neocomplete.mac ~/.dein.toml
                 ;;
             2)
                 rm -rf ${DOTFILES}/vim/dein
@@ -302,6 +305,20 @@ setup_vim_only_vimrc () {
     ln -sf ~/dotfiles/vim/vimrc ~/.vimrc
     cd -
     printf "\e[30;42;1m vim setup completed \e[m\n"
+}
+
+setup_new_vim () {
+    if [ -e ~/.config/nvim ]; then
+        rm -rf ~/.config/nvim
+    fi
+    mkdir -p ~/.config/nvim
+
+    # for nvim
+    ln -sf ~/dotfiles/vim/vimrc ~/.config/nvim/init.vim
+    # for vim
+    ln -sf ~/dotfiles/vim/vimrc ~/.vimrc
+
+    printf "\e[30;42;1m new vim setup completed \e[m\n"
 }
 main
 

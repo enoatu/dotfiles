@@ -1,0 +1,304 @@
+set encoding=utf-8
+set fileencodings=utf-8,iso-2022-jp,euc-jp,sjis
+set fileformats=unix,dos,mac
+"dein Scripts-----------------------------
+" dein.vim がなければ github から落としてくる
+
+if has('nvim')
+  let s:dein_dir = expand('~/dotfiles/vim/neo-dein')
+else
+  let s:dein_dir = expand('~/dotfiles/vim/dein')
+endif
+
+let s:dein_repo_dir = s:dein_dir . '/repos/github.com/Shougo/dein.vim'
+if &runtimepath !~# '/dein.vim'
+  if !isdirectory(s:dein_repo_dir)
+    execute '!git clone https://github.com/Shougo/dein.vim' s:dein_repo_dir
+  endif
+  execute 'set runtimepath^=' . fnamemodify(s:dein_repo_dir, ':p')
+endif
+
+if dein#load_state(s:dein_dir)
+  call dein#begin(s:dein_dir)
+  let s:toml = '~/dotfiles/vim/dein.toml'
+  let s:tomllazy = '~/dotfiles/vim/dein_lazy.toml'
+  call dein#load_toml(s:toml, {'lazy': 0})
+  call dein#load_toml(s:tomllazy, {'lazy': 1})
+
+  call dein#end()
+  call dein#save_state()
+endif
+
+ if dein#check_install()
+   call dein#install()
+ endif
+let g:dein#install_max_processes = 16
+
+ "End dein Scripts-------------------------
+
+ "setting https://qiita.com/hide/items/229ff9460e75426a2d07
+ "文字コードをUFT-8に設定
+ "set fenc=utf-8
+ " バックアップファイルを作らない
+ "set nobackup
+ " スワップファイルを作らない
+ set noswapfile
+ " 編集中のファイルが変更されたら自動で読み直す
+ set autoread
+ " バッファが編集中でもその他のファイルを開けるように
+ set hidden
+ " 入力中のコマンドをステータスに表示する
+ set showcmd
+
+ " 見た目系
+ " 行番号を表示
+ set number
+ " 現在の行を強調表示
+ "set cursorline
+ " 現在の行を強調表示（縦）
+ "set cursorcolumn
+ " 行末の1文字先までカーソルを移動できるように
+ set virtualedit=onemore
+
+set hls                "検索した文字をハイライトする
+set termguicolors      "TrueColor対応"
+
+"通常モードはブロック型点滅有り
+"挿入モードはライン型点滅有り
+let &t_SI .= "\e[5 q"
+let &t_EI .= "\e[1 q"
+" ビープ音を可視化
+set visualbell
+" 括弧入力時の対応する括弧を表示
+set showmatch
+" ステータスラインを常に表示
+set laststatus=2
+" コマンドラインの補完
+set wildmode=list:longest
+" 折り返し時に表示行単位での移動できるようにする
+nnoremap j gj
+nnoremap k gk
+" diff時 set wrapをデフォルトに
+autocmd FilterWritePre * if &diff | setlocal wrap< | endif
+nnoremap <Leader>gv :Gdiff<CR>:windo set wrap<CR>
+nnoremap <Leader>gh :Gsdiff<CR>:windo set wrap<CR>
+nnoremap <Leader>gv :Gvdiff<CR>:windo set wrap<CR>
+
+" Tab系
+" 不可視文字を可視化(タブが「▸-」と表示される)
+set list listchars=tab:\▸\-
+
+" 検索系
+" 検索文字列が小文字の場合は大文字小文字を区別なく検索する
+set ignorecase
+" 検索文字列に大文字が含まれている場合は区別して検索する
+set smartcase
+" 検索文字列入力時に順次対象文字列にヒットさせる
+set incsearch
+" 検索語をハイライト表示
+set hlsearch
+" ESC連打でハイライト解除
+nmap <Esc><Esc> :nohlsearch<CR><Esc>
+
+"行頭
+nmap <C-h> 0
+"行末
+nmap <C-l> $
+nmap <C-e> $
+
+" タイポ修正
+inoremap <C-t> <Esc><Left>"zx"zpa
+
+vmap <BS> <Del>
+imap <BS> <BS>
+" 挿入モードーノーマルモード間移動を高速化
+set ttimeoutlen=10
+" Start interactive EasyAlign in visual mode (e.g. vipga)
+ xmap ga <Plug>(EasyAlign)
+"  Start interactive EasyAlign for a motion/text object (e.g. gaip)
+ nmap ga <Plug>(EasyAlign)
+
+set mouse=a
+
+" ウィンドウの幅より長い行は折り返され、次の行に続けて表示される
+set wrap
+
+set number
+"4nvim
+"set clipboard+=autoselect
+set clipboard+=unnamed
+set showmatch
+set matchtime=1
+set matchpairs& matchpairs+=<:>
+set hidden
+set whichwrap=b,s,<,>,[,]
+vnoremap <silent> <C-p> "0p<CR>
+map <C-k> :call BufferList()<CR>
+"nvim
+"syntax on
+"colorscheme molokai
+"colorscheme random
+
+set t_Co=256
+cnoremap w!! w !sudo tee > /dev/null %<CR>
+
+"visulaモードで選択してからのインデント調整で調整後に選択範囲を開放しない
+vnoremap > >gv
+vnoremap < <gv
+" ===================airline_theme====================
+filetype plugin indent on
+
+syntax enable
+colorscheme one
+
+" tmux
+set t_8b=[48;2;%lu;%lu;%lum
+set t_8f=[38;2;%lu;%lu;%lum
+
+let g:airline_theme = 'one'
+" powerline enable(最初に設定しないとダメ)
+let g:airline_powerline_fonts = 1
+" タブバーをかっこよく
+let g:airline#extensions#tabline#enabled = 1
+" 選択行列の表示をカスタム(デフォルトだと長くて横幅を圧迫するので最小限に)
+let g:airline_section_z = airline#section#create(['windowswap', '%3p%% ', 'linenr', ':%3v'])
+" gitのHEADから変更した行の+-を非表示(vim-gitgutterの拡張)
+let g:airline#extensions#hunks#enabled = 0
+
+if !has('nvim')
+  "====================neocomplcache====================
+  " ~Disable AutoComplPop. neocomplcashe~
+  let g:acp_enableAtStartup = 0
+  " Use neocomplcache.
+  let g:neocomplcache_enable_at_startup = 1
+  " Use smartcase.
+  let g:neocomplcache_enable_smart_case = 1
+  " Set minimum syntax keyword length.
+  let g:neocomplcache_min_syntax_length = 3
+  let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
+
+  " Define dictionary.
+  let g:neocomplcache_dictionary_filetype_lists = {
+      \ 'default' : ''
+      \ }
+
+  " Plugin key-mappings.
+  inoremap <expr><C-g>     neocomplcache#undo_completion()
+  inoremap <expr><C-l>     neocomplcache#complete_common_string()
+
+  " Recommended key-mappings.
+  " <CR>: close popup and save indent.
+  inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
+  function! s:my_cr_function()
+    return neocomplcache#smart_close_popup() . "\<CR>"
+  endfunction
+  " <TAB>: completion.
+  inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+  " <C-h>, <BS>: close popup and delete backword char.
+  inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
+  inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
+  inoremap <expr><C-y>  neocomplcache#close_popup()
+  inoremap <expr><C-e>  neocomplcache#cancel_popup()
+  "~neocomplecas~
+
+
+  "====================neosnippet====================
+  " Plugin key-mappings.
+  " Note: It must be "imap" and "smap".  It uses <Plug> mappings.
+  imap <C-s>     <Plug>(neosnippet_expand_or_jump)
+  smap <C-s>     <Plug>(neosnippet_expand_or_jump)
+  xmap <C-s>     <Plug>(neosnippet_expand_target)
+
+  " SuperTab like snippets behavior.
+  " Note: It must be "imap" and "smap".  It uses <Plug> mappings.
+  imap <C-s>     <Plug>(neosnippet_expand_or_jump)
+  "imap <expr><TAB>
+  " \ pumvisible() ? "\<C-n>" :
+  " \ neosnippet#expandable_or_jumpable() ?
+  " \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+  smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+  \ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+
+   " For conceal markers.
+   "if has('conceal')
+   "  set conceallevel=2 concealcursor=niv
+   "endif
+
+   " ~ファイルタイプ毎 & gitリポジトリ毎にtagsの読み込みpathを変える~
+  function! ReadTags(type)
+      try
+          execute "set tags=".$HOME."/dotfiles/tags_files/".
+             \ system("cd " . expand('%:p:h') . "; basename `git rev-parse --show-toplevel` | tr -d '\n'").
+            \ "/" . a:type . "_tags"
+       catch
+          execute "set tags=./tags/" . a:type . "_tags;"
+      endtry
+  endfunction
+
+  augroup TagsAutoCmd
+      autocmd!
+      autocmd BufEnter * :call ReadTags(&filetype)
+  augroup END
+endif
+"====================vim-json=========================
+let g:vim_json_syntax_conceal = 0
+"====================nerdtree============================
+map <C-n> :NERDTreeToggle<CR>
+"======================indent===================
+"自動インデント
+set smartindent
+" Tab文字を半角スペースにする
+set expandtab
+
+let s:switchTab=1
+let s:switchTabMessage="4スペ"
+set sw=4 "shiftwidth
+set ts=4 "tabstop
+noremap <C-i> :call SwitchIndent()<CR>
+function! SwitchIndent()
+    if (s:switchTab == 1)
+        let s:switchTab=2
+        set expandtab
+        set sw=4
+        set ts=4
+        let s:switchTabMessage="4スペ"
+    elseif (s:switchTab == 2)
+        let s:switchTab=3
+        set expandtab
+        set sw=2
+        set ts=2
+        let s:switchTabMessage="2スペ"
+    elseif (s:switchTab == 3)
+        "tab
+        let s:switchTab=1
+        set noexpandtab
+        set sw=4
+        set ts=4
+        let s:switchTabMessage="タブ"
+    endif
+    echo "SwitchIndent: " . s:switchTabMessage
+endfunction
+"======================gitgutter===================
+"画面をガタガタ言わせない
+"set signcolumn=yes
+"タイピング終了後すぐに反映する
+set updatetime=200
+"master
+let s:switchGutter=1
+noremap <C-m> :call SwitchGutter()<CR>
+function! SwitchGutter()
+    if (s:switchGutter == 1)
+        let g:gitgutter_diff_base =  'origin/main'
+        let s:switchGutter=2
+        echo "switchGutter: origin/main"
+    elseif (s:switchGutter == 2)
+        let g:gitgutter_diff_base =  'origin/dev'
+        let s:switchGutter=3
+        echo "switchGutter: origin/dev"
+    else
+        let g:gitgutter_diff_base =  ''
+        let s:switchGutter=1
+        echo "switchGutter: デフォルト"
+    endif
+    :GitGutterAll
+endfunction
