@@ -2,10 +2,6 @@
 [[plugins]]
 repo = 'junegunn/vim-easy-align'
 
-# markdown
-[[plugins]]
-repo = 'plasticboy/vim-markdown'
-
 # ctrl+p でファイルあいまい検索ができる
 [[plugins]]
 repo = 'ctrlpvim/ctrlp.vim'
@@ -36,14 +32,6 @@ let g:copilot_no_maps = v:true
 imap <script><silent><nowait><expr> <C-g> copilot#Accept()
 '''
 
-# fで検索後移動できるようにする
-[[plugins]]
-repo = 'rhysd/clever-f.vim'
-
-# 気分によってcolorschemeかえる
-[[plugins]]
-repo = 'flazz/vim-colorschemes'
-
 #:Gdiffと打つとHEADと現在の状態を比較できる
 #:Glog = git log
 #:Gdiff コミット番号でそのdiffをとれる
@@ -62,3 +50,18 @@ repo = 'flazz/vim-colorschemes'
 #:Gpull [args]
 [[plugins]]
 repo = 'tpope/vim-fugitive'
+
+#ノードツリーをひらく デフォルトはctl + n
+[[plugins]]
+repo = 'scrooloose/nerdtree'
+
+# fで検索後移動できるようにする
+[[plugins]]
+repo = 'rhysd/clever-f.vim'
+
+# 気分によってcolorschemeかえる
+[[plugins]]
+repo = 'flazz/vim-colorschemes'
+
+[[plugins]]
+repo = 'Quramy/tsuquyomi'

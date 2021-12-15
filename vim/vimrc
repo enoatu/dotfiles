@@ -32,6 +32,14 @@ endif
  if dein#check_install()
    call dein#install()
  endif
+
+" 未アンインストールされていないものがあればアンインストール
+let s:removed_plugins = dein#check_clean()
+if len(s:removed_plugins) > 0
+  call map(s:removed_plugins, "delete(v:val, 'rf')")
+  call dein#recache_runtimepath()
+endif
+
 let g:dein#install_max_processes = 16
 
  "End dein Scripts-------------------------
@@ -259,22 +267,21 @@ function! SwitchIndent()
     if (s:switchTab == 1)
         let s:switchTab=2
         set expandtab
-        set sw=4
-        set ts=4
-        let s:switchTabMessage="4スペ"
-    elseif (s:switchTab == 2)
-        let s:switchTab=3
-        set expandtab
         set sw=2
         set ts=2
         let s:switchTabMessage="2スペ"
-    elseif (s:switchTab == 3)
-        "tab
-        let s:switchTab=1
+    elseif (s:switchTab == 2)
+        let s:switchTab=3
         set noexpandtab
         set sw=4
         set ts=4
         let s:switchTabMessage="タブ"
+    elseif (s:switchTab == 3)
+        let s:switchTab=1
+        set expandtab
+        set sw=4
+        set ts=4
+        let s:switchTabMessage="4スペ"
     endif
     echo "SwitchIndent: " . s:switchTabMessage
 endfunction
@@ -302,3 +309,8 @@ function! SwitchGutter()
     endif
     :GitGutterAll
 endfunction
+"=================tsuquyoomi====================
+"if has('nvim')
+"  set ballooneval
+"  autocmd FileType typescript nmap <buffer> <Leader>t : <C-u>echo tsuquyomi#hint()<CR>
+"endif
