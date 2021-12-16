@@ -312,9 +312,14 @@ setup_new_vim () {
         rm -rf ~/.config/nvim
     fi
     mkdir -p ~/.config/nvim
+    if [ -e ~/.vim ]; then
+        rm -rf ~/.vim
+    fi
+    mkdir -p ~/.vim
 
     # for nvim
     ln -sf ~/dotfiles/vim/vimrc ~/.config/nvim/init.vim
+    ln -sf ~/dotfiles/vim/coc-settings.json ~/.config/nvim/coc-settings.json
     # for vim
     ln -sf ~/dotfiles/vim/vimrc ~/.vimrc
 

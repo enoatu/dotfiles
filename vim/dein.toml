@@ -11,8 +11,29 @@ depends = ['vim-airline-themes']
 repo = 'vim-airline/vim-airline-themes'
 
 #テーマ
+#addじゃないと動かない
 [[plugins]]
 repo = 'rakr/vim-one'
+hook_add = '''
+filetype plugin indent on
+
+syntax enable
+colorscheme one
+
+" tmux
+set t_8b=[48;2;%lu;%lu;%lum
+set t_8f=[38;2;%lu;%lu;%lum
+
+let g:airline_theme = 'one'
+" powerline enable(最初に設定しないとダメ)
+let g:airline_powerline_fonts = 1
+" タブバーをかっこよく
+let g:airline#extensions#tabline#enabled = 1
+" 選択行列の表示をカスタム(デフォルトだと長くて横幅を圧迫するので最小限に)
+let g:airline_section_z = airline#section#create(['windowswap', '%3p%% ', 'linenr', ':%3v'])
+" gitのHEADから変更した行の+-を非表示(vim-gitgutterの拡張)
+let g:airline#extensions#hunks#enabled = 0
+'''
 
 #アイコン for テーマ
 [[plugins]]
@@ -25,6 +46,9 @@ repo = 'Yggdroot/indentLine'
 #プラグインによってjsonの表示がおかしくなるものがあるため入れる
 [[plugins]]
 repo = 'elzr/vim-json'
+hook_source = '''
+let g:vim_json_syntax_conceal = 0
+'''
 
 # markdown
 [[plugins]]
@@ -37,53 +61,79 @@ repo = 'vim-scripts/bufferlist.vim'
 #gitで管理してる場合、左側に差分を表示
 [[plugins]]
 repo = 'airblade/vim-gitgutter'
-
-[[plugins]]
-repo = 'juliosueiras/vim-terraform-completion'
-if = 'has("nvim")'
-
-[[plugins]]
-repo = 'peitalin/vim-jsx-typescript'
-if = 'has("nvim")'
-
-[[plugins]]
-repo = 'leafgarland/typescript-vim'
-if = 'has("nvim")'
-
-[[plugins]]
-repo = 'neoclide/coc.nvim'
-rev = 'release'
-if = 'has("nvim") && executable("node") && executable("yarn")'
-on_i = 1
-merged = '0'
 hook_source = '''
-let g:coc_global_extensions = [ 'coc-tsserver', 'coc-vetur', 'coc-go', 'coc-rust-analyzer' ]
-" Remap keys for applying codeAction to the current line.
-nmap <leader>ac  <Plug>(coc-codeaction)
-" Apply AutoFix to problem on the current line.
-nmap <leader>qf  <Plug>(coc-fix-current)
-" GoTo code navigation.
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
-" Use K to show documentation in preview window
-nnoremap <silent> K :call <SID>show_documentation()<CR>
-
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('doHover')
-  endif
+"画面をガタガタ言わせない
+"set signcolumn=yes
+"タイピング終了後すぐに反映する
+set updatetime=200
+"master
+let s:switchGutter=1
+noremap <C-m> :call SwitchGutter()<CR>
+function! SwitchGutter()
+    if (s:switchGutter == 1)
+        let g:gitgutter_diff_base =  'origin/main'
+        let s:switchGutter=2
+        echo "switchGutter: origin/main"
+    elseif (s:switchGutter == 2)
+        let g:gitgutter_diff_base =  'origin/dev'
+        let s:switchGutter=3
+        echo "switchGutter: origin/dev"
+    else
+        let g:gitgutter_diff_base =  ''
+        let s:switchGutter=1
+        echo "switchGutter: デフォルト"
+    endif
+    :GitGutterAll
 endfunction
 '''
-#hook_source = '''
-#call coil398#init#coc#hook_source()
-#'''
-#build = './install.sh nightly'
-#let g:coc_global_extensions = [ 'coc-tsserver' ]
 
+###################################lazy#############################
+
+# easy aline
 [[plugins]]
-repo = 'rust-lang/rust.vim'
-if = 'has("nvim")'
+repo = 'junegunn/vim-easy-align'
+lazy = true
+
+# ctrl+p でファイルあいまい検索ができる
+[[plugins]]
+repo = 'ctrlpvim/ctrlp.vim'
+lazy = true
+
+#:Gdiffと打つとHEADと現在の状態を比較できる
+#:Glog = git log
+#:Gdiff コミット番号でそのdiffをとれる
+#:Gblameでコミット詳細みれる
+#:Gstatus = git status
+#:Gwrite [path]
+#:Gcommit
+#:Gdiff [fugitive-revision]
+#:Gedit [fugitive-revision]
+#:Gmove [destination]
+#:Gremove
+#:Glog [args]
+#:Gpush [args]
+#:Gfetch [args]
+#:Gmerge [args]
+#:Gpull [args]
+[[plugins]]
+repo = 'tpope/vim-fugitive'
+lazy = true
+
+#ノードツリーをひらく デフォルトはctl + n
+# addでないと動かない
+[[plugins]]
+repo = 'scrooloose/nerdtree'
+lazy = true
+hook_add = '''
+nmap <C-n> :NERDTreeToggle<CR>
+'''
+
+# fで検索後移動できるようにする
+[[plugins]]
+repo = 'rhysd/clever-f.vim'
+lazy = true
+
+# 気分によってcolorschemeかえる
+[[plugins]]
+repo = 'flazz/vim-colorschemes'
+lazy = true

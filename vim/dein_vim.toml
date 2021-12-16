@@ -1,0 +1,17 @@
+#######################lazy#########################
+# neosinppet for vim
+
+##入力補完ctrl + k で次の入力するところに飛べる
+[[plugins]]
+repo = 'Shougo/neocomplcache'
+lazy = true
+
+## スニペットの補完機能
+[[plugins]]
+repo = 'Shougo/neosnippet'
+lazy = true
+
+## スニペット集
+[[plugins]]
+repo = 'Shougo/neosnippet-snippets'
+lazy = true
