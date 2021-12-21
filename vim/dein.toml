@@ -57,11 +57,14 @@ repo = 'plasticboy/vim-markdown'
 # bufferlist(lazyではできない)
 [[plugins]]
 repo = 'vim-scripts/bufferlist.vim'
+hook_add = '''
+map <C-k> :call BufferList()<CR>
+'''
 
 #gitで管理してる場合、左側に差分を表示
 [[plugins]]
 repo = 'airblade/vim-gitgutter'
-hook_source = '''
+hook_add = '''
 "画面をガタガタ言わせない
 "set signcolumn=yes
 "タイピング終了後すぐに反映する
