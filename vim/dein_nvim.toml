@@ -2,10 +2,10 @@
 repo = 'juliosueiras/vim-terraform-completion'
 
 [[plugins]]
-repo = 'peitalin/vim-jsx-typescript'
+repo = 'MaxMEllon/vim-jsx-pretty'
 
 [[plugins]]
-repo = 'leafgarland/typescript-vim'
+repo = 'styled-components/vim-styled-components'
 
 [[plugins]]
 repo = 'rust-lang/rust.vim'
@@ -199,3 +199,5 @@ function! s:show_documentation()
   endif
 endfunction
 '''
+# terraform-lsp required
+# download lsp and pathing

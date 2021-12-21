@@ -3,8 +3,11 @@ set fileencodings=utf-8,iso-2022-jp,euc-jp,sjis
 set fileformats=unix,dos,mac
 "dein Scripts-----------------------------
 " dein.vim がなければ github から落としてくる
+let s:plugin_test = 0
 
-if has('nvim')
+if s:plugin_test
+  let s:dein_dir = expand('~/dotfiles/vim/.test-dein')
+elseif has('vim')
   let s:dein_dir = expand('~/dotfiles/vim/neo-dein')
 else
   let s:dein_dir = expand('~/dotfiles/vim/dein')
@@ -21,13 +24,17 @@ endif
 if dein#load_state(s:dein_dir)
   call dein#begin(s:dein_dir)
   let s:toml = '~/dotfiles/vim/dein.toml'
+  let s:tomltest = '~/dotfiles/vim/dein_test.toml'
   let s:tomlnvim = '~/dotfiles/vim/dein_nvim.toml'
   let s:tomlvim = '~/dotfiles/vim/dein_vim.toml'
 
-  call dein#load_toml(s:toml, {'lazy': 0})
-  if has('nvim')
+  if s:plugin_test
+    call dein#load_toml(s:tomltest, {'lazy': 0})
+  elseif has('nvim')
+    call dein#load_toml(s:toml, {'lazy': 0})
     call dein#load_toml(s:tomlnvim, {'lazy': 0})
   else
+    call dein#load_toml(s:toml, {'lazy': 0})
     call dein#load_toml(s:tomlvim, {'lazy': 0})
   endif
 
@@ -147,11 +154,6 @@ set matchpairs& matchpairs+=<:>
 set hidden
 set whichwrap=b,s,<,>,[,]
 vnoremap <silent> <C-p> "0p<CR>
-map <C-k> :call BufferList()<CR>
-"nvim
-"syntax on
-"colorscheme molokai
-"colorscheme random
 
 set t_Co=256
 cnoremap w!! w !sudo tee > /dev/null %<CR>
@@ -159,105 +161,6 @@ cnoremap w!! w !sudo tee > /dev/null %<CR>
 "visulaモードで選択してからのインデント調整で調整後に選択範囲を開放しない
 vnoremap > >gv
 vnoremap < <gv
-" ===================airline_theme====================
-filetype plugin indent on
-
-syntax enable
-colorscheme one
-
-" tmux
-set t_8b=[48;2;%lu;%lu;%lum
-set t_8f=[38;2;%lu;%lu;%lum
-
-let g:airline_theme = 'one'
-" powerline enable(最初に設定しないとダメ)
-let g:airline_powerline_fonts = 1
-" タブバーをかっこよく
-let g:airline#extensions#tabline#enabled = 1
-" 選択行列の表示をカスタム(デフォルトだと長くて横幅を圧迫するので最小限に)
-let g:airline_section_z = airline#section#create(['windowswap', '%3p%% ', 'linenr', ':%3v'])
-" gitのHEADから変更した行の+-を非表示(vim-gitgutterの拡張)
-let g:airline#extensions#hunks#enabled = 0
-
-if !has('nvim')
-  "====================neocomplcache====================
-  " ~Disable AutoComplPop. neocomplcashe~
-  let g:acp_enableAtStartup = 0
-  " Use neocomplcache.
-  let g:neocomplcache_enable_at_startup = 1
-  " Use smartcase.
-  let g:neocomplcache_enable_smart_case = 1
-  " Set minimum syntax keyword length.
-  let g:neocomplcache_min_syntax_length = 3
-  let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
-
-  " Define dictionary.
-  let g:neocomplcache_dictionary_filetype_lists = {
-      \ 'default' : ''
-      \ }
-
-  " Plugin key-mappings.
-  inoremap <expr><C-g>     neocomplcache#undo_completion()
-  inoremap <expr><C-l>     neocomplcache#complete_common_string()
-
-  " Recommended key-mappings.
-  " <CR>: close popup and save indent.
-  inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
-  function! s:my_cr_function()
-    return neocomplcache#smart_close_popup() . "\<CR>"
-  endfunction
-  " <TAB>: completion.
-  inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-  " <C-h>, <BS>: close popup and delete backword char.
-  inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
-  inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
-  inoremap <expr><C-y>  neocomplcache#close_popup()
-  inoremap <expr><C-e>  neocomplcache#cancel_popup()
-  "~neocomplecas~
-
-
-  "====================neosnippet====================
-  " Plugin key-mappings.
-  " Note: It must be "imap" and "smap".  It uses <Plug> mappings.
-  imap <C-s>     <Plug>(neosnippet_expand_or_jump)
-  smap <C-s>     <Plug>(neosnippet_expand_or_jump)
-  xmap <C-s>     <Plug>(neosnippet_expand_target)
-
-  " SuperTab like snippets behavior.
-  " Note: It must be "imap" and "smap".  It uses <Plug> mappings.
-  imap <C-s>     <Plug>(neosnippet_expand_or_jump)
-  "imap <expr><TAB>
-  " \ pumvisible() ? "\<C-n>" :
-  " \ neosnippet#expandable_or_jumpable() ?
-  " \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
-  smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
-  \ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
-
-   " For conceal markers.
-   "if has('conceal')
-   "  set conceallevel=2 concealcursor=niv
-   "endif
-
-   " ~ファイルタイプ毎 & gitリポジトリ毎にtagsの読み込みpathを変える~
-  function! ReadTags(type)
-      try
-          execute "set tags=".$HOME."/dotfiles/tags_files/".
-             \ system("cd " . expand('%:p:h') . "; basename `git rev-parse --show-toplevel` | tr -d '\n'").
-            \ "/" . a:type . "_tags"
-       catch
-          execute "set tags=./tags/" . a:type . "_tags;"
-      endtry
-  endfunction
-
-  augroup TagsAutoCmd
-      autocmd!
-      autocmd BufEnter * :call ReadTags(&filetype)
-  augroup END
-endif
-"====================vim-json=========================
-let g:vim_json_syntax_conceal = 0
-"====================nerdtree============================
-map <C-n> :NERDTreeToggle<CR>
 "======================indent===================
 "自動インデント
 set smartindent
@@ -291,32 +194,3 @@ function! SwitchIndent()
     endif
     echo "SwitchIndent: " . s:switchTabMessage
 endfunction
-"======================gitgutter===================
-"画面をガタガタ言わせない
-"set signcolumn=yes
-"タイピング終了後すぐに反映する
-set updatetime=200
-"master
-let s:switchGutter=1
-noremap <C-m> :call SwitchGutter()<CR>
-function! SwitchGutter()
-    if (s:switchGutter == 1)
-        let g:gitgutter_diff_base =  'origin/main'
-        let s:switchGutter=2
-        echo "switchGutter: origin/main"
-    elseif (s:switchGutter == 2)
-        let g:gitgutter_diff_base =  'origin/dev'
-        let s:switchGutter=3
-        echo "switchGutter: origin/dev"
-    else
-        let g:gitgutter_diff_base =  ''
-        let s:switchGutter=1
-        echo "switchGutter: デフォルト"
-    endif
-    :GitGutterAll
-endfunction
-"=================tsuquyoomi====================
-"if has('nvim')
-"  set ballooneval
-"  autocmd FileType typescript nmap <buffer> <Leader>t : <C-u>echo tsuquyomi#hint()<CR>
-"endif
