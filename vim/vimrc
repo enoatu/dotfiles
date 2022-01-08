@@ -158,7 +158,7 @@ vnoremap <silent> <C-p> "0p<CR>
 set t_Co=256
 cnoremap w!! w !sudo tee > /dev/null %<CR>
 
-"visulaモードで選択してからのインデント調整で調整後に選択範囲を開放しない
+"visualモードで選択してからのインデント調整で調整後に選択範囲を開放しない
 vnoremap > >gv
 vnoremap < <gv
 "======================indent===================

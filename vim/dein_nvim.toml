@@ -187,7 +187,7 @@ nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
 " Resume latest coc list.
 nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
 
-let g:coc_global_extensions = ['coc-tsserver', 'coc-vetur', 'coc-go', 'coc-perl', 'coc-phpls', 'coc-rust-analyzer' ]
+let g:coc_global_extensions = ['coc-tsserver', 'coc-vetur', 'coc-go', 'coc-perl', 'coc-phpls', 'coc-rust-analyzer', 'coc-spell-checker' ]
 " Use K to show documentation in preview window
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 

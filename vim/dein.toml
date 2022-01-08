@@ -43,12 +43,31 @@ repo = 'ryanoasis/vim-devicons'
 [[plugins]]
 repo = 'Yggdroot/indentLine'
 
-#プラグインによってjsonの表示がおかしくなるものがあるため入れる
+#indentLineプラグインによってjsonファイルの表示がおかしくなるため入れる
 [[plugins]]
 repo = 'elzr/vim-json'
-hook_source = '''
+hook_add = '''
 let g:vim_json_syntax_conceal = 0
 '''
+
+#:Gdiffと打つとHEADと現在の状態を比較できる
+#:Glog = git log
+#:Gdiff コミット番号でそのdiffをとれる
+#:Gblameでコミット詳細みれる
+#:Gstatus = git status
+#:Gwrite [path]
+#:Gcommit
+#:Gdiff [fugitive-revision]
+#:Gedit [fugitive-revision]
+#:Gmove [destination]
+#:Gremove
+#:Glog [args]
+#:Gpush [args]
+#:Gfetch [args]
+#:Gmerge [args]
+#:Gpull [args]
+[[plugins]]
+repo = 'tpope/vim-fugitive'
 
 # markdown
 [[plugins]]
@@ -100,26 +119,6 @@ lazy = true
 # ctrl+p でファイルあいまい検索ができる
 [[plugins]]
 repo = 'ctrlpvim/ctrlp.vim'
-lazy = true
-
-#:Gdiffと打つとHEADと現在の状態を比較できる
-#:Glog = git log
-#:Gdiff コミット番号でそのdiffをとれる
-#:Gblameでコミット詳細みれる
-#:Gstatus = git status
-#:Gwrite [path]
-#:Gcommit
-#:Gdiff [fugitive-revision]
-#:Gedit [fugitive-revision]
-#:Gmove [destination]
-#:Gremove
-#:Glog [args]
-#:Gpush [args]
-#:Gfetch [args]
-#:Gmerge [args]
-#:Gpull [args]
-[[plugins]]
-repo = 'tpope/vim-fugitive'
 lazy = true
 
 #ノードツリーをひらく デフォルトはctl + n

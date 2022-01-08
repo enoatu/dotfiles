@@ -6,5 +6,62 @@
   "intelephense.diagnostics.undefinedFunctions": false,
   "intelephense.diagnostics.undefinedMethods": false,
   "intelephense.diagnostics.undefinedProperties": false,
-  "intelephense.diagnostics.undefinedTypes":false
+  "intelephense.diagnostics.undefinedTypes":false,
+  "languageserver": {
+    "terraform": {
+      "command": "terraform-lsp",
+      "filetypes": [
+        "terraform",
+        "tf"
+      ],
+      "initializationOptions": {},
+      "settings": {}
+    }
+  },
+  "cSpell.diagnosticLevel": "hint",
+  "cSpell.enabledLanguageIds": [
+    "vim",
+    "asciidoc",
+    "c",
+    "cpp",
+    "csharp",
+    "css",
+    "git-commit",
+    "go",
+    "handlebars",
+    "haskell",
+    "html",
+    "jade",
+    "java",
+    "javascript",
+    "javascriptreact",
+    "json",
+    "jsonc",
+    "latex",
+    "less",
+    "markdown",
+    "php",
+    "plaintext",
+    "python",
+    "pug",
+    "restructuredtext",
+    "rust",
+    "scala",
+    "scss",
+    "text",
+    "typescript",
+    "typescriptreact",
+    "vue", // add
+    "yaml",
+    "yml"
+  ],
+  "cSpell.languageSettings": [
+    {
+      "languageId": "vue",
+      "locale": "*",
+      "ignoreRegExpList": [],
+      "dictionaries": ["html","typescript", "css"],
+      "dictionaryDefinitions": []
+    }
+  ]
 }
