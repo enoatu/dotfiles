@@ -75,7 +75,8 @@ repo = 'plasticboy/vim-markdown'
 
 # bufferlist(lazyではできない)
 [[plugins]]
-repo = 'vim-scripts/bufferlist.vim'
+#repo = '~/MyDevelopment/vim-bufferlist'
+repo = 'enoatu/vim-bufferlist'
 hook_add = '''
 map <C-k> :call BufferList()<CR>
 '''
@@ -114,7 +115,10 @@ endfunction
 # easy aline
 [[plugins]]
 repo = 'junegunn/vim-easy-align'
-lazy = true
+hook_add = '''
+xmap ga <Plug>(EasyAlign)
+nmap ga <Plug>(EasyAlign)
+'''
 
 # ctrl+p でファイルあいまい検索ができる
 [[plugins]]

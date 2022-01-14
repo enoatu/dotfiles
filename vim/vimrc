@@ -7,7 +7,7 @@ let s:plugin_test = 0
 
 if s:plugin_test
   let s:dein_dir = expand('~/dotfiles/vim/.test-dein')
-elseif has('vim')
+elseif has('nvim')
   let s:dein_dir = expand('~/dotfiles/vim/neo-dein')
 else
   let s:dein_dir = expand('~/dotfiles/vim/dein')
@@ -105,9 +105,22 @@ nnoremap <Leader>gv :Gdiff<CR>:windo set wrap<CR>
 nnoremap <Leader>gh :Gsdiff<CR>:windo set wrap<CR>
 nnoremap <Leader>gv :Gvdiff<CR>:windo set wrap<CR>
 
-" Tab系
-" 不可視文字を可視化(タブが「▸-」と表示される)
-set list listchars=tab:\▸\-
+"タブ、空白、改行の可視化
+set list
+set listchars=tab:\▸\-,trail:◀,extends:>,precedes:<,nbsp:%
+
+"全角スペースをハイライト表示
+function! ZenkakuSpace()
+    highlight ZenkakuSpace cterm=reverse ctermfg=DarkMagenta gui=reverse guifg=DarkMagenta
+endfunction
+if has('syntax')
+    augroup ZenkakuSpace
+        autocmd!
+        autocmd ColorScheme       * call ZenkakuSpace()
+        autocmd VimEnter,WinEnter * match ZenkakuSpace /　/
+    augroup END
+    call ZenkakuSpace()
+endif
 
 " 検索系
 " 検索文字列が小文字の場合は大文字小文字を区別なく検索する
@@ -134,10 +147,6 @@ vmap <BS> <Del>
 imap <BS> <BS>
 " 挿入モードーノーマルモード間移動を高速化
 set ttimeoutlen=10
-" Start interactive EasyAlign in visual mode (e.g. vipga)
- xmap ga <Plug>(EasyAlign)
-"  Start interactive EasyAlign for a motion/text object (e.g. gaip)
- nmap ga <Plug>(EasyAlign)
 
 set mouse=a
 
