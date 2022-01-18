@@ -70,6 +70,14 @@ let g:vim_json_syntax_conceal = 0
 [[plugins]]
 repo = 'tpope/vim-fugitive'
 
+# bufferlist(lazyではできない)
+[[plugins]]
+#repo = '~/MyDevelopment/vim-bufferlist'
+repo = 'enoatu/vim-bufferlist'
+hook_add = '''
+map <C-k> :call BufferList()<CR>
+'''
+
 # markdown
 #[[plugins]]
 #repo = 'plasticboy/vim-markdown'
@@ -111,15 +119,6 @@ lazy = true
 hook_add = '''
 xmap ga <Plug>(EasyAlign)
 nmap ga <Plug>(EasyAlign)
-'''
-
-# bufferlist(lazyではできない)
-[[plugins]]
-#repo = '~/MyDevelopment/vim-bufferlist'
-repo = 'enoatu/vim-bufferlist'
-lazy = true
-hook_add = '''
-map <C-k> :call BufferList()<CR>
 '''
 
 #ノードツリーをひらく デフォルトはctl + n
