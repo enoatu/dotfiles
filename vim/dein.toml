@@ -53,6 +53,7 @@ let g:vim_json_syntax_conceal = 0
 #:Gdiffと打つとHEADと現在の状態を比較できる
 #:Glog = git log
 #:Gdiff コミット番号でそのdiffをとれる
+#:Gread HEAD^^:%
 #:Gblameでコミット詳細みれる
 #:Gstatus = git status
 #:Gwrite [path]
@@ -70,16 +71,8 @@ let g:vim_json_syntax_conceal = 0
 repo = 'tpope/vim-fugitive'
 
 # markdown
-[[plugins]]
-repo = 'plasticboy/vim-markdown'
-
-# bufferlist(lazyではできない)
-[[plugins]]
-#repo = '~/MyDevelopment/vim-bufferlist'
-repo = 'enoatu/vim-bufferlist'
-hook_add = '''
-map <C-k> :call BufferList()<CR>
-'''
+#[[plugins]]
+#repo = 'plasticboy/vim-markdown'
 
 #gitで管理してる場合、左側に差分を表示
 [[plugins]]
@@ -103,7 +96,6 @@ function! SwitchGutter()
         echo "switchGutter: origin/dev"
     else
         let g:gitgutter_diff_base =  ''
-        let s:switchGutter=1
         echo "switchGutter: デフォルト"
     endif
     :GitGutterAll
@@ -115,15 +107,20 @@ endfunction
 # easy aline
 [[plugins]]
 repo = 'junegunn/vim-easy-align'
+lazy = true
 hook_add = '''
 xmap ga <Plug>(EasyAlign)
 nmap ga <Plug>(EasyAlign)
 '''
 
-# ctrl+p でファイルあいまい検索ができる
+# bufferlist(lazyではできない)
 [[plugins]]
-repo = 'ctrlpvim/ctrlp.vim'
+#repo = '~/MyDevelopment/vim-bufferlist'
+repo = 'enoatu/vim-bufferlist'
 lazy = true
+hook_add = '''
+map <C-k> :call BufferList()<CR>
+'''
 
 #ノードツリーをひらく デフォルトはctl + n
 # addでないと動かない
@@ -137,9 +134,4 @@ nmap <C-n> :NERDTreeToggle<CR>
 # fで検索後移動できるようにする
 [[plugins]]
 repo = 'rhysd/clever-f.vim'
-lazy = true
-
-# 気分によってcolorschemeかえる
-[[plugins]]
-repo = 'flazz/vim-colorschemes'
 lazy = true

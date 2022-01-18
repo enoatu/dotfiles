@@ -17,9 +17,6 @@ repo = 'github/copilot.vim'
 hook_source = '''
 imap <script><silent><nowait><expr> <C-g> copilot#Accept()
 '''
-hook_post_source = '''
-Copilot setup
-'''
 
 [[plugins]]
 repo = 'neoclide/coc.nvim'
