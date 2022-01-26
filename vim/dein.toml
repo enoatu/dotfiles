@@ -79,8 +79,13 @@ map <C-k> :call BufferList()<CR>
 '''
 
 # markdown
-#[[plugins]]
-#repo = 'plasticboy/vim-markdown'
+# md形式がおかしくなるため入れる
+[[plugins]]
+repo = 'preservim/vim-markdown'
+# 折りたたみを無効にする
+hook_add = '''
+let g:vim_markdown_folding_disabled = 1
+'''
 
 #gitで管理してる場合、左側に差分を表示
 [[plugins]]
