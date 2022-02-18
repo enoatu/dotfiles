@@ -182,7 +182,7 @@ setup_vim () {
         echo 'selected :1'
         rm -rf ${DOTFILES}/vim/dein
         rm -rf ${DOTFILES}/vim/.local
-        ln -sf ~/dotfiles/vim/vimrc.neocomplete ~/.vimrc
+        ln -sf ~/dotfiles/vim/vimrc ~/.vimrc
         ln -sf ~/dotfiles/vim/dein.toml.neocomplete ~/.dein.toml
         ;;
     2)
@@ -201,13 +201,13 @@ setup_vim () {
                 echo 'selected :1'
                 rm -rf ${DOTFILES}/vim/dein
                 rm -rf ${DOTFILES}/vim/.local
-                ln -sf ~/dotfiles/vim/vimrc.neocomplete ~/.vimrc
+                ln -sf ~/dotfiles/vim/vimrc ~/.vimrc
                 ln -sf ~/dotfiles/vim/dein.toml.neocomplete ~/.dein.toml
                 ;;
             2)
                 rm -rf ${DOTFILES}/vim/dein
                 rm -rf ${DOTFILES}/vim/.local
-                ln -sf ~/dotfiles/vim/vimrc.youcompleteme ~/.vimrc
+                ln -sf ~/dotfiles/vim/vimrc ~/.vimrc
                 ln -sf ~/dotfiles/vim/dein.toml.youcompleteme ~/.dein.toml
                 PYTHON_VER=3.7.2
                 if [ ! -e $ANYENV_DIR ]; then

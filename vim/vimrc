@@ -203,3 +203,20 @@ function! SwitchIndent()
     endif
     echo "SwitchIndent: " . s:switchTabMessage
 endfunction
+
+"============== 不要になったら削除する =====================
+"function! _RestartGRPC()
+"   exe ":!docker-compose -f /Users/enotiru/Development/youbride/youbride-rails/docker/local/docker-compose.yml restart api"
+"endfunction
+"
+"command! RestartGRPC call _RestartGRPC()
+"autocmd BufWrite *.{rb} :RestartGRPC
+"
+"function! _RestartServer()
+"   exe ":!docker-compose -f /Users/enotiru/Development/youbride/youbride-server/docker-compose.yml restart admin"
+"endfunction
+"
+"command! RestartServer call _RestartServer()
+"
+"autocmd BufWrite *.{pm} :RestartServer
+"==========================================================

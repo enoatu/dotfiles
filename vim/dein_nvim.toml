@@ -170,7 +170,7 @@ nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
 " Resume latest coc list.
 nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
 
-let g:coc_global_extensions = ['coc-tsserver', 'coc-vetur', 'coc-go', 'coc-perl', 'coc-phpls', 'coc-rust-analyzer', 'coc-spell-checker', 'coc-fzf-preview', 'coc-snippets']
+let g:coc_global_extensions = ['coc-tsserver', 'coc-vetur', 'coc-go', 'coc-phpls', 'coc-rust-analyzer', 'coc-spell-checker', 'coc-fzf-preview', 'coc-snippets']
 " Use K to show documentation in preview window
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 
@@ -197,7 +197,11 @@ endfunction
 let g:coc_snippet_next = '<tab>'
 '''
 # terraform-lsp required
-# download lsp and pathing
+## download lsp and pathing
+# coc-solargraph
+## sudo gem install solargraph
+# coc-perl
+## sudo cpan Perl::LanguageServer
 
 [[plugins]]
 repo = 'junegunn/fzf'

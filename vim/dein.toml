@@ -100,16 +100,21 @@ let s:switchGutter=1
 noremap <C-m> :call SwitchGutter()<CR>
 function! SwitchGutter()
     if (s:switchGutter == 1)
-        let g:gitgutter_diff_base =  'origin/main'
+        let g:gitgutter_diff_base = 'origin/main'
         let s:switchGutter=2
         echo "switchGutter: origin/main"
     elseif (s:switchGutter == 2)
-        let g:gitgutter_diff_base =  'origin/dev'
+        let g:gitgutter_diff_base = 'origin/dev'
         let s:switchGutter=3
         echo "switchGutter: origin/dev"
-    else
-        let g:gitgutter_diff_base =  ''
+    elseif (s:switchGutter == 3)
         echo "switchGutter: デフォルト"
+        let s:switchGutter=4
+        let g:gitgutter_diff_base = ''
+    elseif (s:switchGutter == 4)
+        echo "switchGutter: origin/master"
+        let s:switchGutter=1
+        let g:gitgutter_diff_base = 'origin/master'
     endif
     :GitGutterAll
 endfunction

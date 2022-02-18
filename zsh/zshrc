@@ -46,6 +46,7 @@ setopt correct
 
 # エイリアス
 alias sudo='sudo ' # sudo ll など、sudo してもaliasを引き継げる
+alias vi='vim'
 alias lst='ls -ltr'
 alias l='ls -ltr'
 alias la='ls -la'
