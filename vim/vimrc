@@ -136,9 +136,10 @@ nmap <Esc><Esc> :nohlsearch<CR><Esc>
 
 "行頭
 nmap <C-h> 0
+vmap <C-h> 0
 "行末
 nmap <C-l> $
-nmap <C-e> $
+vmap <C-l> $
 
 " タイポ修正
 inoremap <C-t> <Esc><Left>"zx"zpa
