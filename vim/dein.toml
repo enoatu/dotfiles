@@ -75,6 +75,7 @@ repo = 'tpope/vim-fugitive'
 #repo = '~/MyDevelopment/vim-bufferlist'
 repo = 'enoatu/vim-bufferlist'
 hook_add = '''
+let g:BufferListMaxWidth = 100
 map <C-k> :call BufferList()<CR>
 '''
 
