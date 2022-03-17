@@ -1,6 +1,7 @@
 [core]
   excludesfile = ~/.gitignore_global
   editor=/usr/local/bin/vim
+  quotepath = false
 [user]
   name = Atsushi ENOMOTO
   email = enotiru@moove.co.jp
@@ -19,3 +20,8 @@
     proxy=socks5://127.0.0.1:1080
 [https]
     proxy=socks5://127.0.0.1:1080
+
+[includeIf "gitdir:~/MyDevelopment/"]
+   path = ~/MyDevelopment/.gitconfig
+[includeIf "gitdir:~/Development/div/"]
+   path = ~/Development/div/.gitconfig

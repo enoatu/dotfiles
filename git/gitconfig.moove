@@ -2,6 +2,7 @@
   excludesfile = ~/.gitignore_global
   gitproxy=/home/enotiru/gitproxy.sh
   editor=/usr/local/bin/vim
+  quotepath = false
 [user]
   name = Atsushi ENOMOTO
   email = enotiru@moove.co.jp
@@ -22,3 +23,8 @@
 #  proxy=socks5://127.0.0.1:1081
 [init]
    defaultBranch = main
+
+[includeIf "gitdir:~/MyDevelopment/"]
+   path = ~/MyDevelopment/.gitconfig
+[includeIf "gitdir:~/Development/div/"]
+   path = ~/Development/div/.gitconfig
