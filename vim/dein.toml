@@ -93,9 +93,11 @@ let g:vim_markdown_folding_disabled = 1
 repo = 'airblade/vim-gitgutter'
 hook_add = '''
 "画面をガタガタ言わせない
-"set signcolumn=yes
+set signcolumn=yes
+
 "タイピング終了後すぐに反映する
 set updatetime=200
+
 "master
 let s:switchGutter=1
 noremap <C-m> :call SwitchGutter()<CR>
