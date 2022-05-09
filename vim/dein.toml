@@ -41,6 +41,10 @@ repo = 'ryanoasis/vim-devicons'
 
 # インデント
 [[plugins]]
+repo = 'sheerun/vim-polyglot'
+
+# インデント表示
+[[plugins]]
 repo = 'Yggdroot/indentLine'
 
 #indentLineプラグインによってjsonファイルの表示がおかしくなるため入れる

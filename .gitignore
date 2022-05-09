@@ -12,3 +12,4 @@
 bin/setlocalgit
 /vim/.test-dein/
 /vim/dein_test.toml
+*node_modules

@@ -51,6 +51,14 @@ setup_zsh () {
             ./fzf/install --no-fish --no-bash
             mv ~/.fzf.zsh ${DOTFILES}/zsh/fzf.zsh
         fi
+        # if [ ! -e ${DOTFILES}/node/.nodenv ]; then
+        #     cd node
+        #     git clone https://github.com/nodenv/nodenv.git ./nodenv
+        #     cd .nodenv && src/configure && make -C src && cd ..
+        #     ./nodenv install 16.8.0
+        #     ./nodenv rehash
+        #     yarn add zx
+        # fi
         if [ ! -e ${DOTFILES}/zsh/zsh-autosuggestions.zsh ]; then
             git clone https://github.com/zsh-users/zsh-autosuggestions ./zsh-autosuggestions
             mv ./zsh-autosuggestions/zsh-autosuggestions.zsh ${DOTFILES}/zsh/zsh-autosuggestions.zsh

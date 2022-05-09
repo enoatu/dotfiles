@@ -32,8 +32,8 @@ setopt share_history
 setopt extended_history
 
 HISTFILE=~/.zsh_history
-HISTSIZE=10000
-SAVEHIST=10000
+HISTSIZE=1000000
+SAVEHIST=1000000
 
 # 自動でpushdを実行
 setopt auto_pushd
@@ -182,6 +182,10 @@ autoload -Uz zmv
 alias zmv='noglob zmv -W'
 export PERL5LIB=$HOME/work/Moove/lib:$HOME/work/moove/lib:$PERL5LIB
 export PATH="$HOME/dotfiles/bin:$PATH"
+# test
+# [ -d ../node/.nodenv ] && export PATH="$HOME/dotfiles/zsh/nodenv/bin:$PATH"
+# [ -d ../node/.nodenv ] && eval "$(nodenv init -)"
+# [ -f ../node/node_modules/zx/zx.mjs ] && export PATH="
 export PATH="/usr/bin:/usr/local:/usr/local/bin:$PATH"
 export PATH="/usr/lib:$PATH"
 #autoload -Uz vcs_info
@@ -218,6 +222,3 @@ function +vi-git-config-user(){
 ## tmux ログイン時起動
 #[[ $- != *i* ]] && return
 #[[ -z "$TMUX" ]] && exec tmux
-#
-
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
