@@ -19,6 +19,7 @@ hook_source = '''
 " 確定キーをTABからC-lに変更
 imap <silent><script><expr> <C-l> copilot#Accept("\<CR>")
 let g:copilot_no_tab_map = v:true
+echo "ready copilot"
 '''
 
 # coc
@@ -28,7 +29,7 @@ repo = 'neoclide/coc.nvim'
 rev = 'release'
 on_i = 1
 merged = '0'
-hook_source = '''
+hook_add = '''
 " Give more space for displaying messages. 必要かもしれない
 set cmdheight=2
 

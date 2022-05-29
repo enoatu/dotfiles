@@ -151,3 +151,21 @@ nmap <C-n> :NERDTreeToggle<CR>
 [[plugins]]
 repo = 'rhysd/clever-f.vim'
 lazy = true
+
+# 定義ジャンプ
+[[plugins]]
+repo = 'pechorin/any-jump.vim'
+lazy = true
+hook_add = '''
+" Normal mode: Jump to definition under cursor
+nnoremap <C-j> :AnyJump<CR>
+
+" Visual mode: jump to selected text in visual mode
+xnoremap <C-j> :AnyJumpVisual<CR>
+
+" Normal mode: open previous opened file (after jump)
+nnoremap <C-b> :AnyJumpBack<CR>
+
+" Normal mode: open last closed search window again
+"nnoremap <C-al :AnyJumpLastResults<CR>
+'''
