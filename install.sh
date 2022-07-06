@@ -126,14 +126,17 @@ setup_gitconfig () {
     1)
         echo 'selected :1'
         ln -sf ~/dotfiles/git/gitconfig.my ~/.gitconfig
+        ln -sf ~/dotfiles/git/gitignore ~/.gitignore_global
         ;;
     2)
         echo 'selected :2'
         ln -sf ~/dotfiles/git/gitconfig.moove ~/.gitconfig
+        ln -sf ~/dotfiles/git/gitignore ~/.gitignore_global
         ;;
     3)
         echo 'selected :3'
         ln -sf ~/dotfiles/git/gitconfig.moove.proxy ~/.gitconfig
+        ln -sf ~/dotfiles/git/gitignore ~/.gitignore_global
         ;;
     *)
         echo 'tmux setup canceled'

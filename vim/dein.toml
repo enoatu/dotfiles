@@ -39,10 +39,6 @@ let g:airline#extensions#hunks#enabled = 0
 [[plugins]]
 repo = 'ryanoasis/vim-devicons'
 
-# インデント
-[[plugins]]
-repo = 'sheerun/vim-polyglot'
-
 # インデント表示
 [[plugins]]
 repo = 'Yggdroot/indentLine'
@@ -73,6 +69,10 @@ let g:vim_json_syntax_conceal = 0
 #:Gpull [args]
 [[plugins]]
 repo = 'tpope/vim-fugitive'
+[[plugins]]
+repo = 'tpope/vim-rhubarb'
+[[plugins]]
+repo = 'shumphrey/fugitive-gitlab.vim'
 
 # bufferlist(lazyではできない)
 [[plugins]]
@@ -104,7 +104,7 @@ set updatetime=200
 
 "master
 let s:switchGutter=1
-noremap <C-m> :call SwitchGutter()<CR>
+noremap mm :call SwitchGutter()<CR>
 function! SwitchGutter()
     if (s:switchGutter == 1)
         let g:gitgutter_diff_base = 'origin/main'
@@ -157,6 +157,9 @@ lazy = true
 repo = 'pechorin/any-jump.vim'
 lazy = true
 hook_add = '''
+let g:any_jump_window_width_ratio  = 0.9
+let g:any_jump_window_height_ratio = 0.9
+let g:any_jump_max_search_results = 20
 " Normal mode: Jump to definition under cursor
 nnoremap <C-j> :AnyJump<CR>
 

@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# EX) mv_testimage /tmp/testimage.png 大きめ画像 => png_大きめ画像_detail_.png
+FILE=$1
+CONTENT=${2}
+
+DIR=$HOME/MyDevelopment/testimages
+EX=$(file --mime-type $FILE | gsed 's/.*image\///g')
+NEW_NAME=$(file $FILE | gsed 's/[^:]*: //' | gsed 's/ /_/g' | gsed 's/,//g' | gsed 's/\//_/g' | gsed 's/"//g' | gsed 's/\[.*\]//g')
+echo $DIR/${EX}_${CONTENT}_${NEW_NAME}.${EX}
+mv $FILE $DIR/${EX}_${CONTENT}_${NEW_NAME}.${EX}
