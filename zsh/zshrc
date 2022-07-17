@@ -1,5 +1,3 @@
-[ -f ~/.zshrc.local ] && source ~/.zshrc.local
-
 autoload -U compinit
 compinit
 
@@ -207,6 +205,8 @@ zstyle ':vcs_info:*' actionformats '[%b|%a] %m'
 zstyle ':vcs_info:git+set-message:*' hooks git-config-user
 precmd () { vcs_info }
 GIT='${vcs_info_msg_0_}'
+
+[ -f ~/.zshrc.local ] && source ~/.zshrc.local
 
 #black red green yellow blue magenta cyan white
 PROMPT="%(?.%{${fg[green]}%}.%{${fg[red]}%})(%D %*%)%n${reset_color}@${hostcolor}${host}${reset_color}${fg[green]}(%j)${reset_color}${GIT}%~
