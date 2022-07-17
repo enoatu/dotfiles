@@ -1,7 +1,7 @@
 [core]
   excludesfile = ~/.gitignore_global
   gitproxy=/home/enotiru/gitproxy.sh
-  editor=/usr/local/bin/vim
+  editor=vim
   quotepath = false
 [user]
   name = Atsushi ENOMOTO
