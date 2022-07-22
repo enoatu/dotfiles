@@ -319,6 +319,8 @@ setup_vim_only_vimrc () {
 }
 
 setup_new_vim () {
+    rm -rf ${DOTFILES}/vim/neo-dein
+
     if [ -e ~/.config/nvim ]; then
         rm -rf ~/.config/nvim
     fi

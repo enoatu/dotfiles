@@ -13,14 +13,14 @@ repo = 'rust-lang/rust.vim'
 # copilot for nvim
 # lazyで動かない
 # 動かなくなったら copilot log で確認する(大体 入れなおせば直る)
-[[plugins]]
-repo = 'github/copilot.vim'
-hook_source = '''
-" 確定キーをTABからC-lに変更
-imap <silent><script><expr> <C-l> copilot#Accept("\<CR>")
-let g:copilot_no_tab_map = v:true
-echo "ready copilot"
-'''
+#[[plugins]]
+#repo = 'github/copilot.vim'
+#hook_source = '''
+#" 確定キーをTABからC-lに変更
+#imap <silent><script><expr> <C-l> copilot#Accept("\<CR>")
+#let g:copilot_no_tab_map = v:true
+#echo "ready copilot"
+#'''
 
 # coc
 # 動かなくなったら↓コメントアウトして立ち上げ、コメントインして立ち上げれば直る
@@ -30,6 +30,10 @@ rev = 'release'
 on_i = 1
 merged = '0'
 hook_add = '''
+" インストール時実行
+" call coc#util#install()
+" pip install pynvim
+
 " Give more space for displaying messages. 必要かもしれない
 set cmdheight=2
 

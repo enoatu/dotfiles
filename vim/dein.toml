@@ -69,10 +69,11 @@ let g:vim_json_syntax_conceal = 0
 #:Gpull [args]
 [[plugins]]
 repo = 'tpope/vim-fugitive'
-[[plugins]]
-repo = 'tpope/vim-rhubarb'
-[[plugins]]
-repo = 'shumphrey/fugitive-gitlab.vim'
+## github/gitlab token必要なので考える
+##[[plugins]]
+##repo = 'tpope/vim-rhubarb'
+#[[plugins]]
+#repo = 'shumphrey/fugitive-gitlab.vim'
 
 # bufferlist(lazyではできない)
 [[plugins]]
