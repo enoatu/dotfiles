@@ -43,6 +43,13 @@ repo = 'ryanoasis/vim-devicons'
 [[plugins]]
 repo = 'Yggdroot/indentLine'
 
+# 括弧に別々の色を付ける
+[[plugins]]
+repo = 'luochen1990/rainbow'
+hook_add = '''
+    let g:rainbow_active = 1
+'''
+
 #indentLineプラグインによってjsonファイルの表示がおかしくなるため入れる
 [[plugins]]
 repo = 'elzr/vim-json'
