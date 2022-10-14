@@ -102,13 +102,11 @@ dr() {
   local dirs=$HOME/dotfiles/.dirs
   arg=$1
   if [ -z "$arg" ]; then
-    return;
-  elif [ "$arg" = '--list' ]; then
-    cat $dirs
+    return
   elif [ "$arg" = '-l' ]; then
     cat $dirs
   else
-    target_dir=$(awk -F"\t" -v arg=$arg '$1 == arg {print $2}' $dirs)
+    target_dir=$(tac $dirs | awk -F"\t" -v arg=$arg '$1 == arg {print $2}' | head -n1)
     [ -z $target_dir ] && return 1
     cd $target_dir
   fi
@@ -119,8 +117,6 @@ dw() {
   arg=$1
   if [ -z "$arg" ]; then
     return;
-  elif [ "$arg" = '--list' ]; then
-    cat $dirs
   elif [ "$arg" = '-l' ]; then
     cat $dirs
   else
@@ -222,3 +218,10 @@ function +vi-git-config-user(){
 ## tmux ログイン時起動
 #[[ $- != *i* ]] && return
 #[[ -z "$TMUX" ]] && exec tmux
+
+# bun completions
+[ -s "/Users/enotiru/.bun/_bun" ] && source "/Users/enotiru/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"

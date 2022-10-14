@@ -1,26 +1,26 @@
-[[plugins]]
-repo = 'juliosueiras/vim-terraform-completion'
-
-[[plugins]]
-repo = 'MaxMEllon/vim-jsx-pretty'
-
-[[plugins]]
-repo = 'styled-components/vim-styled-components'
-
-[[plugins]]
-repo = 'rust-lang/rust.vim'
-
+#[[plugins]]
+#repo = 'juliosueiras/vim-terraform-completion'
+#
+#[[plugins]]
+#repo = 'MaxMEllon/vim-jsx-pretty'
+#
+#[[plugins]]
+#repo = 'styled-components/vim-styled-components'
+#
+#[[plugins]]
+#repo = 'rust-lang/rust.vim'
+#
 # copilot for nvim
 # lazyで動かない
 # 動かなくなったら copilot log で確認する(大体 入れなおせば直る)
-#[[plugins]]
-#repo = 'github/copilot.vim'
-#hook_source = '''
-#" 確定キーをTABからC-lに変更
-#imap <silent><script><expr> <C-l> copilot#Accept("\<CR>")
-#let g:copilot_no_tab_map = v:true
-#echo "ready copilot"
-#'''
+[[plugins]]
+repo = 'github/copilot.vim'
+hook_source = '''
+" 確定キーをTABからC-lに変更
+imap <silent><script><expr> <C-l> copilot#Accept("\<CR>")
+let g:copilot_no_tab_map = v:true
+echo "ready copilot"
+'''
 
 # coc
 # 動かなくなったら↓コメントアウトして立ち上げ、コメントインして立ち上げれば直る
@@ -99,7 +99,7 @@ nnoremap <silent><nowait> dg  :<C-u>CocList diagnostics<cr>
 nmap <silent> [d <Plug>(coc-diagnostic-prev)
 nmap <silent> ]d <Plug>(coc-diagnostic-next)
 
-let g:coc_global_extensions = ['coc-tsserver', 'coc-vetur', 'coc-go', 'coc-phpls', 'coc-rust-analyzer', 'coc-spell-checker', 'coc-snippets', 'coc-tabnine']
+let g:coc_global_extensions = ['coc-tsserver', '@yaegassy/coc-volar', 'coc-go', 'coc-phpls', 'coc-rust-analyzer', 'coc-spell-checker', 'coc-snippets', 'coc-tabnine', 'coc-tailwindcss']
 
 """""""""coc-snippets
 inoremap <silent><expr> <TAB>

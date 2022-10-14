@@ -85,6 +85,11 @@ setup_zsh () {
     )
 }
 
+setup_prezto_zsh () {
+   cd 
+   rm -rf .zlogin .zlogout .zpreztorc .zprofile .zshenv .zshrc
+}
+
 setup_mysql () {
     ln -sf ~/dotfiles/mysql/my.cnf ~/.my.cnf
     printf "\e[30;42;1m mysql setup completed\e[m\n"

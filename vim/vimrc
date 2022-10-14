@@ -6,7 +6,7 @@ set fileformats=unix,dos,mac
 let s:plugin_test = 0
 
 if s:plugin_test
-  let s:dein_dir = expand('~/dotfiles/vim/.test-dein')
+  let s:dein_dir = expand('~/dotfiles/vim/test-dein')
 elseif has('nvim')
   let s:dein_dir = expand('~/dotfiles/vim/neo-dein')
 else
@@ -29,6 +29,7 @@ if dein#load_state(s:dein_dir)
   let s:tomlvim = '~/dotfiles/vim/dein_vim.toml'
 
   if s:plugin_test
+    call dein#load_toml(s:toml, {'lazy': 0})
     call dein#load_toml(s:tomltest, {'lazy': 0})
   elseif has('nvim')
     call dein#load_toml(s:toml, {'lazy': 0})
@@ -174,6 +175,7 @@ vnoremap < <gv
 "======================indent===================
 "自動インデント
 set smartindent
+set autoindent
 " Tab文字を半角スペースにする
 set expandtab
 
@@ -181,7 +183,7 @@ let s:switchTab=1
 let s:switchTabMessage="4スペ"
 set sw=4 "shiftwidth
 set ts=4 "tabstop
-noremap <C-i> :call SwitchIndent()<CR>
+noremap <C-o> :call SwitchIndent()<CR>
 function! SwitchIndent()
     if (s:switchTab == 1)
         let s:switchTab=2

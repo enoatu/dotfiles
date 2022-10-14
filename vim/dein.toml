@@ -35,10 +35,10 @@ let g:airline_section_z = airline#section#create(['windowswap', '%3p%% ', 'linen
 let g:airline#extensions#hunks#enabled = 0
 '''
 
-#アイコン for テーマ
-[[plugins]]
-repo = 'ryanoasis/vim-devicons'
-
+##アイコン for テーマ
+#[[plugins]]
+#repo = 'ryanoasis/vim-devicons'
+#
 # インデント表示
 [[plugins]]
 repo = 'Yggdroot/indentLine'
@@ -56,6 +56,11 @@ repo = 'elzr/vim-json'
 hook_add = '''
 let g:vim_json_syntax_conceal = 0
 '''
+
+
+# rgb
+[[plugins]]
+repo = 'lilydjwg/colorizer'
 
 #:Gdiffと打つとHEADと現在の状態を比較できる
 #:Glog = git log
@@ -76,11 +81,11 @@ let g:vim_json_syntax_conceal = 0
 #:Gpull [args]
 [[plugins]]
 repo = 'tpope/vim-fugitive'
-## github/gitlab token必要なので考える
-##[[plugins]]
-##repo = 'tpope/vim-rhubarb'
+# github/gitlab token必要なので考える
 #[[plugins]]
-#repo = 'shumphrey/fugitive-gitlab.vim'
+#repo = 'tpope/vim-rhubarb'
+[[plugins]]
+repo = 'shumphrey/fugitive-gitlab.vim'
 
 # bufferlist(lazyではできない)
 [[plugins]]
@@ -89,15 +94,6 @@ repo = 'enoatu/vim-bufferlist'
 hook_add = '''
 let g:BufferListMaxWidth = 100
 map <C-k> :call BufferList()<CR>
-'''
-
-# markdown
-# md形式がおかしくなるため入れる
-[[plugins]]
-repo = 'preservim/vim-markdown'
-# 折りたたみを無効にする
-hook_add = '''
-let g:vim_markdown_folding_disabled = 1
 '''
 
 #gitで管理してる場合、左側に差分を表示
@@ -137,7 +133,7 @@ endfunction
 
 ###################################lazy#############################
 
-# easy aline
+# easy align
 [[plugins]]
 repo = 'junegunn/vim-easy-align'
 lazy = true
@@ -145,6 +141,11 @@ hook_add = '''
 xmap ga <Plug>(EasyAlign)
 nmap ga <Plug>(EasyAlign)
 '''
+
+# インデントの位置を直す
+[[plugins]]
+repo = "pangloss/vim-javascript"
+lazy = true
 
 #ノードツリーをひらく デフォルトはctl + n
 # addでないと動かない
@@ -178,5 +179,5 @@ xnoremap <C-j> :AnyJumpVisual<CR>
 nnoremap <C-b> :AnyJumpBack<CR>
 
 " Normal mode: open last closed search window again
-"nnoremap <C-al :AnyJumpLastResults<CR>
+"nnoremap <C-al> :AnyJumpLastResults<CR>
 '''
