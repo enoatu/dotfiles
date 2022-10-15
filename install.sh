@@ -2,6 +2,7 @@
 set -u
 
 DOTFILES="${HOME}/dotfiles"
+PRIVATE_DOTFILES="${HOME}/dotfiles/private-dotfiles"
 ANYENV_DIR="${HOME}/.anyenv"
 ANYENV="${ANYENV_DIR}/bin/anyenv"
 
@@ -22,9 +23,6 @@ main () {
         ;;
     zsh)
         setup_zsh
-        ;;
-    mysql)
-        setup_mysql
         ;;
     tmux)
         setup_tmux
@@ -85,16 +83,6 @@ setup_zsh () {
     )
 }
 
-setup_prezto_zsh () {
-   cd 
-   rm -rf .zlogin .zlogout .zpreztorc .zprofile .zshenv .zshrc
-}
-
-setup_mysql () {
-    ln -sf ~/dotfiles/mysql/my.cnf ~/.my.cnf
-    printf "\e[30;42;1m mysql setup completed\e[m\n"
-}
-
 setup_tmux () {
     echo 'tmuxのセットアップスタイルを選択したください。 (1 or 2 or cancel) '
     echo '1: local環境'
@@ -122,7 +110,11 @@ setup_tmux () {
 }
 
 setup_gitconfig () {
-    echo 'gitconfigのセットアップスタイルを選択したください。 (1 or 2 or 3 or cancel) '
+    if [ ! -e $PRIVATE_DOTFILES/git ]; then
+        echo "git config が存在しません。"
+        return
+    fi
+    echo 'gitconfigのセットアップスタイルを選択してください。 (1 or 2 or 3 or cancel) '
     echo '1: my環境'
     echo '2: moove環境'
     echo '3: moove proxy環境'
@@ -130,18 +122,18 @@ setup_gitconfig () {
     case "$git_answer" in
     1)
         echo 'selected :1'
-        ln -sf ~/dotfiles/git/gitconfig.my ~/.gitconfig
-        ln -sf ~/dotfiles/git/gitignore ~/.gitignore_global
+        ln -sf $PRIVATE_DOTFILES/git/gitconfig.my ~/.gitconfig
+        ln -sf $PRIVATE_DOTFILES/git/gitignore ~/.gitignore_global
         ;;
     2)
         echo 'selected :2'
-        ln -sf ~/dotfiles/git/gitconfig.moove ~/.gitconfig
-        ln -sf ~/dotfiles/git/gitignore ~/.gitignore_global
+        ln -sf $PRIVATE_DOTFILES/git/gitconfig.moove ~/.gitconfig
+        ln -sf $PRIVATE_DOTFILES/git/gitignore ~/.gitignore_global
         ;;
     3)
         echo 'selected :3'
-        ln -sf ~/dotfiles/git/gitconfig.moove.proxy ~/.gitconfig
-        ln -sf ~/dotfiles/git/gitignore ~/.gitignore_global
+        ln -sf $PRIVATE_DOTFILES/git/gitconfig.moove.proxy ~/.gitconfig
+        ln -sf $PRIVATE_DOTFILES/git/gitignore ~/.gitignore_global
         ;;
     *)
         echo 'tmux setup canceled'
@@ -337,7 +329,9 @@ setup_new_vim () {
 
     # for nvim
     ln -sf ~/dotfiles/vim/vimrc ~/.config/nvim/init.vim
-    ln -sf ~/dotfiles/vim/coc-settings.json ~/.config/nvim/coc-settings.json
+    if [ -e $PRIVATE_DOTFILES/vim/coc-settings.json ]; then
+      ln -sf $PRIVATE_DOTFILES/vim/coc-settings.json ~/.config/nvim/coc-settings.json
+    fi
     # for vim
     ln -sf ~/dotfiles/vim/vimrc ~/.vimrc
 
