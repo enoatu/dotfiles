@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -eu
-PRIVATE_DOTFILES="$HOME/dotfiles/private_dotfiles"
+PRIVATE_DOTFILES="$HOME/dotfiles/private-dotfiles"
 
 main() {
     echo '? gitconfig(git) or project_root(pr)'
