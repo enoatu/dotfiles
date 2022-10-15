@@ -3,18 +3,22 @@ set -u
 
 DOTFILES="${HOME}/dotfiles"
 PRIVATE_DOTFILES="${HOME}/dotfiles/private-dotfiles"
+PRIVATE_REPO_URL="https://enoatu@github.com/enoatu/private-dotfiles.git"
 ANYENV_DIR="${HOME}/.anyenv"
 ANYENV="${ANYENV_DIR}/bin/anyenv"
 
 main () {
     cd ${HOME}/dotfiles
-    echo '? (all or vim or zsh or mysql or tmux or git) '
+    if [ -d ${PRIVATE_DOTFILES} ]; then
+        rm -rf ${PRIVATE_DOTFILES}
+    fi
+    git clone ${PRIVATE_REPO_URL} ${PRIVATE_DOTFILES}
+    echo '? (all or vim or zsh or tmux or git) '
     read answer
     case "$answer" in
     all)
         select_vim_setup_style
         setup_zsh
-        setup_mysql
         setup_tmux
         setup_gitconfig
         ;;
@@ -132,7 +136,7 @@ setup_gitconfig () {
         ;;
     3)
         echo 'selected :3'
-        ln -sf $PRIVATE_DOTFILES/git/gitconfig.moove.proxy ~/.gitconfig
+        ln -sf $PRIVATE_DOTFILES/git/gitconfig.moove-proxy ~/.gitconfig
         ln -sf $PRIVATE_DOTFILES/git/gitignore ~/.gitignore_global
         ;;
     *)
