@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -eu
+PRIVATE_DOTFILES="$HOME/dotfiles/private_dotfiles"
 
 main() {
     echo '? gitconfig(git) or project_root(pr)'
@@ -24,23 +25,23 @@ change_gitconfig() {
     read git_answer
     case "$git_answer" in
     my)
-        ln -sf ~/dotfiles/git/gitconfig.my ~/.gitconfig
+        ln -sf $PRIVATE_DOTFILES/git/gitconfig.my ~/.gitconfig
         printf "\e[30;42;1mchanged\e[m\n"
         ;;
     m)
-        ln -sf ~/dotfiles/git/gitconfig.moove ~/.gitconfig
+        ln -sf $PRIVATE_DOTFILES/git/gitconfig.moove ~/.gitconfig
         printf "\e[30;42;1mchanged\e[m\n"
         ;;
     moove)
-        ln -sf ~/dotfiles/git/gitconfig.moove ~/.gitconfig
+        ln -sf $PRIVATE_DOTFILES/git/gitconfig.moove ~/.gitconfig
         printf "\e[30;42;1mchanged\e[m\n"
         ;;
     mp)
-        ln -sf ~/dotfiles/git/gitconfig.moove-proxy ~/.gitconfig
+        ln -sf $PRIVATE_DOTFILES/git/gitconfig.moove-proxy ~/.gitconfig
         printf "\e[30;42;1mchanged\e[m\n"
         ;;
     moove.proxy)
-        ln -sf ~/dotfiles/git/gitconfig.moove-proxy ~/.gitconfig
+        ln -sf $PRIVATE_DOTFILES/git/gitconfig.moove-proxy ~/.gitconfig
         printf "\e[30;42;1mchanged\e[m\n"
         ;;
     *)
