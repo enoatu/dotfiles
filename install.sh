@@ -67,16 +67,14 @@ setup_zsh () {
         fi
         ln -sf ${DOTFILES}/zsh/zshrc ~/.zshrc
         if [ ! -e ~/.zshrc.local ]; then
-            ln -sf ${DOTFILES}/zsh/zshrc.local ~/.zshrc.local
-            [ `hostname` = "2018macbook.local" ] && ln -sf ${DOTFILES}/zsh/zshrc.local.mac ~/.zshrc.local
+            ln -sf $PRIVATE_DOTFILES/zsh/zshrc.local ~/.zshrc.local
         else
             echo 'プロンプト反映しますか。 (y or n) '
             read zsh_answer
             case "$zsh_answer" in
             y)
                 echo 'selected :1'
-                ln -sf ${DOTFILES}/zsh/zshrc.local ~/.zshrc.local
-                [ `hostname` = "2018macbook.local" ] && ln -sf ~/dotfiles/zsh/zshrc.local.mac ~/.zshrc.local
+                ln -sf $PRIVATE_DOTFILES/zsh/zshrc.local ~/.zshrc.local
                 printf "\e[30;42;1m zsh setup completed\e[m\n"
                 ;;
             *)
