@@ -42,6 +42,9 @@ let g:airline#extensions#hunks#enabled = 0
 # インデント表示
 [[plugins]]
 repo = 'Yggdroot/indentLine'
+hook_add = '''
+autocmd BufNewFile,BufRead,BufEnter * :let g:indentLine_setConceal = (&ft=='json' ? 0 : 1)
+'''
 
 # 括弧に別々の色を付ける
 [[plugins]]
@@ -50,12 +53,12 @@ hook_add = '''
     let g:rainbow_active = 1
 '''
 
-#indentLineプラグインによってjsonファイルの表示がおかしくなるため入れる
-[[plugins]]
-repo = 'elzr/vim-json'
-hook_add = '''
-let g:vim_json_syntax_conceal = 0
-'''
+##indentLineプラグインによってjsonファイルの表示がおかしくなるため入れる
+#[[plugins]]
+#repo = 'elzr/vim-json'
+#hook_add = '''
+#let g:vim_json_syntax_conceal = 0
+#'''
 
 
 # rgb
@@ -89,8 +92,8 @@ repo = 'shumphrey/fugitive-gitlab.vim'
 
 # bufferlist(lazyではできない)
 [[plugins]]
-#repo = '~/MyDevelopment/vim-bufferlist'
-repo = 'enoatu/vim-bufferlist'
+repo = '~/MyDevelopment/vim-bufferlist'
+#repo = 'enoatu/vim-bufferlist'
 hook_add = '''
 let g:BufferListMaxWidth = 100
 map <C-k> :call BufferList()<CR>
@@ -146,15 +149,6 @@ nmap ga <Plug>(EasyAlign)
 [[plugins]]
 repo = "pangloss/vim-javascript"
 lazy = true
-
-#ノードツリーをひらく デフォルトはctl + n
-# addでないと動かない
-[[plugins]]
-repo = 'scrooloose/nerdtree'
-lazy = true
-hook_add = '''
-nmap <C-n> :NERDTreeToggle<CR>
-'''
 
 # fで検索後移動できるようにする
 [[plugins]]
