@@ -53,14 +53,6 @@ hook_add = '''
     let g:rainbow_active = 1
 '''
 
-##indentLineプラグインによってjsonファイルの表示がおかしくなるため入れる
-#[[plugins]]
-#repo = 'elzr/vim-json'
-#hook_add = '''
-#let g:vim_json_syntax_conceal = 0
-#'''
-
-
 # rgb
 [[plugins]]
 repo = 'lilydjwg/colorizer'
@@ -111,7 +103,7 @@ set updatetime=200
 
 "master
 let s:switchGutter=1
-noremap mm :call SwitchGutter()<CR>
+noremap m :call SwitchGutter()<CR>
 function! SwitchGutter()
     if (s:switchGutter == 1)
         let g:gitgutter_diff_base = 'origin/main'
@@ -127,8 +119,12 @@ function! SwitchGutter()
         let g:gitgutter_diff_base = ''
     elseif (s:switchGutter == 4)
         echo "switchGutter: origin/master"
-        let s:switchGutter=1
+        let s:switchGutter=5
         let g:gitgutter_diff_base = 'origin/master'
+    elseif (s:switchGutter == 5)
+        echo "switchGutter: origin/backlog/20"
+        let s:switchGutter=1
+        let g:gitgutter_diff_base = 'origin/backlog/20'
     endif
     :GitGutterAll
 endfunction
