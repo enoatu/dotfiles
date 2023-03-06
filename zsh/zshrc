@@ -83,7 +83,7 @@ alias cmb='~/dotfiles/bin/gitcommit.sh bug'
 alias cmo='~/dotfiles/bin/gitcommit.sh construction'
 
 alias d='docker'
-alias dc=/usr/local/bin/docker-compose
+alias dc='/usr/local/bin/docker compose'
 
 alias ta='tmux attach'
 
@@ -149,6 +149,7 @@ zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 # bindkey '^r' history-incremental-pattern-search-backward
 # bindkey '^s' history-incremental-pattern-search-forward
 
+export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'
 setopt hist_ignore_all_dups  # 重複するコマンドラインは古い方を削除する
 setopt hist_ignore_dups      # 直前と同じコマンドラインはヒストリに追加しない
 setopt inc_append_history    # 実行するたびにファイルに書き込む
