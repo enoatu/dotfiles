@@ -1,33 +1,29 @@
 #!/bin/sh
 # install homebrew
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+#/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+#(echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> $HOME/.zprofile
+#eval "$(/opt/homebrew/bin/brew shellenv)"
 
-brew install git tmux gsed ggrep jq wget cmake gcc tree ripgrep colordiff git-delta vips openexr
-
-# Font + icon Install for mac
-git clone --branch=master --depth 1 https://github.com/ryanoasis/nerd-fonts.git
-cd nerd-fonts
-./install.sh
-rm -fr nerd-fonts
+# brew install git tmux gsed ggrep jq wget cmake gcc tree ripgrep colordiff git-delta vips openexr nvim yarn asdf
+# 
+# # Font + icon Install for mac
+# git clone --branch=master --depth 1 https://github.com/ryanoasis/nerd-fonts.git
+# cd nerd-fonts
+# ./install.sh
+# rm -fr nerd-fonts
 # select iTerm2 > profile > NotoSansMono Nerd Font
 
-# docker desktop install
-sudo curl -L https://download.docker.com/mac/stable/Docker.dmg -o /tmp/Docker.dmg
-sudo hdiutil attach /tmp/Docker.dmg
-sudo cp -r /Volumes/Docker/Docker.app /Applications
-sudo hdiutil detach /Volumes/Docker
-rm /tmp/Docker.dmg
+# restore history
+# cp -rf private-dotfiles/zsh/backup_history ~/.zsh_history
 
+# docker desktop install
 
 # install asdf version manager
 git clone https://github.com/asdf/asdf.git ~/.asdf --branch v0.8.0
-echo -e '
+echo ' . /opt/homebrew/opt/asdf/libexec/asdf.sh' >> ~/.zprofile
 
-. $HOME/.asdf/asdf.sh' >> ~/.zshrc
-echo -e '
-
-. $HOME/.asdf/completions/asdf.bash' >> ~/.zshrc
 source ~/.zshrc
+
 # install asdf plugins
 asdf plugin-add nodejs
 asdf plugin-add golang
@@ -46,3 +42,4 @@ brew install --cask iterm2
 # install tailscale
 # install microsoft edge
 # install firefox
+# install Google日本語入力

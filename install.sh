@@ -148,7 +148,8 @@ select_vim_setup_style () {
     echo 'vimのセットアップスタイルを選択したください。 (1 or 2 or cancel) '
     echo '1: vimrc + プラグイン のセットアップ'
     echo '2: vimrc              のセットアップ'
-    echo '3: new vim のセットアップ'
+    echo '3: neovim インストール + セットアップ'
+    echo '4: new vim のセットアップ'
     read vim_plugin_answer
     case "$vim_plugin_answer" in
     1)
@@ -161,6 +162,10 @@ select_vim_setup_style () {
         ;;
     3)
         echo 'selected :3'
+        setup_neovim
+        ;;
+    4)
+        echo 'selected :4'
         setup_new_vim
         ;;
     *)
@@ -315,6 +320,17 @@ setup_vim_only_vimrc () {
     ln -sf ~/dotfiles/vim/vimrc ~/.vimrc
     cd -
     printf "\e[30;42;1m vim setup completed \e[m\n"
+}
+
+setup_neovim () {
+  TMP_NEOVIM_DIR=tmp-neovim
+  git clone https://github.com/neovim/neovim.git --depth 1 $TMP_NEOVIM_DIR
+  cd $TMP_NEOVIM_DIR
+  make CMAKE_BUILD_TYPE=RelWithDebInfo
+  make CMAKE_INSTALL_PREFIX=$DOTFILES/bin install
+  cd ..
+  rm -rf $TMP_NEOVIM_DIR
+   ~/dotfiles/vim/nvim
 }
 
 setup_new_vim () {
