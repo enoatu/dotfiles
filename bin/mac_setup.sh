@@ -37,9 +37,8 @@ code --install-extension ms-vscode.go
 brew install --cask iterm2
 
 # install GIPHY CAPTURE
-# install Clippy
-# install Dropbox
-# install tailscale
-# install microsoft edge
-# install firefox
-# install Google日本語入力
+# brew install --cask clipy
+# brew install tailscale
+# brew install --cask dropbox
+# brew install --cask microsoft-edge
+# brew install --cask firefox

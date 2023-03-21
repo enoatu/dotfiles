@@ -84,8 +84,8 @@ repo = 'shumphrey/fugitive-gitlab.vim'
 
 # bufferlist(lazyではできない)
 [[plugins]]
-repo = '~/MyDevelopment/vim-bufferlist'
-#repo = 'enoatu/vim-bufferlist'
+#repo = '~/MyDevelopment/vim-bufferlist'
+repo = 'enoatu/vim-bufferlist'
 hook_add = '''
 let g:BufferListMaxWidth = 100
 map <C-k> :call BufferList()<CR>
@@ -122,9 +122,9 @@ function! SwitchGutter()
         let s:switchGutter=5
         let g:gitgutter_diff_base = 'origin/master'
     elseif (s:switchGutter == 5)
-        echo "switchGutter: origin/backlog/20"
+        echo "switchGutter: origin/staging"
         let s:switchGutter=1
-        let g:gitgutter_diff_base = 'origin/backlog/20'
+        let g:gitgutter_diff_base = 'origin/staging'
     endif
     :GitGutterAll
 endfunction
