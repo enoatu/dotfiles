@@ -1,0 +1,22 @@
+version: '3.7'
+services:
+  debian:
+    build:
+      context: .
+      dockerfile: ./debian/Dockerfile
+    command: /root/dotfiles/vim/usr/bin/nvim
+    tty: true
+    volumes:
+      - ../:/root/dotfiles
+      # 除外
+      - /root/dotfiles/vim/neo-dein
+  #centos:
+  #  build:
+  #    context: .
+  #    dockerfile: ./centos/Dockerfile
+  #  command: /bin/bash
+  #  tty: true
+  #  volumes:
+  #    - ../:/root
+  #    # 除外
+  #    - /root/vim/neo-dein

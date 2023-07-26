@@ -102,9 +102,8 @@ nnoremap j gj
 nnoremap k gk
 " diff時 set wrapをデフォルトに
 autocmd FilterWritePre * if &diff | setlocal wrap< | endif
-nnoremap <Leader>gv :Gdiff<CR>:windo set wrap<CR>
-nnoremap <Leader>gh :Gsdiff<CR>:windo set wrap<CR>
-nnoremap <Leader>gv :Gvdiff<CR>:windo set wrap<CR>
+let mapleader = ","
+nnoremap <Leader>d :Gdiff<CR>:windo set wrap<CR>
 
 "タブ、空白、改行の可視化
 set list

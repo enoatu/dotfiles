@@ -2,6 +2,7 @@
 /vim/neo-dein
 /vim/vim-*
 /vim/v8*
+/vim/usr
 /zsh/zshrc.local*
 .project_root
 .current_dir
