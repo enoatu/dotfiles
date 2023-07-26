@@ -99,7 +99,7 @@ nnoremap <silent><nowait> dg  :<C-u>CocList diagnostics<cr>
 nmap <silent> [d <Plug>(coc-diagnostic-prev)
 nmap <silent> ]d <Plug>(coc-diagnostic-next)
 
-let g:coc_global_extensions = ['coc-tsserver', '@yaegassy/coc-volar', 'coc-go', 'coc-phpls', 'coc-rust-analyzer', 'coc-spell-checker', 'coc-snippets', 'coc-tabnine', '@yaegassy/coc-tailwindcss3']
+let g:coc_global_extensions = ['coc-tsserver', '@yaegassy/coc-volar', 'coc-go', 'coc-phpls', 'coc-rust-analyzer', 'coc-diagnostic', 'coc-snippets', 'coc-tabnine', '@yaegassy/coc-tailwindcss3', 'coc-webview', 'coc-markdown-preview-enhanced']
 
 """""""""coc-snippets
 inoremap <silent><expr> <TAB>
