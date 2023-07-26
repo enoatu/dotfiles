@@ -9,10 +9,10 @@ ANYENV="${ANYENV_DIR}/bin/anyenv"
 
 main () {
     cd ${HOME}/dotfiles
-    if [ -d ${PRIVATE_DOTFILES} ]; then
-        rm -rf ${PRIVATE_DOTFILES}
+    if [ ! -d ${PRIVATE_DOTFILES} ]; then
+        git clone ${PRIVATE_REPO_URL} ${PRIVATE_DOTFILES}
+        echo "private_dotfiles not found continue"
     fi
-    git clone ${PRIVATE_REPO_URL} ${PRIVATE_DOTFILES}
     echo '? (all or vim or zsh or tmux or git) '
     read answer
     case "$answer" in
@@ -330,7 +330,32 @@ setup_neovim () {
   make CMAKE_INSTALL_PREFIX=$DOTFILES/bin install
   cd ..
   rm -rf $TMP_NEOVIM_DIR
-   ~/dotfiles/vim/nvim
+  # check in vim command line
+  # :checkhealth provider
+
+  #python3 -m pip install --user --upgrade pynvim
+
+  # asdf plugin-add nodejs
+  # asdf install nodejs 16.8.0
+  # asdf global nodejs 16.8.0
+  # exec $SHELL -l
+  # npm install -g neovim
+
+  # asdf plugin-add perl
+  # asdf install perl 5.30.0
+  # asdf global perl 5.30.0
+  # exec $SHELL -l
+  # cpan Neovim::Ext
+
+  # 未確認
+  # asdf plugin-add ruby
+  # asdf install ruby 3.2.1
+  # asdf global ruby 3.2.1
+  # exec $SHELL -l
+  # gem install neovim
+
+  # 入れないと諸々動かない
+  #ln -sf ~/dotfiles/private-dotfiles/vim/coc-settings.json ~/.config/nvim/
 }
 
 setup_new_vim () {

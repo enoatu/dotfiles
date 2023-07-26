@@ -1,5 +1,5 @@
 #!/usr/bin/env zx
-$.verbose = false
+$.verbose = true
 
 if (argv.staged || argv.s) {
   // show diff staging files
@@ -9,9 +9,9 @@ if (argv.staged || argv.s) {
 }
 
 let arg = ''
-if (argv._[1]) {
+if (argv._[0]) {
   // show diff branch etc..
-  arg = argv._[1]
+  arg = argv._[0]
 } else if (argv.default || argv.d) {
   // show diff default remote branch
   const defaultRemoteBranch = await $`git remote show origin | grep 'HEAD branch' | awk '{print $NF}'`
