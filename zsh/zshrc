@@ -85,6 +85,9 @@ alias cmo='~/dotfiles/bin/gitcommit.sh construction'
 alias d='docker'
 alias dc='/usr/local/bin/docker compose'
 
+alias t='terraform'
+alias vim=nvim
+
 alias ta='tmux attach'
 
 gitstashpopreset() {
@@ -205,6 +208,10 @@ zstyle ':vcs_info:git+set-message:*' hooks git-config-user
 precmd () { vcs_info }
 GIT='${vcs_info_msg_0_}'
 
+export PATH="$HOME/dotfiles/vim/nvim/bin:$PATH"
+
+. ~/.asdf/libexec/asdf.sh
+
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
 
 #black red green yellow blue magenta cyan white
@@ -222,13 +229,3 @@ function +vi-git-config-user(){
 #[[ $- != *i* ]] && return
 #[[ -z "$TMUX" ]] && exec tmux
 
-# bun completions
-[ -s "/Users/enotiru/.bun/_bun" ] && source "/Users/enotiru/.bun/_bun"
-
-# bun
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
-
-export PYENV_ROOT="$HOME/.pyenv"
-command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"
