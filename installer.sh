@@ -121,16 +121,16 @@ setup_neovim () {
         . ${HOME}/.asdf/asdf.sh
     fi
 
+    # coc.nvim で使う
     asdf plugin-add nodejs
     asdf install nodejs 16.8.0
     asdf global nodejs 16.8.0
     npm install -g neovim
 
-
-    #まだ不要
-    #asdf plugin-add python
-    #asdf install python 3.9.7
-    #asdf global python 3.9.7
+    # coc-snippets で使う
+    asdf plugin-add python
+    asdf install python 3.9.7
+    asdf global python 3.9.7
 
     # まだ不要
     # asdf plugin-add perl

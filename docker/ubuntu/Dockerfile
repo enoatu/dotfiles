@@ -8,6 +8,7 @@ WORKDIR /root
 # 2. asdf curl git
 # 3. locales (for nvim), language-pack-jaがないとnvimが動かない
 # 4. tmux あったら嬉しい
+# 5. build-essential coc-snippets が pythonを使用していて、pythonのビルドのために必要
 
 ## -----need sudo-------
 RUN \
@@ -16,7 +17,8 @@ RUN \
     apt-get install -y zsh tar \
     curl git \
     locales language-pack-ja \
-    tmux
+    tmux \
+    build-essential
 
 # nvim locale error fix
 RUN \
