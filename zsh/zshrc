@@ -210,8 +210,6 @@ GIT='${vcs_info_msg_0_}'
 
 export PATH="$HOME/dotfiles/vim/nvim/bin:$PATH"
 
-. ~/.asdf/libexec/asdf.sh
-
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
 
 #black red green yellow blue magenta cyan white
