@@ -6,11 +6,9 @@ set fileformats=unix,dos,mac
 let s:plugin_test = 0
 
 if s:plugin_test
-  let s:dein_dir = expand('~/dotfiles/vim/test-dein')
-elseif has('nvim')
-  let s:dein_dir = expand('~/dotfiles/vim/neo-dein')
+  let s:dein_dir = expand('~/dotfiles/neovim/test-dein')
 else
-  let s:dein_dir = expand('~/dotfiles/vim/dein')
+  let s:dein_dir = expand('~/dotfiles/neovim/neo-dein')
 endif
 
 let s:dein_repo_dir = s:dein_dir . '/repos/github.com/Shougo/dein.vim'
@@ -23,20 +21,13 @@ endif
 
 if dein#load_state(s:dein_dir)
   call dein#begin(s:dein_dir)
-  let s:toml = '~/dotfiles/vim/dein.toml'
-  let s:tomltest = '~/dotfiles/vim/dein_test.toml'
-  let s:tomlnvim = '~/dotfiles/vim/dein_nvim.toml'
-  let s:tomlvim = '~/dotfiles/vim/dein_vim.toml'
+  let s:tomltest = '~/dotfiles/neovim/dein_test.toml'
+  let s:tomlnvim = '~/dotfiles/neovim/dein_nvim.toml'
 
   if s:plugin_test
-    call dein#load_toml(s:toml, {'lazy': 0})
     call dein#load_toml(s:tomltest, {'lazy': 0})
-  elseif has('nvim')
-    call dein#load_toml(s:toml, {'lazy': 0})
-    call dein#load_toml(s:tomlnvim, {'lazy': 0})
   else
-    call dein#load_toml(s:toml, {'lazy': 0})
-    call dein#load_toml(s:tomlvim, {'lazy': 0})
+    call dein#load_toml(s:tomlnvim, {'lazy': 0})
   endif
 
   call dein#end()

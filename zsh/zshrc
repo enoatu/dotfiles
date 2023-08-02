@@ -86,7 +86,7 @@ alias d='docker'
 alias dc='/usr/local/bin/docker compose'
 
 alias t='terraform'
-alias vim=nvim
+alias vim='nvim'
 
 alias ta='tmux attach'
 
@@ -182,6 +182,7 @@ autoload -Uz zmv
 alias zmv='noglob zmv -W'
 export PERL5LIB=$HOME/work/Moove/lib:$HOME/work/moove/lib:$PERL5LIB
 export PATH="$HOME/dotfiles/bin:$PATH"
+export PATH="$HOME/dotfiles/neovim/install/nvim/bin:$PATH"
 # test
 # [ -d ../node/.nodenv ] && export PATH="$HOME/dotfiles/zsh/nodenv/bin:$PATH"
 # [ -d ../node/.nodenv ] && eval "$(nodenv init -)"
@@ -208,13 +209,15 @@ zstyle ':vcs_info:git+set-message:*' hooks git-config-user
 precmd () { vcs_info }
 GIT='${vcs_info_msg_0_}'
 
-export PATH="$HOME/dotfiles/vim/nvim/bin:$PATH"
+export PATH="$HOME/dotfiles/neovim/install/nvim/bin:$PATH"
 
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
 
 #black red green yellow blue magenta cyan white
 PROMPT="%(?.%{${fg[green]}%}.%{${fg[red]}%})(%D %*%)%n${reset_color}@${hostcolor}${host}${reset_color}${fg[green]}(%j)${reset_color}${GIT}%~
 %# "
+
+. $HOME/.asdf/asdf.sh
 
 # gitリポジトリにいる場合、set-messageフックでgit-config-user関数が呼び出されるように登録
 

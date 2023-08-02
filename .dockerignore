@@ -1,0 +1,12 @@
+**/neo-dein
+**/zsh/zshrc.local*
+**/.project_root
+**/.current_dir
+**/zsh/fzf*
+**/zsh/zsh-autosuggestions*
+**/.dirs
+**/bin/setlocalgit
+**/neovim/dein_test.toml
+**/node_modules
+**/nerd-fonts
+**/neovim/install
