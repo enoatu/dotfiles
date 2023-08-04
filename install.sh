@@ -19,14 +19,14 @@ main () {
         setup_neovim
         setup_tmux
         setup_additional_dotfiles
-        echo 'Please exec "source ~/.zshrc"'
+        echo 'Please exec "source ${HOME}/.zshrc"'
         ;;
     nvim)
         setup_neovim
         ;;
     zsh)
         setup_zsh
-        echo 'Please exec "source ~/.zshrc"'
+        echo 'Please exec "source ~${HOME}/.zshrc"'
         ;;
     tmux)
         setup_tmux
