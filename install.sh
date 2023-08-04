@@ -11,7 +11,7 @@ ADDITIONAL_REPO_BRANCH=${ADDITIONAL_REPO_BRANCH:-"main"}
 
 main () {
     cd ${HOME}/dotfiles
-    echo '? (all or nvim or zsh or tmux or git or additional) '
+    echo '? (all or nvim or zsh or tmux or git or additional(a)) '
     read answer
     case "$answer" in
     all)
@@ -19,17 +19,23 @@ main () {
         setup_neovim
         setup_tmux
         setup_additional_dotfiles
+        echo 'Please exec "source ~/.zshrc"'
         ;;
     nvim)
         setup_neovim
         ;;
     zsh)
         setup_zsh
+        echo 'Please exec "source ~/.zshrc"'
         ;;
     tmux)
         setup_tmux
         ;;
     additional)
+        ADDITIONAL_INSTALL_SELECT=1
+        setup_additional_dotfiles
+        ;;
+    a)
         ADDITIONAL_INSTALL_SELECT=1
         setup_additional_dotfiles
         ;;
