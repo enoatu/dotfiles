@@ -199,6 +199,25 @@ let g:copilot_no_tab_map = v:true
 echo "ready copilot"
 '''
 
+[[plugins]]
+repo = 'kylechui/nvim-surround'
+lua_add = '''
+require("nvim-surround").setup({
+   keymaps = {
+       insert = "<C-g>s",
+       insert_line = "<C-g>S",
+       normal = "e",
+       normal_cur = "es",
+       normal_line = "yS",
+       normal_cur_line = "ySS",
+       visual = "S",
+       visual_line = "gS",
+       delete = "ds",
+       change = "cs",
+   }
+})
+'''
+
 # coc
 # 動かなくなったら↓コメントアウトして立ち上げ、コメントインして立ち上げれば直る
 [[plugins]]
