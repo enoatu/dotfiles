@@ -133,7 +133,7 @@ setup_neovim () {
     asdf plugin-add nodejs
     asdf install nodejs 16.8.0
     asdf global nodejs 16.8.0
-    npm install -g neovim zx
+    npm install -g neovim zx yarn@1
 
     # coc-snippets で使う
     #asdf plugin-add python

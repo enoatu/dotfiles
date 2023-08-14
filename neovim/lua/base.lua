@@ -36,9 +36,9 @@ vim.o.laststatus = 2
 -- " コマンドラインの補完
 vim.o.wildmode = "list:longest"
 -- " 折り返し時に表示行単位での移動できるようにする
-vim.keymap.set("n", "j", "gj, { noremap = true }")
-
-vim.keymap.set("n", "k", "gk", { noremap = true })
+-- vim.keymap.set("n", "j", "gj", { noremap = true, desc="jをgjに置き換える" })
+-- 
+-- vim.keymap.set("n", "k", "gk", { noremap = true })
 -- " diff時 set wrapをデフォルトに
 -- autocmd FilterWritePre * if &diff | setlocal wrap< | endif
 -- TODO
@@ -82,7 +82,7 @@ vim.keymap.set("i", "<BS>", "<BS>", { noremap = true })
 vim.o.ttimeoutlen = 10
 vim.o.mouse = "a"
 -- " ウィンドウの幅より長い行は折り返され、次の行に続けて表示される
-vim.o.wrap = true
+-- vim.wo.wrap = true プラグインにより無効化されている
 vim.o.number = true
 vim.o.clipboard = "unnamed"
 vim.o.showmatch = true
