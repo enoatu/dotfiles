@@ -37,7 +37,7 @@ vim.o.laststatus = 2
 vim.o.wildmode = "list:longest"
 -- " 折り返し時に表示行単位での移動できるようにする
 -- vim.keymap.set("n", "j", "gj", { noremap = true, desc="jをgjに置き換える" })
--- 
+--
 -- vim.keymap.set("n", "k", "gk", { noremap = true })
 -- " diff時 set wrapをデフォルトに
 -- autocmd FilterWritePre * if &diff | setlocal wrap< | endif
@@ -52,16 +52,16 @@ vim.keymap.set("n", "<Leader>d", ":Gdiff<CR>:windo set wrap<CR>")
 vim.o.list = true
 vim.o.listchars = "tab:▸▸,trail:◀,extends:>,precedes:<,nbsp:%"
 -- "全角スペースをハイライト表示
-vim.api.nvim_create_augroup('extra-whitespace', {})
-vim.api.nvim_create_autocmd({'VimEnter', 'WinEnter'}, {
-  group = 'extra-whitespace',
-  pattern = {'*'},
-  command = [[call matchadd('ExtraWhitespace', '[\u200B\u3000]')]]
+vim.api.nvim_create_augroup("extra-whitespace", {})
+vim.api.nvim_create_autocmd({ "VimEnter", "WinEnter" }, {
+	group = "extra-whitespace",
+	pattern = { "*" },
+	command = [[call matchadd('ExtraWhitespace', '[\u200B\u3000]')]],
 })
-vim.api.nvim_create_autocmd({'ColorScheme'}, {
-  group = 'extra-whitespace',
-  pattern = {'*'},
-  command = [[highlight default ExtraWhitespace ctermbg=202 ctermfg=202 guibg=salmon]]
+vim.api.nvim_create_autocmd({ "ColorScheme" }, {
+	group = "extra-whitespace",
+	pattern = { "*" },
+	command = [[highlight default ExtraWhitespace ctermbg=202 ctermfg=202 guibg=salmon]],
 })
 -- " 検索系
 -- " 検索文字列が小文字の場合は大文字小文字を区別なく検索する
@@ -73,9 +73,9 @@ vim.o.incsearch = true
 -- " 検索語をハイライト表示
 vim.o.hlsearch = true
 -- "行頭
-vim.keymap.set({"n", "v"}, "<C-h>", "0", { noremap = true })
+vim.keymap.set({ "n", "v" }, "<C-h>", "0", { noremap = true })
 -- "行末
-vim.keymap.set({"n", "v"}, "<C-l>", "$", { noremap = true })
+vim.keymap.set({ "n", "v" }, "<C-l>", "$", { noremap = true })
 vim.keymap.set("v", "<BS>", "<Del>", { noremap = true })
 vim.keymap.set("i", "<BS>", "<BS>", { noremap = true })
 -- " 挿入モードーノーマルモード間移動を高速化

@@ -137,33 +137,23 @@ require("lazy").setup({
 			build = ":lua print('need exec Copilot auth')",
 			init = function()
 				-- 確定キーをTABからC-lに変更
-				vim.keymap.set(
-					"i",
-					"<C-l>",
-					'copilot#Accept("<CR>")',
-					{
-						noremap = true,
-						desc = "copilot 用エンター",
-						expr = true,
-						silent = true,
-						script = true,
-						replace_keycodes = false,
-					}
-				)
-				vim.keymap.set(
-					"i",
-					"<C-j>",
-					"copilot#Next()",
-					{
-						noremap = true,
-						desc = "copilotで後の候補へ",
-						expr = true,
-						silent = true,
-						script = true,
-						replace_keycodes = false,
-						noremap = true,
-					}
-				)
+				vim.keymap.set("i", "<C-l>", 'copilot#Accept("<CR>")', {
+					noremap = true,
+					desc = "copilot 用エンター",
+					expr = true,
+					silent = true,
+					script = true,
+					replace_keycodes = false,
+				})
+				vim.keymap.set("i", "<C-j>", "copilot#Next()", {
+					noremap = true,
+					desc = "copilotで後の候補へ",
+					expr = true,
+					silent = true,
+					script = true,
+					replace_keycodes = false,
+					noremap = true,
+				})
 				vim.g.copilot_no_tab_map = true
 			end,
 		},
@@ -226,10 +216,87 @@ require("lazy").setup({
 			end,
 		},
 		-- lazy plugins: https://www.lazyvim.org/plugins
+		{ -- snippet engine by lua
+			"L3MON4D3/LuaSnip",
+		},
+		{ -- snippet collection
+			"rafamadriz/friendly-snippets",
+		},
+		{ -- snippet engine by lua?
+			"hrsh7th/nvim-cmp",
+		},
+		{
+			"hrsh7th/cmp-nvim-lsp",
+		},
+		{
+			"hrsh7th/cmp-buffer",
+		},
+		{
+			"hrsh7th/cmp-path",
+		},
+		{
+			"saadparwaiz1/cmp_luasnip",
+		},
+		-- mini.pairs
+		-- mini.surround
+		-- nvim-ts-context-commentstring
+		-- mini.comment
+		-- mini.ai
+		{ -- 括弧の補完
+			"echasnovski/mini.pairs",
+		},
+		{ -- 囲む
+			"echasnovski/mini.surround",
+			enabled = false,
+		},
+		{ -- コメント gc
+			"JoosepAlviste/nvim-ts-context-commentstring",
+		},
+		{ -- コメント gc (行ごと)
+			"echasnovski/mini.comment",
+		},
+		{ -- ui系
+			"echasnovski/mini.ai",
+		},
 		-- Editor
 		{
 			"nvim-neo-tree/neo-tree.nvim",
 			enabled = false,
+		},
+		{ -- 複数ファイル検索・置換 (<leader>c で置換)
+			"nvim-pack/nvim-spectre",
+			cmd = "Spectre",
+			opts = { open_cmd = "noswapfile vnew" },
+			keys = {
+				{
+					"<leader>sr",
+					function()
+						require("spectre").open()
+					end,
+					desc = "Replace in files (Spectre)",
+				},
+			},
+		},
+		{ -- fzf
+			"nvim-telescope/telescope.nvim",
+		},
+		{ -- 検索f の強化版 shogehogeで検索
+			"folke/flash.nvim",
+		},
+		{ -- flash のtelescope config
+			"nvim-telescope/telescope.nvim",
+		},
+		{ -- カーソルの他の単語もハイライト
+			"RRethy/vim-illuminate",
+		},
+		{ -- buffer 削除
+			"echasnovski/mini.bufremove",
+		},
+		{ -- diagnostics list
+			"folke/trouble.nvim",
+		},
+		{ -- todo comment list [t などで移動 <leader>stで検索
+			"folke/todo-comments.nvim",
 		},
 		-- ...
 		-- LSP
