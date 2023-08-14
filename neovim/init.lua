@@ -240,11 +240,14 @@ require("lazy").setup({
   -- vim.ui.selectなどを装飾する
   {
     'stevearc/dressing.nvim',
-    opts = {},
+    opts = {
+      input = {
+        relative = "win",
+      },
+    },
   },
   {
-    "enoatu/gitsigns.nvim",
-    -- dir = "~/MyDevelopment/gitsigns.nvim",
+    'lewis6991/gitsigns.nvim',
     config = function()
       require('gitsigns').setup {
         signs = {
@@ -252,7 +255,7 @@ require("lazy").setup({
           change = { text = '~' },
           changedelete = { text = '≃' },
         },
-        signcolumn = true,  -- Toggle with `:Gitsigns toggle_signs`
+        signcolumn = true, -- Toggle with `:Gitsigns toggle_signs`
         numhl      = true, -- Toggle with `:Gitsigns toggle_numhl`
         linehl     = true, -- Toggle with `:Gitsigns toggle_linehl`
         word_diff  = true, -- Toggle with `:Gitsigns toggle_word_diff`
@@ -300,28 +303,48 @@ require("lazy").setup({
       }
     end,
   },
+  {
+    "junegunn/vim-easy-align",
+    lazy = true,
+    init = function()
+      vim.keymap.set({"n", "v"}, "ga", "<Plug>(EasyAlign)")
+    end,
+  },
 })
 
-function ChangeBranchForComparison(branch)
-  vim.g.gitsigns_head = branch
-  package.loaded.gitsigns.refresh()
-end
-
-vim.g.gitsigns_head = ""
 vim.keymap.set("n", "m", ":lua SwitchGutter()<CR>", { noremap = true })
-local switchGutterBranches = { "", "origin/main", "origin/dev", "origin/master", "origin/staging", "main", "dev", "master", "staging" }
+local switchGutterBranches = {
+  "<input>",
+  "HEAD",
+  "origin/main",
+  "origin/dev",
+  "origin/master",
+  "origin/staging",
+  "main",
+  "dev",
+  "master",
+  "staging",
+}
 local isSwitchGutter = false
 function SwitchGutter()
   if isSwitchGutter then
     return
   end
   isSwitchGutter = true
-  vim.notify("or :ChangeBranchForComparison(branch)", vim.log.levels.INFO)
   vim.ui.select(switchGutterBranches, {
     prompt = "Select the branch for comparison",
    }, function(item, lnum)
+    -- 手動入力
+    if item == "<input>" then
+      vim.notify("input", vim.log.levels.INFO)
+      vim.ui.input({ prompt = 'Enter the branch for comparison: ' }, function(input)
+        package.loaded.gitsigns.change_base(item)
+      end)
+      isSwitchGutter = false
+      return
+    end
     if item and lnum then
-      ChangeBranchForComparison(item)
+      package.loaded.gitsigns.change_base(item)
       vim.notify(string.format("selected '%s' (idx %d)", item, lnum), vim.log.levels.INFO)
     else
       vim.notify("Selection canceled", vim.log.levels.INFO)
