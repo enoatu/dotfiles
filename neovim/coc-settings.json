@@ -19,7 +19,12 @@
       "settings": {}
     }
   },
-  "cSpell.diagnosticLevel": "hint",
+  "cSpell.diagnosticLevel": "hints",
+  "diagnostic.checkCurrentLine": true,
+  "diagnostic.infoSign": "",
+  "diagnostic.hintSign": "",
+  "diagnostic.warningSign": "⚠️",
+  "diagnostic.errorSign": "❌",
   "cSpell.enabledLanguageIds": [
     "vim",
     "asciidoc",
@@ -67,6 +72,5 @@
   ],
   "cSpell.userWords": [
     "eyecatch",
-    "hoge"
   ]
 }

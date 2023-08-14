@@ -60,17 +60,19 @@ setup_additional_dotfiles () {
 }
 
 setup_zsh () {
-    cd ${DOTFILES}/zsh
-    if [ ! -e ${DOTFILES}/zsh/fzf.zsh ]; then
-        git clone https://github.com/junegunn/fzf.git ./fzf
-        ./fzf/install --no-fish --no-bash
-        mv ${HOME}/.fzf.zsh ${DOTFILES}/zsh/fzf.zsh
-    fi
-    if [ ! -e ${DOTFILES}/zsh/zsh-autosuggestions.zsh ]; then
-        git clone https://github.com/zsh-users/zsh-autosuggestions ./zsh-autosuggestions
-        mv ./zsh-autosuggestions/zsh-autosuggestions.zsh ${DOTFILES}/zsh/zsh-autosuggestions.zsh
-    fi
-    ln -sf ${DOTFILES}/zsh/zshrc ${HOME}/.zshrc
+    (
+        cd ${DOTFILES}/zsh
+        if [ ! -e ${DOTFILES}/zsh/fzf.zsh ]; then
+            git clone https://github.com/junegunn/fzf.git ./fzf
+            ./fzf/install --no-fish --no-bash
+            mv ${HOME}/.fzf.zsh ${DOTFILES}/zsh/fzf.zsh
+        fi
+        if [ ! -e ${DOTFILES}/zsh/zsh-autosuggestions.zsh ]; then
+            git clone https://github.com/zsh-users/zsh-autosuggestions ./zsh-autosuggestions
+            mv ./zsh-autosuggestions/zsh-autosuggestions.zsh ${DOTFILES}/zsh/zsh-autosuggestions.zsh
+        fi
+        ln -sf ${DOTFILES}/zsh/zshrc ${HOME}/.zshrc
+    )
 }
 
 setup_tmux () {
