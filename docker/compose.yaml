@@ -9,6 +9,8 @@ services:
       - ..:/root/dotfiles
       - /root/dotfiles/node_modules
       - /root/dotfiles/neovim/install
+      - /dev/null:/root/dotfiles/bin/fd
+      - /dev/null:/root/dotfiles/bin/rg
       # - /root/dotfiles/zsh/fzf
       # - /dev/null:/root/dotfiles/zsh/fzf.zsh
       # - /root/dotfiles/zsh/zsh-autosuggestions

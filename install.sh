@@ -128,11 +128,38 @@ setup_neovim () {
         git clone https://github.com/asdf-vm/asdf.git ${HOME}/.asdf --branch v0.12.0
         . ${HOME}/.asdf/asdf.sh
     fi
+ 
+    # install fd-find
+    if [ ! -e ${DOTFILES}/bin/fd ]; then
+        if [ "$(uname)" == 'Darwin' ]; then
+            curl -L -o tmp-fd.tar.gz https://github.com/sharkdp/fd/releases/download/v8.7.0/fd-v8.7.0-x86_64-apple-darwin.tar.gz
+        else
+            curl -L -o tmp-fd.tar.gz https://github.com/sharkdp/fd/releases/download/v8.7.0/fd-v8.7.0-x86_64-unknown-linux-gnu.tar.gz
+        fi
+        mkdir -p ${DOTFILES}/fd-bin
+        tar xzf tmp-fd.tar.gz --directory=${DOTFILES}/fd-bin
+        find ${DOTFILES}/fd-bin -maxdepth 1 -mindepth 1 -type d | xargs -I{} mv {}/fd ${DOTFILES}/bin/
+        rm -rf tmp-fd.tar.gz ${DOTFILES}/fd-bin
+    fi
+
+    # install ripgrep(rg)
+    if [ ! -e ${DOTFILES}/bin/rg ]; then
+        if [ "$(uname)" == 'Darwin' ]; then
+            curl -L -o tmp-rg.tar.gz https://github.com/BurntSushi/ripgrep/releases/download/13.0.0/ripgrep-13.0.0-x86_64-apple-darwin.tar.gz
+        else
+            curl -L -o tmp-rg.tar.gz https://github.com/BurntSushi/ripgrep/releases/download/13.0.0/ripgrep-13.0.0-x86_64-unknown-linux-musl.tar.gz
+        fi
+        mkdir -p ${DOTFILES}/rg-bin
+        tar xzf tmp-rg.tar.gz --directory=${DOTFILES}/rg-bin
+        find ${DOTFILES}/rg-bin -maxdepth 1 -mindepth 1 -type d | xargs -I{} mv {}/rg ${DOTFILES}/bin/
+        rm -rf tmp-rg.tar.gz ${DOTFILES}/rg-bin
+    fi
 
     # coc.nvim で使う
     asdf plugin-add nodejs
     asdf install nodejs 16.8.0
     asdf global nodejs 16.8.0
+    # yarn = cocで使用
     npm install -g neovim zx yarn@1
 
     # coc-snippets で使う
