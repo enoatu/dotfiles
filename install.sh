@@ -131,12 +131,12 @@ setup_neovim () {
     asdf plugin-add nodejs
     asdf install nodejs 16.8.0
     asdf global nodejs 16.8.0
-    npm install -g neovim
+    npm install -g neovim zx
 
     # coc-snippets で使う
-    asdf plugin-add python
-    asdf install python 3.9.7
-    asdf global python 3.9.7
+    #asdf plugin-add python
+    #asdf install python 3.9.7
+    #asdf global python 3.9.7
 
     # まだ不要
     # asdf plugin-add perl
@@ -153,8 +153,10 @@ setup_neovim () {
     # gem install neovim
 
     # for nvim
-    ln -sf ${DOTFILES}/neovim/init.vim ${HOME}/.config/nvim/init.vim
+    ln -sf ${DOTFILES}/neovim/init.lua ${HOME}/.config/nvim/init.lua
+    ln -sf ${DOTFILES}/neovim/lua ${HOME}/.config/nvim/lua
     ln -sf ${DOTFILES}/neovim/coc-settings.json ${HOME}/.config/nvim/coc-settings.json
+    ln -sf ${DOTFILES}/neovim/lazy-lock.json ${HOME}/.config/nvim/lazy-lock.json
 
     printf "\e[30;42;1m new vim setup completed \e[m\n"
 }
