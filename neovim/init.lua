@@ -218,6 +218,7 @@ require("lazy").setup({
     },
     {
       "neoclide/coc.nvim",
+      build = ":call coc#util#install()",
       init = function()
         -- インストール時実行
         -- call coc#util#install()
@@ -262,15 +263,14 @@ require("lazy").setup({
         vim.g.coc_global_extensions = {
           'coc-tsserver',
           '@yaegassy/coc-volar',
-          'coc-go',
+          -- 'coc-go',
           'coc-phpls',
-          'coc-rust-analyzer',
           'coc-spell-checker',
-          'coc-snippets',
+          -- 'coc-snippets', need python
           'coc-tabnine',
-          '@yaegassy/coc-tailwindcss3',
-          'coc-webview',
-          'coc-markdown-preview-enhanced',
+          -- '@yaegassy/coc-tailwindcss3',
+          -- 'coc-webview',
+          -- 'coc-markdown-preview-enhanced',
         }
       end,
     },
@@ -282,6 +282,24 @@ require("lazy").setup({
     },
     -- ...
     -- LSP
+    { import = "lazyvim.plugins.extras.ui.mini-animate" }, -- default
+    -- { import = "lazyvim.plugins.extras.lang.clangd" },
+    -- { import = "lazyvim.plugins.extras.lang.cmake" },
+    { import = "lazyvim.plugins.extras.lang.docker" },
+    { import = "lazyvim.plugins.extras.lang.go" },
+    -- { import = "lazyvim.plugins.extras.lang.elixir" },
+    -- { import = "lazyvim.plugins.extras.lang.java" },
+    { import = "lazyvim.plugins.extras.lang.json" },
+    -- { import = "lazyvim.plugins.extras.lang.python-semshi" },
+    { import = "lazyvim.plugins.extras.lang.python" },
+    -- { import = "lazyvim.plugins.extras.lang.ruby" },
+    -- { import = "lazyvim.plugins.extras.lang.rust" },
+    -- { import = "lazyvim.plugins.extras.lang.tailwind" }, coc
+    { import = "lazyvim.plugins.extras.lang.terraform" },
+    -- { import = "lazyvim.plugins.extras.lang.tex" },
+    -- { import = "lazyvim.plugins.extras.lang.typescript" }, coc
+    { import = "lazyvim.plugins.extras.lang.yaml" },
+    --
     { -- lspconfig
       "neovim/nvim-lspconfig",
     },
@@ -325,6 +343,7 @@ require("lazy").setup({
           "query",
           "regex",
           "tsx",
+		  "javascript",
           "typescript",
           "vim",
           "vimdoc",

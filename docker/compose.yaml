@@ -5,6 +5,22 @@ services:
       context: ..
       dockerfile: ./docker/ubuntu/Dockerfile
     tty: true
+    volumes:
+      - ..:/root/dotfiles
+      - /root/dotfiles/node_modules
+      - /root/dotfiles/neovim/install
+      # - /root/dotfiles/zsh/fzf
+      # - /dev/null:/root/dotfiles/zsh/fzf.zsh
+      # - /root/dotfiles/zsh/zsh-autosuggestions
+      # - /dev/null:/root/dotfiles/zsh/zsh-autosuggestions.zsh
+      - /dev/null:/root/dotfiles/.project_root
+      - /dev/null:/root/dotfiles/.dirs
+      - /dev/null:/root/dotfiles/.current_dir
+  debian:
+    build:
+      context: ..
+      dockerfile: ./docker/debian/Dockerfile
+    tty: true
   #centos:
   #  build:
   #    context: .

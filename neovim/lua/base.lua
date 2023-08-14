@@ -36,9 +36,9 @@ vim.o.laststatus = 2
 -- " コマンドラインの補完
 vim.o.wildmode = "list:longest"
 -- " 折り返し時に表示行単位での移動できるようにする
-vim.keymap.set("n", "j", "gj")
+vim.keymap.set("n", "j", "gj, { noremap = true }")
 
-vim.keymap.set("n", "k", "gk")
+vim.keymap.set("n", "k", "gk", { noremap = true })
 -- " diff時 set wrapをデフォルトに
 -- autocmd FilterWritePre * if &diff | setlocal wrap< | endif
 -- TODO
@@ -73,11 +73,11 @@ vim.o.incsearch = true
 -- " 検索語をハイライト表示
 vim.o.hlsearch = true
 -- "行頭
-vim.keymap.set({"n", "v"}, "<C-h>", "0")
+vim.keymap.set({"n", "v"}, "<C-h>", "0", { noremap = true })
 -- "行末
-vim.keymap.set({"n", "v"}, "<C-l>", "$")
-vim.keymap.set("v", "<BS>", "<Del>")
-vim.keymap.set("i", "<BS>", "<BS>")
+vim.keymap.set({"n", "v"}, "<C-l>", "$", { noremap = true })
+vim.keymap.set("v", "<BS>", "<Del>", { noremap = true })
+vim.keymap.set("i", "<BS>", "<BS>", { noremap = true })
 -- " 挿入モードーノーマルモード間移動を高速化
 vim.o.ttimeoutlen = 10
 vim.o.mouse = "a"
@@ -93,7 +93,7 @@ vim.o.whichwrap = "b,s,<,>,[,]"
 -- vnoremap <silent> <C-p> "0p<CR>
 vim.o.t_Co = 256
 
-vim.keymap.set("c", "w!!", "w !sudo tee > /dev/null %<CR>")
+vim.keymap.set("c", "w!!", "w !sudo tee > /dev/null %<CR>", { noremap = true })
 -- "visualモードで選択してからのインデント調整で調整後に選択範囲を開放しない
-vim.keymap.set("v", ">", ">gv")
-vim.keymap.set("v", "<", "<gv")
+vim.keymap.set("v", ">", ">gv", { noremap = true })
+vim.keymap.set("v", "<", "<gv", { noremap = true })
