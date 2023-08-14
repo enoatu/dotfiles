@@ -181,13 +181,6 @@ require("lazy").setup({
       vim.cmd([[colorscheme tokyonight]])
     end,
   },
-  {
-     "github/copilot.vim",
-     init = function()
-       vim.keymap.set("i", "<silent><script><expr> <C-l>", 'copilot#Accept("<CR>")')
-       vim.api.nvim_set_var("copilot_no_tab_map", "true")
-     end,
-  },
   -- インデント可視化
   {
     "lukas-reineke/indent-blankline.nvim",
@@ -304,12 +297,102 @@ require("lazy").setup({
     end,
   },
   {
-    "junegunn/vim-easy-align",
-    lazy = true,
-    init = function()
-      vim.keymap.set({"n", "v"}, "ga", "<Plug>(EasyAlign)")
+    "kylechui/nvim-surround",
+    config = function()
+      require("nvim-surround").setup({
+        keymaps = {
+          insert = "<C-g>s",
+          insert_line = "<C-g>S",
+          normal = "e",
+          normal_cur = "es",
+          normal_line = "yS",
+          normal_cur_line = "ySS",
+          visual = "S",
+          visual_line = "gS",
+          delete = "ds",
+          change = "cs",
+        }
+      })
     end,
   },
+  {
+    "tpope/vim-fugitive", -- vimscript
+    opt = {},
+  },
+  {
+    "enoatu/vim-bufferlist", -- vimscript
+    init = function()
+      vim.g.BufferListMaxWidth = 100
+      vim.keymap.set("n", "<C-k>", ":call BufferList()<CR>", { noremap = true })
+    end,
+  },
+  {
+    "github/copilot.vim",
+    init = function()
+      -- 確定キーをTABからC-lに変更
+      vim.keymap.set("i", "<silent><script><expr> <C-l>", 'copilot#Accept("<CR>")')
+      -- 動かなくなったら copilot log で確認する(大体 入れなおせば直る)
+      vim.api.nvim_set_var("copilot_no_tab_map", "true")
+    end,
+  },
+  {
+    "neoclide/coc.nvim",
+    init = function()
+      -- インストール時実行
+      -- call coc#util#install()
+      -- coc-snippets を使用する場合は以下実行
+      -- pip install pynvim
+      -- 定義ジャンプ
+      vim.keymap.set('n', 'gd', '<Plug>(coc-definition)', { silent = true })
+      -- 型定義ジャンプ
+      vim.keymap.set('n', 'gt', '<Plug>(coc-type-definition)', { silent = true })
+      -- grep
+      vim.keymap.set('n', 'gr', '<Plug>(coc-references)', { silent = true })
+      -- 情報表示
+      function coc_show_documentation()
+        if vim.fn.index({'vim', 'help'}, vim.bo.filetype) >= 0 then
+          vim.cmd('execute "h " . expand("<cword>")')
+        elseif vim.fn['coc#rpc#ready']() then
+          vim.fn.CocActionAsync('doHover')
+        else
+          vim.cmd('execute "!" . &keywordprg . " " . expand("<cword>")')
+        end
+      end
+      vim.keymap.set('n', 'K', ':lua coc_show_documentation()<CR>', { silent = true })
+      -- コードアクション(全て)
+      vim.keymap.set('n', 'cc', '<Plug>(coc-codeaction)', { silent = true })
+      -- コードアクション(特定操作)
+      vim.keymap.set('x', 'cd', '<Plug>(coc-codeaction-selected)', { silent = true })
+      vim.keymap.set('n', 'cd', '<Plug>(coc-codeaction-selected)', { silent = true })
+      -- 現在の行の問題にAutoFixを適用する
+      vim.keymap.set('n', 'cq', '<Plug>(coc-fix-current)', { silent = true })
+      -- 選択したコードをフォーマットする
+      vim.keymap.set('x', 'cf', '<Plug>(coc-format-selected)', { silent = true })
+      vim.keymap.set('n', 'cf', '<Plug>(coc-format-selected)', { silent = true })
+      -- :Format all
+      vim.cmd('command! -nargs=0 Format :call CocAction("format")')
+      -- :ORでインポートの整理（不要なインポートの削除、並べ替えなど）
+      vim.cmd('command! -nargs=0 OR :call CocActionAsync("runCommand", "editor.action.organizeImport")')
+      -- すべての診断情報を表示
+      vim.keymap.set('n', 'dg', ':CocList diagnostics<CR>', { silent = true })
+      -- [dと]dを使用して診断情報をナビゲート
+      vim.keymap.set('n', '[d', '<Plug>(coc-diagnostic-prev)', { silent = true })
+      vim.keymap.set('n', ']d', '<Plug>(coc-diagnostic-next)', { silent = true })
+      vim.g.coc_global_extensions = {
+        'coc-tsserver',
+        '@yaegassy/coc-volar',
+        'coc-go',
+        'coc-phpls',
+        'coc-rust-analyzer',
+        'coc-diagnostic',
+        'coc-snippets',
+        'coc-tabnine',
+        '@yaegassy/coc-tailwindcss3',
+        'coc-webview',
+        'coc-markdown-preview-enhanced',
+      }
+    end,
+  }
 })
 
 vim.keymap.set("n", "m", ":lua SwitchGutter()<CR>", { noremap = true })
@@ -338,7 +421,7 @@ function SwitchGutter()
     if item == "<input>" then
       vim.notify("input", vim.log.levels.INFO)
       vim.ui.input({ prompt = 'Enter the branch for comparison: ' }, function(input)
-        package.loaded.gitsigns.change_base(item)
+        package.loaded.gitsigns.change_base(input)
       end)
       isSwitchGutter = false
       return
@@ -352,168 +435,3 @@ function SwitchGutter()
   isSwitchGutter = false
   end)
 end
-
--- " 確定キーをTABからC-lに変更
--- copilot for nvim
--- lazyで動かない
--- 動かなくなったら copilot log で確認する(大体 入れなおせば直る)
-
--- #テーマ
--- #addじゃないと動かない
--- [[plugins]]
--- repo = 'rakr/vim-one'
--- hook_add = '''
--- filetype plugin indent on
--- 
--- syntax enable
--- colorscheme one
--- 
--- " tmux
--- set t_8b=[48;2;%lu;%lu;%lum
--- set t_8f=[38;2;%lu;%lu;%lum
--- 
--- let g:airline_theme = 'one'
--- " powerline enable(最初に設定しないとダメ)
--- let g:airline_powerline_fonts = 1
--- " タブバーをかっこよく
--- let g:airline#extensions#tabline#enabled = 1
--- " 選択行列の表示をカスタム(デフォルトだと長くて横幅を圧迫するので最小限に)
--- let g:airline_section_z = airline#section#create(['windowswap', '%3p%% ', 'linenr', ':%3v'])
--- " gitのHEADから変更した行の+-を非表示(vim-gitgutterの拡張)
--- let g:airline#extensions#hunks#enabled = 0
--- '''
--- 
--- # インデント表示
--- [[plugins]]
--- repo = 'Yggdroot/indentLine'
--- hook_add = '''
--- autocmd BufNewFile,BufRead,BufEnter * :let g:indentLine_setConceal = (&ft=='json' ? 0 : 1)
--- '''
--- #
--- 
--- # 括弧に別々の色を付ける
--- [[plugins]]
--- repo = 'luochen1990/rainbow'
--- hook_add = '''
---     let g:rainbow_active = 1
--- '''
--- 
--- # rgb
--- [[plugins]]
--- repo = 'lilydjwg/colorizer'
--- 
--- #:Gdiffと打つとHEADと現在の状態を比較できる
--- #:Glog = git log
--- #:Gdiff コミット番号でそのdiffをとれる
--- #:Gread HEAD^^:%
--- #:Gblameでコミット詳細みれる
--- #:Gstatus = git status
--- #:Gwrite [path]
--- #:Gcommit
--- #:Gdiff [fugitive-revision]
--- #:Gedit [fugitive-revision]
--- #:Gmove [destination]
--- #:Gremove
--- #:Glog [args]
--- #:Gpush [args]
--- #:Gfetch [args]
--- #:Gmerge [args]
--- #:Gpull [args]
--- [[plugins]]
--- repo = 'tpope/vim-fugitive'
--- # github/gitlab token必要なので考える
--- #[[plugins]]
--- #repo = 'tpope/vim-rhubarb'
--- [[plugins]]
--- repo = 'shumphrey/fugitive-gitlab.vim'
--- 
--- # bufferlist(lazyではできない)
--- [[plugins]]
--- #repo = '~/MyDevelopment/vim-bufferlist'
--- repo = 'enoatu/vim-bufferlist'
--- hook_add = '''
--- let g:BufferListMaxWidth = 100
--- map <C-k> :call BufferList()<CR>
--- '''
--- 
--- #gitで管理してる場合、左側に差分を表示
--- [[plugins]]
--- repo = 'airblade/vim-gitgutter'
--- hook_add = '''
--- "画面をガタガタ言わせない
--- set signcolumn=yes
--- 
--- "タイピング終了後すぐに反映する
--- set updatetime=200
--- 
--- "master
--- let s:switchGutter=1
--- noremap m :call SwitchGutter()<CR>
--- function! SwitchGutter()
---     if (s:switchGutter == 1)
---         let g:gitgutter_diff_base = 'origin/main'
---         let s:switchGutter=2
---         echo "switchGutter: origin/main"
---     elseif (s:switchGutter == 2)
---         let g:gitgutter_diff_base = 'origin/dev'
---         let s:switchGutter=3
---         echo "switchGutter: origin/dev"
---     elseif (s:switchGutter == 3)
---         echo "switchGutter: デフォルト"
---         let s:switchGutter=4
---         let g:gitgutter_diff_base = ''
---     elseif (s:switchGutter == 4)
---         echo "switchGutter: origin/master"
---         let s:switchGutter=5
---         let g:gitgutter_diff_base = 'origin/master'
---     elseif (s:switchGutter == 5)
---         echo "switchGutter: origin/staging"
---         let s:switchGutter=1
---         let g:gitgutter_diff_base = 'origin/staging'
---     endif
---     :GitGutterAll
--- endfunction
--- '''
--- 
--- ###################################lazy#############################
--- 
--- # easy align
--- [[plugins]]
--- repo = 'junegunn/vim-easy-align'
--- lazy = true
--- hook_add = '''
--- xmap ga <Plug>(EasyAlign)
--- nmap ga <Plug>(EasyAlign)
--- '''
--- 
--- # インデントの位置を直す
--- [[plugins]]
--- repo = "pangloss/vim-javascript"
--- lazy = true
--- 
--- # fで検索後移動できるようにする
--- [[plugins]]
--- repo = 'rhysd/clever-f.vim'
--- lazy = true
--- 
--- # 定義ジャンプ
--- [[plugins]]
--- repo = 'pechorin/any-jump.vim'
--- lazy = true
--- hook_add = '''
--- let g:any_jump_window_width_ratio  = 0.9
--- let g:any_jump_window_height_ratio = 0.9
--- let g:any_jump_max_search_results = 20
--- " Normal mode: Jump to definition under cursor
--- nnoremap <C-j> :AnyJump<CR>
--- 
--- " Visual mode: jump to selected text in visual mode
--- xnoremap <C-j> :AnyJumpVisual<CR>
--- 
--- " Normal mode: open previous opened file (after jump)
--- nnoremap <C-b> :AnyJumpBack<CR>
--- 
--- " Normal mode: open last closed search window again
--- "nnoremap <C-al> :AnyJumpLastResults<CR>
--- '''
-
