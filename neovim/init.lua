@@ -1,6 +1,4 @@
 require("base")
-require("switch-indent")
-require("switch-gutter")
 require("lazy-ready")
 require("lazy").setup({
 	defaults = {
@@ -129,7 +127,6 @@ require("lazy").setup({
 			"enoatu/vim-bufferlist", -- vimscript
 			init = function()
 				vim.g.BufferListMaxWidth = 100
-				vim.keymap.set("n", "<C-k>", ":call BufferList()<CR>", { noremap = true })
 			end,
 		},
 		{
@@ -424,7 +421,7 @@ require("lazy").setup({
 		{ -- アニメーションで現在のインデントを教えてくれる
 			"echasnovski/mini.indentscope",
 		},
-		{ -- キーマップを表示
+		{ -- キーマップを表示 (leader + sk)
 			"folke/which-key.nvim",
 		},
 		{ -- メッセージやcmdlineなどおしゃれに
@@ -461,3 +458,16 @@ require("lazy").setup({
 		},
 	},
 })
+
+-- 優先
+vim.keymap.set(
+	"n",
+	"<C-k>",
+	":call BufferList()<CR>",
+	{ noremap = true, silent = true, desc = "バッファリスト" }
+)
+vim.keymap.set("n", "<C-j>", ":AnyJump<CR>", { noremap = true })
+
+require("switch-indent")
+require("switch-gutter")
+require("override")
