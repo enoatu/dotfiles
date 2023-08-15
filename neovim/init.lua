@@ -57,24 +57,25 @@ require("lazy").setup({
 			config = function()
 				require("gitsigns").setup({
 					signs = {
-						add = { text = "+" },
-						change = { text = "~" },
-						changedelete = { text = "≃" },
+						add = { text = "▌+" },
+						change = { text = "▌~" },
+						delete = { text = "▌_" },
+						topdelete = { text = "▌‾" },
+						changedelete = { text = "▌~" },
 					},
 					signcolumn = true, -- Toggle with `:Gitsigns toggle_signs`
 					numhl = true, -- Toggle with `:Gitsigns toggle_numhl`
 					linehl = false, -- Toggle with `:Gitsigns toggle_linehl` coc-spell-checker とハイライトがぶつかる
 					word_diff = true, -- Toggle with `:Gitsigns toggle_word_diff`
 					-- current_line_blame = true,
+					attach_to_untracked = false,
 					on_attach = function(bufnr)
 						local gs = package.loaded.gitsigns
-
 						local function map(mode, l, r, opts)
 							opts = opts or {}
 							opts.buffer = bufnr
 							vim.keymap.set(mode, l, r, opts)
 						end
-
 						-- Navigation
 						map("n", "]c", function()
 							if vim.wo.diff then
@@ -85,7 +86,6 @@ require("lazy").setup({
 							end)
 							return "<Ignore>"
 						end, { expr = true, desc = "次のhunkへ移動" })
-
 						map("n", "[c", function()
 							if vim.wo.diff then
 								return "[c"
@@ -125,8 +125,10 @@ require("lazy").setup({
 		},
 		{
 			"enoatu/vim-bufferlist", -- vimscript
+			-- dir = "~/MyDevelopment/vim-bufferlist",
 			init = function()
 				vim.g.BufferListMaxWidth = 100
+				-- require("bufferlist")
 			end,
 		},
 		{
