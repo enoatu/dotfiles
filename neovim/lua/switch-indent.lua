@@ -1,3 +1,4 @@
+local vim = vim
 -- "自動インデント
 vim.o.smartindent = true
 vim.o.autoindent = true
@@ -10,8 +11,8 @@ local switchTabMessage = "4スペ"
 vim.o.shiftwidth = 4
 vim.o.tabstop = 4
 
-vim.keymap.set("n", "<C-i>", ":lua SwitchIndent()<CR>", { noremap = true })
-vim.keymap.set("n", "<C-o>", ":lua SwitchIndent()<CR>", { noremap = true })
+vim.keymap.set("n", "<C-i>", ":lua SwitchIndent()<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<C-o>", ":lua SwitchIndent()<CR>", { noremap = true, silent = true })
 function SwitchIndent()
 	if switchTab == 1 then
 		switchTab = 2
@@ -32,5 +33,5 @@ function SwitchIndent()
 		vim.o.tabstop = 4
 		switchTabMessage = "4スペ"
 	end
-	print("SwitchIndent: " .. switchTabMessage)
+	vim.notify(switchTabMessage, vim.log.levels.INFO, { title = "SwitchIndent" })
 end
