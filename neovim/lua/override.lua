@@ -43,14 +43,14 @@ vim.o.listchars = "tab:▸▸,trail:◀,extends:>,precedes:<,nbsp:%"
 -- "全角スペースをハイライト表示
 vim.api.nvim_create_augroup("extra-whitespace", {})
 vim.api.nvim_create_autocmd({ "VimEnter", "WinEnter" }, {
-	group = "extra-whitespace",
-	pattern = { "*" },
-	command = [[call matchadd('ExtraWhitespace', '[\u200B\u3000]')]],
+    group = "extra-whitespace",
+    pattern = { "*" },
+    command = [[call matchadd('ExtraWhitespace', '[\u200B\u3000]')]],
 })
 vim.api.nvim_create_autocmd({ "ColorScheme" }, {
-	group = "extra-whitespace",
-	pattern = { "*" },
-	command = [[highlight default ExtraWhitespace ctermbg=202 ctermfg=202 guibg=salmon]],
+    group = "extra-whitespace",
+    pattern = { "*" },
+    command = [[highlight default ExtraWhitespace ctermbg=202 ctermfg=202 guibg=salmon]],
 })
 -- " 検索系
 -- " 検索文字列が小文字の場合は大文字小文字を区別なく検索する

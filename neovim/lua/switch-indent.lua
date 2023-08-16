@@ -14,24 +14,24 @@ vim.o.tabstop = 4
 vim.keymap.set("n", "<C-i>", ":lua SwitchIndent()<CR>", { noremap = true, silent = true })
 vim.keymap.set("n", "<C-o>", ":lua SwitchIndent()<CR>", { noremap = true, silent = true })
 function SwitchIndent()
-	if switchTab == 1 then
-		switchTab = 2
-		vim.o.expandtab = true
-		vim.o.shiftwidth = 2
-		vim.o.tabstop = 2
-		switchTabMessage = "2スペ"
-	elseif switchTab == 2 then
-		switchTab = 3
-		vim.o.expandtab = false
-		vim.o.shiftwidth = 4
-		vim.o.tabstop = 4
-		switchTabMessage = "タブ"
-	elseif switchTab == 3 then
-		switchTab = 1
-		vim.o.expandtab = true
-		vim.o.shiftwidth = 4
-		vim.o.tabstop = 4
-		switchTabMessage = "4スペ"
-	end
-	vim.notify(switchTabMessage, vim.log.levels.INFO, { title = "SwitchIndent" })
+    if switchTab == 1 then
+        switchTab = 2
+        vim.o.expandtab = true
+        vim.o.shiftwidth = 2
+        vim.o.tabstop = 2
+        switchTabMessage = "2スペ"
+    elseif switchTab == 2 then
+        switchTab = 3
+        vim.o.expandtab = false
+        vim.o.shiftwidth = 4
+        vim.o.tabstop = 4
+        switchTabMessage = "タブ"
+    elseif switchTab == 3 then
+        switchTab = 1
+        vim.o.expandtab = true
+        vim.o.shiftwidth = 4
+        vim.o.tabstop = 4
+        switchTabMessage = "4スペ"
+    end
+    vim.notify(switchTabMessage, vim.log.levels.INFO, { title = "SwitchIndent" })
 end
