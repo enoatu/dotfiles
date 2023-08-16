@@ -87,7 +87,8 @@ alias dc='/usr/local/bin/docker compose'
 
 alias t='terraform'
 alias vim='nvim'
-
+# tmux でvimの色おかしい時はこちらを使う
+alias xtmux='TERM=xterm-256color tmux'
 alias ta='tmux attach'
 
 gitstashpopreset() {

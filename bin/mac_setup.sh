@@ -4,7 +4,10 @@
 #(echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> $HOME/.zprofile
 #eval "$(/opt/homebrew/bin/brew shellenv)"
 
-# brew install git tmux gsed ggrep jq wget cmake gcc tree ripgrep colordiff git-delta vips openexr nvim yarn asdf
+#1. 必須
+#2. あったら嬉しい
+# brew install git tmux \
+# gsed ggrep jq wget cmake gcc tree ripgrep colordiff git-delta vips openexr nvim yarn trivy
 # 
 # # Font + icon Install for mac
 # git clone --branch=master --depth 1 https://github.com/ryanoasis/nerd-fonts.git

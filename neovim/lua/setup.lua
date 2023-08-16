@@ -274,6 +274,7 @@ require("lazy").setup({
         },
         { -- カーソルの他の単語もハイライト
             "RRethy/vim-illuminate",
+            enabled = false, -- gcc 必要かもなので
         },
         { -- buffer 削除
             "echasnovski/mini.bufremove",
@@ -374,6 +375,7 @@ require("lazy").setup({
             "williamboman/mason.nvim",
         },
         -- TreeSitter
+        -- Need A C compiler in your path and libstdc++ installed
         {
             "nvim-treesitter/nvim-treesitter",
             opts = {
