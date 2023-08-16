@@ -1,7 +1,7 @@
 require("base")
 require("env")
 require("lazy-ready")
-require("lazy-setup")
+require("setup")
 -- require("lazy-test")
 require("switch-indent")
 require("switch-gutter")
