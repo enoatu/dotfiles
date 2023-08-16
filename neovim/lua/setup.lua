@@ -265,11 +265,18 @@ require("lazy").setup({
         },
         { -- fzf
             "nvim-telescope/telescope.nvim",
+            keys = {
+                {
+                    "<leader>.",
+                    "<cmd>Telescope find_files hidden=true no_ignore=true<cr>",
+                    desc = "Find files noignore",
+                },
+            },
         },
         { -- 検索f の強化版 shogehogeで検索
             "folke/flash.nvim",
         },
-        { -- flash のtelescope config
+        { -- flash のtelescope configtmu
             "nvim-telescope/telescope.nvim",
         },
         { -- カーソルの他の単語もハイライト
@@ -383,7 +390,6 @@ require("lazy").setup({
                 indent = { enable = true },
                 ensure_installed = {
                     "bash",
-                    "c",
                     "html",
                     "javascript",
                     "jsdoc",
@@ -397,7 +403,6 @@ require("lazy").setup({
                     "query",
                     "regex",
                     "tsx",
-                    "javascript",
                     "typescript",
                     "vim",
                     "vimdoc",
