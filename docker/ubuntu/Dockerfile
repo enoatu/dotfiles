@@ -12,17 +12,16 @@ WORKDIR /root
 
 ## -----need sudo-------
 RUN \
-    apt update && \
-    apt-get update && \
-    apt-get install -y zsh tar \
-    curl git \
-    locales language-pack-ja \
-    unzip wget \
-    tmux
+  apt-get update && \
+  apt-get install -y zsh tar \
+  curl git \
+  locales language-pack-ja \
+  unzip wget \
+  tmux
 
 # 1.change shell
 # 2.nvim locale error fix
 RUN \
-    chsh -s /usr/bin/zsh && \
-    locale-gen ja_JP.UTF-8 && \
-    localedef -f UTF-8 -i ja_JP ja_JP.UTF-8
+  chsh -s /usr/bin/zsh && \
+  locale-gen ja_JP.UTF-8 && \
+  localedef -f UTF-8 -i ja_JP ja_JP.UTF-8
