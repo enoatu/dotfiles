@@ -20,7 +20,7 @@ vim.o.termguicolors = true
 -- " ビープ音を可視化
 vim.o.visualbell = true
 -- " 括弧入力時の対応する括弧を表示
-vim.o.showmatch = true
+-- vim.o.showmatch = true
 -- " ステータスラインを常に表示
 vim.o.laststatus = 2
 -- " コマンドラインの補完
@@ -84,7 +84,6 @@ vim.o.number = true
 vim.o.clipboard = "unnamed"
 vim.o.showmatch = true
 vim.o.matchtime = 1
-vim.o.matchpairs = "<:>"
 vim.o.hidden = true
 vim.o.whichwrap = "b,s,<,>,[,]"
 -- vnoremap <silent> <C-p> "0p<CR>
