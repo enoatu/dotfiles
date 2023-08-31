@@ -334,6 +334,7 @@ require("lazy").setup({
         },
         { -- 検索f の強化版 shogehogeで検索
             "folke/flash.nvim",
+            enabled = false,
         },
         { -- flash のtelescope configtmu
             "nvim-telescope/telescope.nvim",
