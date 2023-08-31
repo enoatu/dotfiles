@@ -421,6 +421,9 @@ require("lazy").setup({
         --
         { -- lspconfig
             "neovim/nvim-lspconfig",
+            opts = {
+                auto_format = false,
+            },
         },
         { -- lspをjsonで管理
             "folke/neoconf.nvim",

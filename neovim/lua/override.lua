@@ -96,7 +96,7 @@ vim.keymap.set("v", "<", "<gv", { noremap = true })
 
 --------------
 local opt = vim.opt
-opt.autowrite = false
+opt.autowrite = true
 opt.spelllang = { "ja" }
 opt.splitright = false
 opt.relativenumber = false
