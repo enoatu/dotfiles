@@ -289,6 +289,7 @@ require("lazy").setup({
         -- mini.ai
         { -- 括弧の補完
             "echasnovski/mini.pairs",
+            enabled = false,
         },
         { -- 囲む
             "echasnovski/mini.surround",
@@ -296,6 +297,7 @@ require("lazy").setup({
         },
         { -- コメント gc
             "JoosepAlviste/nvim-ts-context-commentstring",
+            enabled = false,
         },
         { -- コメント gc (行ごと)
             "echasnovski/mini.comment",
@@ -503,6 +505,7 @@ require("lazy").setup({
         },
         { -- 上部のbufferタブ
             "akinsho/bufferline.nvim",
+            enabled = false,
         },
         {
             "nvim-lualine/lualine.nvim",

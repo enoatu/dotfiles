@@ -23,13 +23,13 @@ function SwitchGutter()
         -- 手動入力
         if item == "<input>" then
             vim.ui.input({ prompt = "Enter the branch for comparison: " }, function(input)
-                package.loaded.gitsigns.change_base(input)
+                package.loaded.gitsigns.change_base(input, true)
             end)
             isSwitchGutter = false
             return
         end
         if item and lnum then
-            package.loaded.gitsigns.change_base(item)
+            package.loaded.gitsigns.change_base(item, true)
         end
         isSwitchGutter = false
     end)
