@@ -83,7 +83,7 @@ alias cmm='~/dotfiles/bin/gitcommit.sh heavy_minus_sign'
 alias cmr='~/dotfiles/bin/gitcommit.sh recycle'
 alias cms='~/dotfiles/bin/gitcommit.sh space_invader'
 alias cmb='~/dotfiles/bin/gitcommit.sh bug'
-alias cmo='~/dotfiles/bin/gitcommit.sh construction'
+alias cmc='~/dotfiles/bin/gitcommit.sh construction'
 
 alias d='docker'
 alias dc='/usr/local/bin/docker compose'
