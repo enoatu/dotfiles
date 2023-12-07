@@ -160,7 +160,7 @@ setup_neovim() {
   asdf install nodejs 16.8.0
   asdf global nodejs 16.8.0
   # yarn = cocで使用
-  npm install -g neovim zx yarn@1
+  npm install -g neovim zx yarn@1 @githubnext/github-copilot-cli
 
   # coc-snippets で使う
   #asdf plugin-add python

@@ -25,6 +25,55 @@ require("lazy").setup({
         {
             "LazyVim/LazyVim",
             import = "lazyvim.plugins",
+            keys = {
+                { -- かぶるので上書きする silent じゃないとPress ENTER or type command to continueが出る
+                    "<C-K>",
+                    ":call BufferList()<CR>",
+                    desc = "BufferList",
+                    { noremap = true, silent = true },
+                },
+                {
+                    "<C-j>",
+                    ":AnyJump<CR>",
+                    desc = "AnyJump",
+                    { noremap = true, silent = true },
+                },
+                {
+                    "<C-h>",
+                    "0",
+                    { noremap = true, silent = true, desc = "行頭に移動" },
+                },
+                {
+                    "<C-l>",
+                    "$",
+                    { noremap = true, silent = true, desc = "行末に移動" },
+                },
+                {
+                    "<leader><S-h>",
+                    "<C-w>h",
+                    { desc = "Go to left window", noremap = true, silent = true },
+                },
+                {
+                    "<leader><S-j>",
+                    "<C-w>j",
+                    { desc = "Go to lower window", noremap = true, silent = true },
+                },
+                {
+                    "<leader><S-k>",
+                    "<C-w>k",
+                    { desc = "Go to upper window", noremap = true, silent = true },
+                },
+                {
+                    "<leader><S-l>",
+                    "<C-w>l",
+                    { desc = "Go to right window", noremap = true, silent = true },
+                },
+                {
+                    "<leader>d",
+                    "<C-w>c",
+                    { desc = "Close current window", noremap = true, silent = true },
+                },
+            },
         },
         { -- #A32B26 等の文字列に色をつける
             "norcalli/nvim-colorizer.lua",
@@ -125,6 +174,7 @@ require("lazy").setup({
         {
             "enoatu/vim-bufferlist", -- vimscript
             -- dir = "~/MyDevelopment/vim-bufferlist",
+            lazy = false,
             init = function()
                 vim.g.BufferListMaxWidth = 100
                 -- require("bufferlist")
@@ -143,6 +193,7 @@ require("lazy").setup({
                     silent = true,
                     script = true,
                     replace_keycodes = false,
+                    remap = true,
                 })
                 vim.keymap.set("i", "<C-j>", "copilot#Next()", {
                     noremap = true,
@@ -424,9 +475,9 @@ require("lazy").setup({
         --
         { -- lspconfig
             "neovim/nvim-lspconfig",
-            opts = {
-                auto_format = false,
-            },
+            config = function()
+                vim.g.autoformat = true
+            end,
         },
         { -- lspをjsonで管理
             "folke/neoconf.nvim",
@@ -439,9 +490,6 @@ require("lazy").setup({
         },
         {
             "hrsh7th/cmp-nvim-lsp",
-        },
-        { -- formatter for lsp
-            "jose-elias-alvarez/null-ls.nvim",
         },
         { -- lsp cli
             "williamboman/mason.nvim",
@@ -512,7 +560,7 @@ require("lazy").setup({
             event = "VeryLazy",
             opts = function()
                 local icons = require("lazyvim.config").icons
-                local Util = require("lazyvim.util")
+                local Util = require("lazyvim.util").ui
 
                 return {
                     options = {
@@ -589,31 +637,38 @@ require("lazy").setup({
                 }
             end,
         },
+        { -- インデントL字型
+            "HiPhish/rainbow-delimiters.nvim",
+        },
         { -- インデント可視化
             "lukas-reineke/indent-blankline.nvim",
+            main = "ibl",
+            lazy = false,
+            dependencies = {
+                "HiPhish/rainbow-delimiters.nvim",
+            },
             config = function()
                 vim.opt.termguicolors = true
-
-                vim.cmd([[highlight IndentBlanklineIndent1 guifg=#A32B26 gui=nocombine]])
-                vim.cmd([[highlight IndentBlanklineIndent2 guifg=#F0B01E gui=nocombine]])
-                vim.cmd([[highlight IndentBlanklineIndent3 guifg=#016669 gui=nocombine]])
-                vim.cmd([[highlight IndentBlanklineIndent4 guifg=#936419 gui=nocombine]])
-                vim.cmd([[highlight IndentBlanklineIndent5 guifg=#14CDE6 gui=nocombine]])
-                vim.cmd([[highlight IndentBlanklineIndent6 guifg=#C678DD gui=nocombine]])
-                vim.opt.list = true
-                -- スペースを⋅で表示
-                -- vim.opt.listchars:append "space:⋅"
-                require("indent_blankline").setup({
-                    space_char_blankline = " ",
-                    char_highlight_list = {
-                        "IndentBlanklineIndent1",
-                        "IndentBlanklineIndent2",
-                        "IndentBlanklineIndent3",
-                        "IndentBlanklineIndent4",
-                        "IndentBlanklineIndent5",
-                        "IndentBlanklineIndent6",
-                    },
-                })
+                local highlight = {
+                    "RainbowRed",
+                    "RainbowYellow",
+                    "RainbowBlue",
+                    "RainbowOrange",
+                    "RainbowGreen",
+                    "RainbowViolet",
+                }
+                local hooks = require("ibl.hooks")
+                -- create the highlight groups in the highlight setup hook, so they are reset
+                -- every time the colorscheme changes
+                hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
+                    vim.api.nvim_set_hl(0, "RainbowRed", { fg = "#A32B26" })
+                    vim.api.nvim_set_hl(0, "RainbowYellow", { fg = "#F0B01E" })
+                    vim.api.nvim_set_hl(0, "RainbowBlue", { fg = "#016669" })
+                    vim.api.nvim_set_hl(0, "RainbowOrange", { fg = "#936419" })
+                    vim.api.nvim_set_hl(0, "RainbowGreen", { fg = "#14CDE6" })
+                    vim.api.nvim_set_hl(0, "RainbowViolet", { fg = "#C678DD" })
+                end)
+                require("ibl").setup({ indent = { highlight = highlight } })
             end,
         },
         { -- アニメーションで現在のインデントを教えてくれる
@@ -627,12 +682,14 @@ require("lazy").setup({
             enabled = false,
         },
         { -- 最初の画面
-            "goolord/alpha-nvim",
+            "nvimdev/dashboard-nvim",
             opts = function()
-                local dashboard = require("alpha.themes.dashboard")
                 require("alpha-custom")
-                dashboard.section.header.val = vim.split(vim.g.alpha_logo, "\n")
-                return dashboard
+                return {
+                    config = {
+                        header = vim.split(vim.g.alpha_logo, "\n"),
+                    },
+                }
             end,
         },
         { -- lsp 関数のどこにいるかを表示:動作していなさそう
@@ -657,12 +714,3 @@ require("lazy").setup({
         },
     },
 })
-
--- 優先
-vim.keymap.set(
-    "n",
-    "<C-k>",
-    ":call BufferList()<CR>",
-    { noremap = true, silent = true, desc = "バッファリスト" }
-)
-vim.keymap.set("n", "<C-j>", ":AnyJump<CR>", { noremap = true })
