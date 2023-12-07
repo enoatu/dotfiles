@@ -106,7 +106,8 @@ setup_neovim() {
     if [ "$(uname)" == 'Darwin' ]; then
       curl -L -o tmp-nvim.tar.gz https://github.com/neovim/neovim/releases/latest/download/nvim-macos.tar.gz
     else
-      curl -L -o tmp-nvim.tar.gz https://github.com/neovim/neovim/releases/download/v0.9.1/nvim-linux64.tar.gz
+      # ロゼッタを有効にしないでインストールを行うこと
+      curl -L -o tmp-nvim.tar.gz https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz
     fi
     mkdir -p ${DOTFILES}/neovim/install
     tar xzf tmp-nvim.tar.gz --directory=${DOTFILES}/neovim/install
@@ -128,6 +129,8 @@ setup_neovim() {
     git clone https://github.com/asdf-vm/asdf.git ${HOME}/.asdf --branch v0.12.0
     . ${HOME}/.asdf/asdf.sh
   fi
+
+  # ~/.asdf/.tool_versions (ローカルでないことに注意) に golang 1.21 など記載することでプラグインエラーを回避できる
 
   # install fd-find
   if [ ! -e ${DOTFILES}/bin/fd ]; then
