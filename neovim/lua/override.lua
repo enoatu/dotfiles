@@ -411,15 +411,5 @@ opt.wrap = true
 
 -- Disable
 vim.keymap.set({ "i", "n" }, "<esc>", "<esc>", { desc = "Escape and clear hlsearch" })
-vim.keymap.set({ "i", "n" }, {
-  "<C-K>",
-  ":call BufferList()<CR>",
-  desc = "BufferList",
-  { noremap = true, silent = true },
-})
-vim.keymap.set({ "i", "n" }, {
-    "<C-j>",
-    ":AnyJump<CR>",
-    desc = "AnyJump",
-    { noremap = true, silent = true },
-})
+vim.keymap.set({ "i", "n" }, "<C-K>", ":call BufferList()<CR>", { desc = "BufferList", noremap = true, silent = true })
+vim.keymap.set({ "i", "n" }, "<C-j>", ":AnyJump<CR>", { desc = "AnyJump", noremap = true, silent = true })
