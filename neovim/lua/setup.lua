@@ -26,18 +26,19 @@ require("lazy").setup({
             "LazyVim/LazyVim",
             import = "lazyvim.plugins",
             keys = {
-                { -- かぶるので上書きする silent じゃないとPress ENTER or type command to continueが出る
-                    "<C-K>",
-                    ":call BufferList()<CR>",
-                    desc = "BufferList",
-                    { noremap = true, silent = true },
-                },
-                {
-                    "<C-j>",
-                    ":AnyJump<CR>",
-                    desc = "AnyJump",
-                    { noremap = true, silent = true },
-                },
+                -- lazyvim バージョンによっては必要 2023/12/10
+                -- { -- かぶるので上書きする silent じゃないとPress ENTER or type command to continueが出る
+                --     "<C-K>",
+                --     ":call BufferList()<CR>",
+                --     desc = "BufferList",
+                --     { noremap = true, silent = true },
+                -- },
+                -- {
+                --     "<C-j>",
+                --     ":AnyJump<CR>",
+                --     desc = "AnyJump",
+                --     { noremap = true, silent = true },
+                -- },
                 {
                     "<C-h>",
                     "0",
