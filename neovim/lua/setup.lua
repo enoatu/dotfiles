@@ -560,7 +560,7 @@ require("lazy").setup({
             event = "VeryLazy",
             opts = function()
                 local icons = require("lazyvim.config").icons
-                local Util = require("lazyvim.util").ui
+                local Util = require("lazyvim.util")
 
                 return {
                     options = {
