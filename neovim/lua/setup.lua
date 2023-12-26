@@ -183,7 +183,6 @@ require("lazy").setup({
         },
         {
             "github/copilot.vim",
-            enabled = vim.g.enable_plugin_copilot or false,
             build = ":lua print('need exec Copilot auth')",
             init = function()
                 -- 確定キーをTABからC-lに変更
