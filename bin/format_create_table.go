@@ -41,6 +41,27 @@ CREATE TABLE IF NOT EXISTS tag (
 		fmt.Println(output)
 	}
 
+	/*
+		  コメントについては、以下について対応する
+			行末の--、#
+			行頭の--, #
+			前後の文章に何もない/* から * /まで
+	*/
+	//	CREATE TABLE IF NOT EXISTS tag (
+	//		id                INT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID',
+	//		name              VARCHAR(50) NOT NULL                 COMMENT 'tag name',
+	//		-- taro: admin
+	//		-- hanako: user
+	//		non_smoking TEXT COMMENT '禁煙席'--(1:あり、0:なし),
+	//		# comment
+	//		/*test
+	//		* infomation
+	//		* test
+	//		*/
+	//		createdOn DATETIME COMMENT '作成日時',
+	//		PRIMARY KEY (id),
+	//	) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='simple tag';
+
 	fileName := os.Args[1]
 
 	// ファイルを開く
@@ -62,47 +83,52 @@ CREATE TABLE IF NOT EXISTS tag (
 
 func formatCreateTable(scanner *bufio.Scanner) string {
 	columnLines := []string{}
-	resultLines := []string{}
+	resultColumnLines := []string{}
 	sqlComments := []SqlComment{}
 	isStartColumn := false
+	isStartMultiLineComment := false
 
 	for scanner.Scan() {
 		line := scanner.Text()
 		// テーブル定義の行かどうかを判定する
 		if strings.Contains(line, "CREATE TABLE") {
 			isStartColumn = true
-			resultLines = append(resultLines, line)
+			resultColumnLines = append(resultColumnLines, line)
 			continue
 		}
 
 		if !isStartColumn {
-			resultLines = append(resultLines, line)
+			resultColumnLines = append(resultColumnLines, line)
 			continue
 		}
 
 		// SQLコメントは後で処理する
-		if strings.Contains(line, "--") || strings.Contains(line, "#") {
+		if strings.Contains(line, "*/") {
 			prevColumnLine := columnLines[len(columnLines)-1]
 			safeColumnLineSplits := safeSplit(prevColumnLine, " ")
-			for i, sqlComment := range sqlComments {
-				if sqlComment.BeforeColumnName == safeColumnLineSplits[0] {
-					sqlComment.texts = append(sqlComment.texts, line)
-					sqlComments[i] = sqlComment
-				}
-			}
+			sqlComments = addSqlComment(line, safeColumnLineSplits[0], sqlComments)
+			isStartMultiLineComment = false
+			continue
+		}
+		if strings.Contains(line, "/*") || isStartMultiLineComment {
+			prevColumnLine := columnLines[len(columnLines)-1]
+			safeColumnLineSplits := safeSplit(prevColumnLine, " ")
+			sqlComments = addSqlComment(line, safeColumnLineSplits[0], sqlComments)
+			isStartMultiLineComment = true
+			continue
+		}
+		if len(line) > 8 && (strings.Contains(line[:8], "--") || strings.Contains(line[:8], "#")) {
+			prevColumnLine := columnLines[len(columnLines)-1]
+			safeColumnLineSplits := safeSplit(prevColumnLine, " ")
+			sqlComments = addSqlComment(line, safeColumnLineSplits[0], sqlComments)
 			continue
 		}
 
 		if isFinishedColumnLine(line) {
 			isStartColumn = false
-			formatedInnerRaw := formatInner(columnLines, sqlComments)
-			formatedInner := []string{}
-			for _, columnLine := range formatedInnerRaw {
-				resultLines = append(resultLines, columnLine)
-			}
-
-			resultLines = append(resultLines, formatedInner...)
-			resultLines = append(resultLines, line)
+			formatedColumnLines := formatColumnLines(columnLines, sqlComments)
+			resultColumnLines = append(resultColumnLines, formatedColumnLines...)
+			resultColumnLines = append(resultColumnLines, line)
 			columnLines = []string{}
 			sqlComments = []SqlComment{}
 			continue
@@ -111,10 +137,10 @@ func formatCreateTable(scanner *bufio.Scanner) string {
 		columnLines = append(columnLines, line)
 	}
 
-	return strings.Join(resultLines, "\n")
+	return strings.Join(resultColumnLines, "\n")
 }
 
-func formatInner(columnLines []string, sqlComments []SqlComment) []string {
+func formatColumnLines(columnLines []string, sqlComments []SqlComment) []string {
 	// 半角スペースで分割して配列に格納する。ただし COMMENT以降は1つの要素として扱う
 	columnLinesSplits := [][]string{}
 	for _, columnLine := range columnLines {
@@ -271,4 +297,22 @@ func safeSplit(str string, delimiter string) []string {
 		}
 	}
 	return emptySafeSplits
+}
+
+func addSqlComment(line, columnName string, sqlComments []SqlComment) []SqlComment {
+	isAdded := false
+	for i, sqlComment := range sqlComments {
+		if sqlComment.BeforeColumnName == columnName {
+			sqlComment.texts = append(sqlComment.texts, line)
+			sqlComments[i] = sqlComment
+			isAdded = true
+		}
+	}
+	if !isAdded {
+		sqlComments = append(sqlComments, SqlComment{
+			BeforeColumnName: columnName,
+			texts:            []string{line},
+		})
+	}
+	return sqlComments
 }
