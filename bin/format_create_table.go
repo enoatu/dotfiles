@@ -36,14 +36,15 @@ import (
 
 type SqlComment struct {
 	BeforeColumnName string
-	texts []string
+	texts            []string
 }
+
 const INDENT = "  "
 
 func main() {
 	if len(os.Args) < 2 || os.Args[1] == "-h" || os.Args[1] == "--help" {
 		fmt.Println("Usage: go run format_create_table.go create_table.sql")
-        inputFile := `
+		inputFile := `
 ---------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS tag (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT            COMMENT 'ID',
@@ -51,10 +52,10 @@ CREATE TABLE IF NOT EXISTS tag (
   PRIMARY KEY (id),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='タグ';
 ---------------------------------------------------------------------------`
-        inputFile = strings.Replace(inputFile, "\n", "", 1)
-        fmt.Println("InputFile:")
-        fmt.Println(inputFile)
-        output := `
+		inputFile = strings.Replace(inputFile, "\n", "", 1)
+		fmt.Println("InputFile:")
+		fmt.Println(inputFile)
+		output := `
 ---------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS tag (
   id                INT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID',
@@ -62,10 +63,10 @@ CREATE TABLE IF NOT EXISTS tag (
   PRIMARY KEY (id),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='タグ';
 ---------------------------------------------------------------------------`
-        output = strings.Replace(output, "\n", "", 1)
-        fmt.Println("Output:")
-        fmt.Println(output)
-    }
+		output = strings.Replace(output, "\n", "", 1)
+		fmt.Println("Output:")
+		fmt.Println(output)
+	}
 
 	fileName := os.Args[1]
 
@@ -79,8 +80,8 @@ CREATE TABLE IF NOT EXISTS tag (
 
 	scanner := bufio.NewScanner(file)
 	if err := scanner.Err(); err != nil {
-			fmt.Println("Error reading file:", err)
-			return
+		fmt.Println("Error reading file:", err)
+		return
 	}
 	result := formatCreateTable(scanner)
 	fmt.Println(result)
@@ -99,7 +100,7 @@ func formatCreateTable(scanner *bufio.Scanner) string {
 		lines = append(lines, line)
 	}
 	for _, line := range lines {
-	  // テーブル定義の行かどうかを判定する
+		// テーブル定義の行かどうかを判定する
 		if strings.Contains(line, "CREATE TABLE") {
 			isStartColumn = true
 			resultLines = append(resultLines, line)
@@ -124,7 +125,7 @@ func formatCreateTable(scanner *bufio.Scanner) string {
 			continue
 		}
 
-		if (isFinishedColumnLine(line)) {
+		if isFinishedColumnLine(line) {
 			isStartColumn = false
 			formatedInnerRaw := formatInner(rows, sqlComments)
 			formatedInner := []string{}
@@ -134,7 +135,6 @@ func formatCreateTable(scanner *bufio.Scanner) string {
 
 			resultLines = append(resultLines, formatedInner...)
 			resultLines = append(resultLines, line)
-			resultLines = append(resultLines, "おわり")
 			rows = []string{}
 			sqlComments = []SqlComment{}
 			continue
@@ -160,9 +160,9 @@ func formatInner(rows []string, sqlComments []SqlComment) []string {
 				break
 			}
 		}
-    if commentPos == 0 {
-      commentPos = len(splits) - 1
-    }
+		if commentPos == 0 {
+			commentPos = len(splits) - 1
+		}
 
 		beforeComment := splits[:commentPos]
 		afterComment := splits[commentPos:]
@@ -224,7 +224,7 @@ func formatInner(rows []string, sqlComments []SqlComment) []string {
 	for i, row := range resultRows {
 		// カラム名+型の長さを取得する
 		if false {
-            // othersの頭を揃える
+			// othersの頭を揃える
 			columnNameTypeLength := len(row)
 			for j := 0; j < maxColumnNameTypeLength-columnNameTypeLength; j++ {
 				row += " "
@@ -248,12 +248,12 @@ func formatInner(rows []string, sqlComments []SqlComment) []string {
 			row += " "
 		}
 		// COMMENTを追加する
-    for _, split := range rowsSplits[i] {
-      if strings.Contains(split, "COMMENT") {
-		    row += rowsSplits[i][len(rowsSplits[i])-1]
-        break
-      }
-    }
+		for _, split := range rowsSplits[i] {
+			if strings.Contains(split, "COMMENT") {
+				row += rowsSplits[i][len(rowsSplits[i])-1]
+				break
+			}
+		}
 
 		resultRows[i] = INDENT + row
 	}
@@ -274,37 +274,37 @@ func formatInner(rows []string, sqlComments []SqlComment) []string {
 }
 
 func isFinishedColumnLine(line string) bool {
-  //  頭3文字内に)がある、またはCOMMENTがない場合はカラム定義が終わっていると判断する
-  if len(line) > 3 && strings.Contains(line[:3], ")") {
-    return true
-  }
+	//  頭3文字内に)がある、またはCOMMENTがない場合はカラム定義が終わっていると判断する
+	if len(line) > 3 && strings.Contains(line[:3], ")") {
+		return true
+	}
 
-  splits := safeSplit(line, " ")
-  for _, split := range splits {
-    if strings.Contains(split, "INDEX") ||
-    strings.Contains(split, "KEY") ||
-    strings.Contains(split, "FULLTEXT") ||
-    strings.Contains(split, "SPATIAL") ||
-    strings.Contains(split, "CONSTRAINT") ||
-    strings.Contains(split, "PRIMARY KEY") ||
-    strings.Contains(split, "UNIQUE") ||
-    strings.Contains(split, "FOREIGN KEY") ||
-    strings.Contains(split, "CHECK") {
-      return true
-    }
-  }
-  return false
+	splits := safeSplit(line, " ")
+	for _, split := range splits {
+		if strings.Contains(split, "INDEX") ||
+			strings.Contains(split, "KEY") ||
+			strings.Contains(split, "FULLTEXT") ||
+			strings.Contains(split, "SPATIAL") ||
+			strings.Contains(split, "CONSTRAINT") ||
+			strings.Contains(split, "PRIMARY KEY") ||
+			strings.Contains(split, "UNIQUE") ||
+			strings.Contains(split, "FOREIGN KEY") ||
+			strings.Contains(split, "CHECK") {
+			return true
+		}
+	}
+	return false
 }
 
 func safeSplit(str string, delimiter string) []string {
-		// 半角スペースで分割する
-		splits := strings.Split(str, delimiter)
-		// 空文字は削除する
-		emptySafeSplits := []string{}
-		for _, s := range splits {
-			if s != "" {
-				emptySafeSplits = append(emptySafeSplits, s)
-			}
+	// 半角スペースで分割する
+	splits := strings.Split(str, delimiter)
+	// 空文字は削除する
+	emptySafeSplits := []string{}
+	for _, s := range splits {
+		if s != "" {
+			emptySafeSplits = append(emptySafeSplits, s)
 		}
-		return emptySafeSplits
 	}
+	return emptySafeSplits
+}
