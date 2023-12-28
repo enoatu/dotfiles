@@ -61,18 +61,13 @@ CREATE TABLE IF NOT EXISTS tag (
 }
 
 func formatCreateTable(scanner *bufio.Scanner) string {
-	rows := []string{}
+	columnLines := []string{}
 	resultLines := []string{}
 	sqlComments := []SqlComment{}
-	lines := []string{}
-
 	isStartColumn := false
 
 	for scanner.Scan() {
 		line := scanner.Text()
-		lines = append(lines, line)
-	}
-	for _, line := range lines {
 		// テーブル定義の行かどうかを判定する
 		if strings.Contains(line, "CREATE TABLE") {
 			isStartColumn = true
@@ -87,10 +82,10 @@ func formatCreateTable(scanner *bufio.Scanner) string {
 
 		// SQLコメントは後で処理する
 		if strings.Contains(line, "--") || strings.Contains(line, "#") {
-			prevRow := rows[len(rows)-1]
-			safeRowSplits := safeSplit(prevRow, " ")
+			prevColumnLine := columnLines[len(columnLines)-1]
+			safeColumnLineSplits := safeSplit(prevColumnLine, " ")
 			for i, sqlComment := range sqlComments {
-				if sqlComment.BeforeColumnName == safeRowSplits[0] {
+				if sqlComment.BeforeColumnName == safeColumnLineSplits[0] {
 					sqlComment.texts = append(sqlComment.texts, line)
 					sqlComments[i] = sqlComment
 				}
@@ -100,31 +95,31 @@ func formatCreateTable(scanner *bufio.Scanner) string {
 
 		if isFinishedColumnLine(line) {
 			isStartColumn = false
-			formatedInnerRaw := formatInner(rows, sqlComments)
+			formatedInnerRaw := formatInner(columnLines, sqlComments)
 			formatedInner := []string{}
-			for _, row := range formatedInnerRaw {
-				resultLines = append(resultLines, row)
+			for _, columnLine := range formatedInnerRaw {
+				resultLines = append(resultLines, columnLine)
 			}
 
 			resultLines = append(resultLines, formatedInner...)
 			resultLines = append(resultLines, line)
-			rows = []string{}
+			columnLines = []string{}
 			sqlComments = []SqlComment{}
 			continue
 		}
 
-		rows = append(rows, line)
+		columnLines = append(columnLines, line)
 	}
 
 	return strings.Join(resultLines, "\n")
 }
 
-func formatInner(rows []string, sqlComments []SqlComment) []string {
+func formatInner(columnLines []string, sqlComments []SqlComment) []string {
 	// 半角スペースで分割して配列に格納する。ただし COMMENT以降は1つの要素として扱う
-	rowsSplits := [][]string{}
-	for _, row := range rows {
+	columnLinesSplits := [][]string{}
+	for _, columnLine := range columnLines {
 		// 半角スペースで分割する
-		splits := safeSplit(row, " ")
+		splits := safeSplit(columnLine, " ")
 
 		commentPos := 0
 		for i, str := range splits {
@@ -141,105 +136,105 @@ func formatInner(rows []string, sqlComments []SqlComment) []string {
 		afterComment := splits[commentPos:]
 		result := append(beforeComment, strings.Join(afterComment, " "))
 		// fmt.Println(strings.Join(result, "|"))
-		rowsSplits = append(rowsSplits, result)
+		columnLinesSplits = append(columnLinesSplits, result)
 	}
 
 	// 最大のカラム名の長さを取得し、その他を抽出する
 	maxColumnNameLength := 0
 	others := []string{}
-	for _, row := range rowsSplits {
+	for _, columnLine := range columnLinesSplits {
 		// カラム名の長さを取得する
-		columnNameLength := len(row[0])
+		columnNameLength := len(columnLine[0])
 		if maxColumnNameLength < columnNameLength {
 			maxColumnNameLength = columnNameLength
 		}
 		// 型名からCOMMENTまでがその他
 		other := ""
-		for i := 2; i < len(row); i++ {
-			if strings.Contains(row[i], "COMMENT") {
+		for i := 2; i < len(columnLine); i++ {
+			if strings.Contains(columnLine[i], "COMMENT") {
 				break
 			}
-			other += row[i]
+			other += columnLine[i]
 			other += " "
 		}
 		others = append(others, other)
 	}
 
 	// カラム名+型を揃え、その一番長い長さを取得する
-	resultRows := []string{}
+	resultColumnLines := []string{}
 	maxColumnNameTypeLength := 0
-	for _, rowSplits := range rowsSplits {
+	for _, columnLineSplits := range columnLinesSplits {
 		// カラム名の長さを取得する
-		columnNameLength := len(rowSplits[0])
+		columnNameLength := len(columnLineSplits[0])
 
 		// カラム名の長さを揃える
-		columnName := rowSplits[0]
+		columnName := columnLineSplits[0]
 		for i := 0; i < maxColumnNameLength-columnNameLength; i++ {
 			columnName += " "
 		}
 
 		// カラム名の後ろに型を入れる
-		columnNameType := columnName + " " + rowSplits[1]
-		resultRows = append(resultRows, columnNameType)
+		columnNameType := columnName + " " + columnLineSplits[1]
+		resultColumnLines = append(resultColumnLines, columnNameType)
 
 		if maxColumnNameTypeLength < len(columnNameType) {
 			maxColumnNameTypeLength = len(columnNameType)
 		}
 	}
-	// fmt.Println(strings.Join(resultRows, "\n"))
+	// fmt.Println(strings.Join(resultColumnLines, "\n"))
 
 	// カラム名+型+その他を揃え、その一番長い長さを取得する
 	maxColumnNameTypeOtherLength := 0
-	for i, row := range resultRows {
+	for i, columnLine := range resultColumnLines {
 		// カラム名+型の長さを取得する
 		if false {
 			// othersの頭を揃える
-			columnNameTypeLength := len(row)
+			columnNameTypeLength := len(columnLine)
 			for j := 0; j < maxColumnNameTypeLength-columnNameTypeLength; j++ {
-				row += " "
+				columnLine += " "
 			}
 		}
-		row += " "
-		row += others[i]
-		resultRows[i] = row
+		columnLine += " "
+		columnLine += others[i]
+		resultColumnLines[i] = columnLine
 
-		if maxColumnNameTypeOtherLength < len(row) {
-			maxColumnNameTypeOtherLength = len(row)
+		if maxColumnNameTypeOtherLength < len(columnLine) {
+			maxColumnNameTypeOtherLength = len(columnLine)
 		}
 	}
-	// fmt.Println(strings.Join(resultRows, "\n"))
+	// fmt.Println(strings.Join(resultColumnLines, "\n"))
 
 	// カラム名+型+その他+COMMENTを揃える
-	for i, row := range resultRows {
+	for i, columnLine := range resultColumnLines {
 		// カラム名+型+その他の長さを取得する
-		columnNameTypeOtherLength := len(row)
+		columnNameTypeOtherLength := len(columnLine)
 		for j := 0; j < maxColumnNameTypeOtherLength-columnNameTypeOtherLength; j++ {
-			row += " "
+			columnLine += " "
 		}
 		// COMMENTを追加する
-		for _, split := range rowsSplits[i] {
+		for _, split := range columnLinesSplits[i] {
 			if strings.Contains(split, "COMMENT") {
-				row += rowsSplits[i][len(rowsSplits[i])-1]
+				columnLine += columnLinesSplits[i][len(columnLinesSplits[i])-1]
 				break
 			}
 		}
 
-		resultRows[i] = INDENT + row
+		resultColumnLines[i] = INDENT + columnLine
 	}
-	// fmt.Println(strings.Join(resultRows, "\n"))
+	// fmt.Println(strings.Join(resultColumnLines, "\n"))
 
-	rowStrings := []string{}
+	columnLineStrings := []string{}
 	// SQLコメントを追加する
-	for i, row := range resultRows {
+	for i, columnLine := range resultColumnLines {
 		for _, sqlComment := range sqlComments {
-			if sqlComment.BeforeColumnName == rowsSplits[i][0] {
-				row += "\n" + strings.Join(sqlComment.texts, "\n")
+			if sqlComment.BeforeColumnName == columnLinesSplits[i][0] {
+				columnLine += "\n" + strings.Join(sqlComment.texts, "\n")
 			}
 		}
-		rowStrings = append(rowStrings, row)
+		columnLineStrings = append(columnLineStrings, columnLine)
 	}
 
-	return rowStrings
+	return columnLineStrings
 }
 
 func isFinishedColumnLine(line string) bool {
