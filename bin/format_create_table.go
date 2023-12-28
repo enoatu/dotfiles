@@ -1,30 +1,3 @@
-// 以下のように、MySQLのテーブルで半角スペースを入れ、型とCOMMENT を1列に並べるように整形する
-// 実行前
-//
-// CREATE TABLE IF NOT EXISTS tag (
-//   id      INT UNSIGNED NOT NULL AUTO_INCREMENT            COMMENT 'ID',
-//   site_id    INT UNSIGNED NOT NULL   COMMENT 'siteのID',
-//   kind  TINYINT UNSIGNED NOT NULL DEFAULT 1    COMMENT '種別',
-//   name    VARCHAR(50) NOT NULL    COMMENT 'タグ名',
-//   created_on   DATETIME NOT NULL    COMMENT '作成日時',
-//   modified_on  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最終更新日時',
-//   PRIMARY KEY (id),
-//   UNIQUE KEY tag_unique01 (site_id,   kind,   name)
-// ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='タグ';
-//
-// 実行後
-//
-// CREATE TABLE IF NOT EXISTS tag (
-//   id                INT UNSIGNED NOT NULL AUTO_INCREMENT                                     COMMENT 'ID',
-//   site_id           INT UNSIGNED NOT NULL                                                    COMMENT 'siteのID',
-//   kind              TINYINT UNSIGNED NOT NULL DEFAULT 1                                      COMMENT '種別',
-//   name              VARCHAR(50) NOT NULL                                                     COMMENT 'タグ名',
-//   created_on        DATETIME NOT NULL                                                        COMMENT '作成日時',
-//   modified_on       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最終更新日時',
-//   PRIMARY KEY (id),
-//   UNIQUE KEY tag_unique01 (site_id, kind, name)
-// ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='タグ';
-
 package main
 
 import (
