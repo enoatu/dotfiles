@@ -48,9 +48,9 @@ func main() {
 ---------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS tag (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT            COMMENT 'ID',
-  name VARCHAR(50) NOT NULL  COMMENT 'タグ名',
+  name VARCHAR(50) NOT NULL  COMMENT 'tag name',
   PRIMARY KEY (id),
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='タグ';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='simple tag';
 ---------------------------------------------------------------------------`
 		inputFile = strings.Replace(inputFile, "\n", "", 1)
 		fmt.Println("InputFile:")
@@ -59,9 +59,9 @@ CREATE TABLE IF NOT EXISTS tag (
 ---------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS tag (
   id                INT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID',
-  name              VARCHAR(50) NOT NULL                 COMMENT 'タグ名',
+  name              VARCHAR(50) NOT NULL                 COMMENT 'tag name',
   PRIMARY KEY (id),
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='タグ';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='simple tag';
 ---------------------------------------------------------------------------`
 		output = strings.Replace(output, "\n", "", 1)
 		fmt.Println("Output:")
@@ -171,9 +171,7 @@ func formatInner(rows []string, sqlComments []SqlComment) []string {
 		rowsSplits = append(rowsSplits, result)
 	}
 
-	// カラム名 型名 その他 COMMENT SQLコメント という形式
-	// 最大のカラム名の長さを取得
-	// その他を抽出する
+	// 最大のカラム名の長さを取得し、その他を抽出する
 	maxColumnNameLength := 0
 	others := []string{}
 	for _, row := range rowsSplits {
@@ -183,7 +181,6 @@ func formatInner(rows []string, sqlComments []SqlComment) []string {
 			maxColumnNameLength = columnNameLength
 		}
 		// 型名からCOMMENTまでがその他
-		// その他を抽出する
 		other := ""
 		for i := 2; i < len(row); i++ {
 			if strings.Contains(row[i], "COMMENT") {
@@ -219,7 +216,6 @@ func formatInner(rows []string, sqlComments []SqlComment) []string {
 	// fmt.Println(strings.Join(resultRows, "\n"))
 
 	// カラム名+型+その他を揃え、その一番長い長さを取得する
-
 	maxColumnNameTypeOtherLength := 0
 	for i, row := range resultRows {
 		// カラム名+型の長さを取得する
