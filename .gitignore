@@ -7,6 +7,7 @@
 bin/setlocalgit
 bin/fd
 bin/rg
+bin/delta
 *node_modules
 private-dotfiles
 nerd-fonts
