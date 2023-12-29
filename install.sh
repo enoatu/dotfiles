@@ -158,6 +158,19 @@ setup_neovim() {
     rm -rf tmp-rg.tar.gz ${DOTFILES}/rg-bin
   fi
 
+  # install delta
+  if [ ! -e ${DOTFILES}/bin/delta ]; then
+    if [ "$(uname)" == 'Darwin' ]; then
+      curl -L -o tmp-delta.tar.gz https://github.com/dandavison/delta/releases/download/0.16.5/delta-0.16.5-x86_64-apple-darwin.tar.gz
+    else
+      curl -L -o tmp-delta.tar.gz https://github.com/dandavison/delta/releases/download/0.16.5/delta-0.16.5-x86_64-unknown-linux-gnu.tar.gz
+    fi
+    mkdir -p ${DOTFILES}/delta-bin
+    tar xzf tmp-delta.tar.gz --directory=${DOTFILES}/delta-bin
+    find ${DOTFILES}/delta-bin -maxdepth 1 -mindepth 1 -type d | xargs -I{} mv {}/delta ${DOTFILES}/bin/
+    rm -rf tmp-delta.tar.gz ${DOTFILES}/delta-bin
+  fi
+
   # coc.nvim で使う
   asdf plugin-add nodejs
   asdf install nodejs 16.8.0
