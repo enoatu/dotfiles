@@ -328,7 +328,7 @@ install_fd() {
   if [ "$(uname)" == 'Darwin' ]; then
     url='https://github.com/sharkdp/fd/releases/download/v8.7.0/fd-v8.7.0-x86_64-apple-darwin.tar.gz'
   else
-    url='https://github.com/BurntSushi/ripgrep/releases/download/13.0.0/ripgrep-13.0.0-x86_64-unknown-linux-musl.tar.gz'
+    url=https://github.com/sharkdp/fd/releases/download/v8.7.0/fd-v8.7.0-x86_64-unknown-linux-gnu.tar.gz
   fi
   install_binary_from_tar_gz $url fd
 }
