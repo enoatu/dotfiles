@@ -9,6 +9,12 @@ ADDITIONAL_REPO_BRANCH=${ADDITIONAL_REPO_BRANCH:-"main"}
 # need
 # curl tar git
 
+# スクリプトの引数に --no-test をつけるとテストをスキップする
+is_exec_test=true
+if [ "$is_exec_test" == "--no-test" ]; then
+  is_exec_test=false
+fi
+
 main() {
   cd ${HOME}/dotfiles
   echo '? (all or nvim or zsh or tmux or git or additional(a)) '
@@ -25,7 +31,11 @@ main() {
     setup_neovim
     ;;
   zsh)
-    setup_zsh
+    isSuccess=setup_zsh
+    # 成功したらechoする
+    if [ "$isSuccess" == "0" ]; then
+      echo 'Please exec "source ~${HOME}/.zshrc"'
+    fi
     echo 'Please exec "source ~${HOME}/.zshrc"'
     ;;
   tmux)
@@ -60,7 +70,9 @@ setup_additional_dotfiles() {
 }
 
 setup_zsh() {
+  echo 'zshのセットアップスタイルを選択したください。 (1 or 2 or cancel) '
   (
+  echo '1: local環境'
     cd ${DOTFILES}/zsh
     if [ ! -e ${DOTFILES}/zsh/fzf.zsh ]; then
       git clone https://github.com/junegunn/fzf.git ./fzf
@@ -72,6 +84,39 @@ setup_zsh() {
       mv ./zsh-autosuggestions/zsh-autosuggestions.zsh ${DOTFILES}/zsh/zsh-autosuggestions.zsh
     fi
     ln -sf ${DOTFILES}/zsh/zshrc ${HOME}/.zshrc
+  )
+  $is_exec_test && test_zsh
+}
+
+test_zsh() {
+  (
+    echo '1. ~/.zshrcが存在するか'
+    if [ ! -e ${HOME}/.zshrc ]; then
+      echo 'zshrcが存在しません'
+      exit 1
+    fi
+    echo 'ok'
+
+    echo '2. zshがインストールされているか'
+    if $(type zsh > /dev/null 2>&1); then
+      echo 'zshがインストールされていません'
+      exit 1
+    fi
+    echo 'ok'
+
+    echo '3. fzfがインストールされているか'
+    if [ ! -e ${DOTFILES}/zsh/fzf.zsh ]; then
+      echo 'fzfがインストールされていません'
+      exit 1
+    fi
+    echo 'ok'
+
+    echo '4. zsh-autosuggestionsがインストールされているか'
+    if [ ! -e ${DOTFILES}/zsh/zsh-autosuggestions.zsh ]; then
+      echo 'zsh-autosuggestionsがインストールされていません'
+      exit 1
+    fi
+    echo 'ok'
   )
 }
 
@@ -104,9 +149,9 @@ setup_tmux() {
 setup_neovim() {
   if [ ! -e ${DOTFILES}/neovim/install/nvim ]; then
     if [ "$(uname)" == 'Darwin' ]; then
+      echo "mac の場合は、ロゼッタを有効にしないでインストールを行うこと"
       curl -L -o tmp-nvim.tar.gz https://github.com/neovim/neovim/releases/latest/download/nvim-macos.tar.gz
     else
-      # ロゼッタを有効にしないでインストールを行うこと
       curl -L -o tmp-nvim.tar.gz https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz
     fi
     mkdir -p ${DOTFILES}/neovim/install
@@ -173,29 +218,33 @@ setup_neovim() {
 
   # coc.nvim で使う
   asdf plugin-add nodejs
-  asdf install nodejs 16.8.0
-  asdf global nodejs 16.8.0
-  # yarn = cocで使用
-  npm install -g neovim zx yarn@1 @githubnext/github-copilot-cli
+  (
+    cd ${DOTFILES}/neovim
+    asdf install nodejs 18.16.0
+    asdf local nodejs 18.16.0
+    npm install -g neovim
+    # yarn = cocで使用
+    npm install -g neovim zx yarn@1 @githubnext/github-copilot-cli
 
-  # coc-snippets で使う
-  #asdf plugin-add python
-  #asdf install python 3.9.7
-  #asdf global python 3.9.7
+    # coc-snippets で使う
+    #asdf plugin-add python
+    #asdf install python 3.9.7
+    #asdf global python 3.9.7
 
-  # まだ不要
-  # asdf plugin-add perl
-  # asdf install perl 5.30.0
-  # asdf global perl 5.30.0
-  # exec $SHELL -l
-  # cpan Neovim::Ext
+    # まだ不要
+    # asdf plugin-add perl
+    # asdf install perl 5.30.0
+    # asdf global perl 5.30.0
+    # exec $SHELL -l
+    # cpan Neovim::Ext
 
-  # まだ不要
-  # asdf plugin-add ruby
-  # asdf install ruby 3.2.1
-  # asdf global ruby 3.2.1
-  # exec $SHELL -l
-  # gem install neovim
+    # まだ不要
+    # asdf plugin-add ruby
+    # asdf install ruby 3.2.1
+    # asdf global ruby 3.2.1
+    # exec $SHELL -l
+    # gem install neovim
+  )
 
   # for nvim
   ln -sf ${DOTFILES}/neovim/init.lua ${HOME}/.config/nvim/init.lua

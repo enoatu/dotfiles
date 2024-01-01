@@ -13,3 +13,4 @@ private-dotfiles
 nerd-fonts
 /neovim/install/*
 /neovim/lua/env.lua
+*.tool-versions

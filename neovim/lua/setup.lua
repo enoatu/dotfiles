@@ -1,4 +1,5 @@
 local vim = vim
+local node_path = "~/.asdf/installs/nodejs/18.16.0/bin/node"
 require("lazy").setup({
     defaults = {
         lazy = false,
@@ -185,6 +186,7 @@ require("lazy").setup({
             "github/copilot.vim",
             build = ":lua print('need exec Copilot auth')",
             init = function()
+                vim.g.copilot_node_command = node_path
                 -- 確定キーをTABからC-lに変更
                 vim.keymap.set("i", "<C-l>", 'copilot#Accept("<CR>")', {
                     noremap = true,
@@ -210,6 +212,7 @@ require("lazy").setup({
             "neoclide/coc.nvim",
             build = ":call coc#util#install()",
             init = function()
+                vim.g.coc_node_path = node_path
                 -- インストール時実行
                 -- call coc#util#install()
                 -- coc-snippets を使用する場合は以下実行
