@@ -234,3 +234,5 @@ function +vi-git-config-user(){
 #[[ $- != *i* ]] && return
 #[[ -z "$TMUX" ]] && exec tmux
 
+# bun completions
+[ -s "~/.bun/_bun" ] && source "~/.bun/_bun"
