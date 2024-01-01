@@ -169,7 +169,7 @@ test_tmux() {
   echo 'ok'
 
   echo '2. tmuxがインストールされているか'
-  if [ $(which tmux) == '' ]; then
+  if [ "$(which tmux)" == '' ]; then
     echo 'tmuxがインストールされていません'
     exit 1
   fi
@@ -256,7 +256,7 @@ test_neovim() {
   echo 'ok'
 
   echo '2. nvimがインストールされているか'
-  if [ $(which nvim) == '' ]; then
+  if [ "$(which nvim)" == '' ]; then
     echo 'nvimがインストールされていません'
     exit 1
   fi
@@ -276,21 +276,21 @@ setup_tools() {
 
 test_tools() {
   echo '1. deltaがインストールされているか'
-  if [ $(which delta) == '' ]; then
+  if [ "$(which delta)" == '' ]; then
     echo 'deltaがインストールされていません'
     exit 1
   fi
   echo 'ok'
 
   echo '2. rgがインストールされているか'
-  if [ $(which rg) == '' ]; then
+  if [ "$(which rg)" == '' ]; then
     echo 'rgがインストールされていません'
     exit 1
   fi
   echo 'ok'
 
   echo '3. fdがインストールされているか'
-  if [ $(which fd) == '' ]; then
+  if [ "$(which fd)" == '' ]; then
     echo 'fdがインストールされていません'
     exit 1
   fi
@@ -311,10 +311,16 @@ install_rg() {
   url=''
   if [ "$(uname)" == 'Darwin' ]; then
     url='https://github.com/BurntSushi/ripgrep/releases/download/13.0.0/ripgrep-13.0.0-x86_64-apple-darwin.tar.gz'
+    install_binary_from_tar_gz $url rg
   else
-    url='https://github.com/BurntSushi/ripgrep/releases/download/13.0.0/ripgrep-13.0.0-x86_64-unknown-linux-musl.tar.gz'
+    (
+      url='https://github.com/BurntSushi/ripgrep/releases/download/13.0.0/ripgrep-13.0.0-x86_64-unknown-linux-musl.tar.gz'
+      TMPDIR=$(mktemp -d)
+      cd $TMPDIR
+      wget -O - $url | tar zxf - --strip-component=1
+      mv rg ${DOTFILES}/installs/
+    )
   fi
-  install_binary_from_tar_gz $url rg
 }
 
 install_fd() {
