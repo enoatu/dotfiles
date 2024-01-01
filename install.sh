@@ -359,10 +359,10 @@ install_binary_from_tar_gz() {
 setup_asdf() {
   if [ ! -e ${HOME}/.asdf ]; then
     git clone https://github.com/asdf-vm/asdf.git ${HOME}/.asdf --branch v0.12.0
-    . ${HOME}/.asdf/asdf.sh
   else
     echo 'asdf is already installed'
   fi
+  . ${HOME}/.asdf/asdf.sh
 }
 
 main
