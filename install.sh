@@ -276,21 +276,21 @@ setup_tools() {
 
 test_tools() {
   echo '1. deltaがインストールされているか'
-  if [ "$(which delta)" == '' ]; then
+  if [ ! -e ${DOTFILES}/installs/delta ]; then
     echo 'deltaがインストールされていません'
     exit 1
   fi
   echo 'ok'
 
   echo '2. rgがインストールされているか'
-  if [ "$(which rg)" == '' ]; then
+  if [ ! -e ${DOTFILES}/installs/rg ]; then
     echo 'rgがインストールされていません'
     exit 1
   fi
   echo 'ok'
 
   echo '3. fdがインストールされているか'
-  if [ "$(which fd)" == '' ]; then
+  if [ ! -e ${DOTFILES}/installs/fd ]; then
     echo 'fdがインストールされていません'
     exit 1
   fi
