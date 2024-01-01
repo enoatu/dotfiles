@@ -189,7 +189,6 @@ setup_neovim() {
     find ${DOTFILES}/neovim/install -maxdepth 1 -mindepth 1 -type d | xargs -I{} mv {} ${DOTFILES}/neovim/install/nvim
     rm -rf tmp-nvim.tar.gz
   fi
-  rm -rf ${DOTFILES}/neovim/neo-dein
 
   if [ -e ${HOME}/.config/nvim ]; then
     rm -rf ${HOME}/.config/nvim
@@ -210,6 +209,15 @@ setup_neovim() {
   (
     cd ${DOTFILES}/neovim
     asdf install nodejs 18.16.0
+    if [ $? -ne 1 ]; then
+      echo 'nodejsのインストールに失敗しました'
+      echo 'nodejsをバイナリでインストールします'
+      curl -L -o tmp-node.tar.xz https://nodejs.org/dist/v18.16.0/node-v18.16.0-linux-x64.tar.xz
+      mkdir -p ${DOTFILES}/neovim/install/nodejs/18.16.0
+      tar xJf tmp-node.tar.xz --directory=${DOTFILES}/neovim/install/nodejs/18.16.0
+      find ${DOTFILES}/neovim/install/nodejs/18.16.0 -maxdepth 1 -mindepth 1 -type d | xargs -I{} mv {} ~/.asdf/installs/nodejs/18.16.0
+      rm -rf tmp-node.tar.xz ${DOTFILES}/neovim/install/nodejs/18.16.0/nodejs
+    fi
     asdf local nodejs 18.16.0
     npm install -g neovim
     # yarn = cocで使用
