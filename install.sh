@@ -64,7 +64,19 @@ main() {
 setup_additional_dotfiles() {
   (
     if [ ! -e ${ADDITIONAL_DOTFILES} ]; then
-      git clone ${ADDITIONAL_REPO_URL} ${ADDITIONAL_DOTFILES}
+     git clone ${ADDITIONAL_REPO_URL} ${ADDITIONAL_DOTFILES}
+      if [ $? -ne 0 ]; then
+        # sshキー作成
+        if [ ! -e ${HOME}/.ssh/id_rsa && ! -e ${HOME}/.ssh/id_rsa.pub ]; then
+          ssh-keygen -t rsa -b 4096
+        fi
+        cat ${HOME}/.ssh/id_rsa.pub
+        echo '上記の公開鍵を、以下のURLに登録してください'
+        echo 'https://github.com/settings/keys'
+        echo '登録後、Enterを押してください'
+        read
+        git clone ${ADDITIONAL_REPO_URL} ${ADDITIONAL_DOTFILES}
+      fi
       cd ${ADDITIONAL_DOTFILES}
       git checkout ${ADDITIONAL_REPO_BRANCH}
     fi
@@ -231,6 +243,7 @@ setup_neovim() {
   ln -sf ${DOTFILES}/neovim/.editorconfig ${HOME}/.editorconfig
   cp ${DOTFILES}/neovim/lua/env.lua.sample ${DOTFILES}/neovim/lua/env.lua
 
+  $is_exec_test && test_neovim
   printf "\e[30;42;1m new vim setup completed \e[m\n"
 }
 
@@ -252,13 +265,36 @@ test_neovim() {
   echo '3. neovimを実行して、:checkhealthが正常に動作するか'
   nvim -c ':checkhealth'
   echo 'ok'
-
 }
 
 setup_tools() {
   install_delta
   install_rg
   install_fd
+  $is_exec_test && test_tools
+}
+
+test_tools() {
+  echo '1. deltaがインストールされているか'
+  if [ $(which delta) == '' ]; then
+    echo 'deltaがインストールされていません'
+    exit 1
+  fi
+  echo 'ok'
+
+  echo '2. rgがインストールされているか'
+  if [ $(which rg) == '' ]; then
+    echo 'rgがインストールされていません'
+    exit 1
+  fi
+  echo 'ok'
+
+  echo '3. fdがインストールされているか'
+  if [ $(which fd) == '' ]; then
+    echo 'fdがインストールされていません'
+    exit 1
+  fi
+  echo 'ok'
 }
 
 install_delta() {

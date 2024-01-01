@@ -465,7 +465,7 @@ require("lazy").setup({
         },
         {
             import = "lazyvim.plugins.extras.lang.tex",
-            enabeled = vim.g.enable_plugin_lsp_tex or false,
+            enabled = vim.g.enable_plugin_lsp_tex or false,
         },
         {
             import = "lazyvim.plugins.extras.lang.typescript",

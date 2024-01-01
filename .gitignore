@@ -5,9 +5,8 @@
 /zsh/zsh-autosuggestions*
 .dirs
 bin/setlocalgit
-bin/fd
-bin/rg
-bin/delta
+installs/*
+!installs/.gitkeep
 *node_modules
 private-dotfiles
 nerd-fonts
