@@ -9,37 +9,41 @@ ADDITIONAL_REPO_BRANCH=${ADDITIONAL_REPO_BRANCH:-"main"}
 # need
 # curl tar git
 
-# スクリプトの引数に --no-test をつけるとテストをスキップする
+# --no-test をつけるとテストをスキップする
 is_exec_test=true
-if [ "$is_exec_test" == "--no-test" ]; then
-  is_exec_test=false
-fi
+for OPT in "$@"; do
+  case "$OPT" in
+  '--no-test' | '-n')
+    is_exec_test=false
+    ;;
+  *)
+    ;;
+  esac
+done
 
 main() {
   cd ${HOME}/dotfiles
-  echo '? (all or nvim or zsh or tmux or git or additional(a)) '
+  echo '? (all or nvim or zsh or tmux or git or tools or additional(a)) '
   read answer
   case "$answer" in
   all)
     setup_zsh
+    setup_tools
     setup_neovim
     setup_tmux
     setup_additional_dotfiles
-    echo 'Please exec "source ${HOME}/.zshrc"'
     ;;
   nvim)
     setup_neovim
     ;;
   zsh)
-    isSuccess=setup_zsh
-    # 成功したらechoする
-    if [ "$isSuccess" == "0" ]; then
-      echo 'Please exec "source ~${HOME}/.zshrc"'
-    fi
-    echo 'Please exec "source ~${HOME}/.zshrc"'
+    setup_zsh
     ;;
   tmux)
     setup_tmux
+    ;;
+  tools)
+    setup_tools
     ;;
   additional)
     ADDITIONAL_INSTALL_SELECT=1
@@ -70,9 +74,7 @@ setup_additional_dotfiles() {
 }
 
 setup_zsh() {
-  echo 'zshのセットアップスタイルを選択したください。 (1 or 2 or cancel) '
   (
-  echo '1: local環境'
     cd ${DOTFILES}/zsh
     if [ ! -e ${DOTFILES}/zsh/fzf.zsh ]; then
       git clone https://github.com/junegunn/fzf.git ./fzf
@@ -86,38 +88,37 @@ setup_zsh() {
     ln -sf ${DOTFILES}/zsh/zshrc ${HOME}/.zshrc
   )
   $is_exec_test && test_zsh
+  echo 'Please exec "source ~${HOME}/.zshrc"'
 }
 
 test_zsh() {
-  (
-    echo '1. ~/.zshrcが存在するか'
-    if [ ! -e ${HOME}/.zshrc ]; then
-      echo 'zshrcが存在しません'
-      exit 1
-    fi
-    echo 'ok'
+  echo '1. ~/.zshrcが存在するか'
+  if [ ! -e ${HOME}/.zshrc ]; then
+    echo 'zshrcが存在しません'
+    exit 1
+  fi
+  echo 'ok'
 
-    echo '2. zshがインストールされているか'
-    if $(type zsh > /dev/null 2>&1); then
-      echo 'zshがインストールされていません'
-      exit 1
-    fi
-    echo 'ok'
+  echo '2. zshがインストールされているか'
+  if [ $(which zsh) == '' ]; then
+    echo 'zshがインストールされていません'
+    exit 1
+  fi
+  echo 'ok'
 
-    echo '3. fzfがインストールされているか'
-    if [ ! -e ${DOTFILES}/zsh/fzf.zsh ]; then
-      echo 'fzfがインストールされていません'
-      exit 1
-    fi
-    echo 'ok'
+  echo '3. fzfがインストールされているか'
+  if [ ! -e ${DOTFILES}/zsh/fzf.zsh ]; then
+    echo 'fzfがインストールされていません'
+    exit 1
+  fi
+  echo 'ok'
 
-    echo '4. zsh-autosuggestionsがインストールされているか'
-    if [ ! -e ${DOTFILES}/zsh/zsh-autosuggestions.zsh ]; then
-      echo 'zsh-autosuggestionsがインストールされていません'
-      exit 1
-    fi
-    echo 'ok'
-  )
+  echo '4. zsh-autosuggestionsがインストールされているか'
+  if [ ! -e ${DOTFILES}/zsh/zsh-autosuggestions.zsh ]; then
+    echo 'zsh-autosuggestionsがインストールされていません'
+    exit 1
+  fi
+  echo 'ok'
 }
 
 setup_tmux() {
@@ -143,7 +144,24 @@ setup_tmux() {
     echo 'tmux setup canceled'
     ;;
   esac
+  $is_exec_test && test_tmux
   printf "\e[30;42;1m tmux setup completed\e[m\n"
+}
+
+test_tmux() {
+  echo '1. ~/.tmux.confが存在するか'
+  if [ ! -e ${HOME}/.tmux.conf ]; then
+    echo 'tmux.confが存在しません'
+    exit 1
+  fi
+  echo 'ok'
+
+  echo '2. tmuxがインストールされているか'
+  if [ $(which tmux) == '' ]; then
+    echo 'tmuxがインストールされていません'
+    exit 1
+  fi
+  echo 'ok'
 }
 
 setup_neovim() {
@@ -169,52 +187,11 @@ setup_neovim() {
   # check in vim command line
   # :checkhealth
 
-  # check asdf
-  if [ ! -e ${HOME}/.asdf ]; then
-    git clone https://github.com/asdf-vm/asdf.git ${HOME}/.asdf --branch v0.12.0
-    . ${HOME}/.asdf/asdf.sh
-  fi
+  setup_asdf
 
   # ~/.asdf/.tool_versions (ローカルでないことに注意) に golang 1.21 など記載することでプラグインエラーを回避できる
 
-  # install fd-find
-  if [ ! -e ${DOTFILES}/bin/fd ]; then
-    if [ "$(uname)" == 'Darwin' ]; then
-      curl -L -o tmp-fd.tar.gz https://github.com/sharkdp/fd/releases/download/v8.7.0/fd-v8.7.0-x86_64-apple-darwin.tar.gz
-    else
-      curl -L -o tmp-fd.tar.gz https://github.com/sharkdp/fd/releases/download/v8.7.0/fd-v8.7.0-x86_64-unknown-linux-gnu.tar.gz
-    fi
-    mkdir -p ${DOTFILES}/fd-bin
-    tar xzf tmp-fd.tar.gz --directory=${DOTFILES}/fd-bin
-    find ${DOTFILES}/fd-bin -maxdepth 1 -mindepth 1 -type d | xargs -I{} mv {}/fd ${DOTFILES}/bin/
-    rm -rf tmp-fd.tar.gz ${DOTFILES}/fd-bin
-  fi
-
-  # install ripgrep(rg)
-  if [ ! -e ${DOTFILES}/bin/rg ]; then
-    if [ "$(uname)" == 'Darwin' ]; then
-      curl -L -o tmp-rg.tar.gz https://github.com/BurntSushi/ripgrep/releases/download/13.0.0/ripgrep-13.0.0-x86_64-apple-darwin.tar.gz
-    else
-      curl -L -o tmp-rg.tar.gz https://github.com/BurntSushi/ripgrep/releases/download/13.0.0/ripgrep-13.0.0-x86_64-unknown-linux-musl.tar.gz
-    fi
-    mkdir -p ${DOTFILES}/rg-bin
-    tar xzf tmp-rg.tar.gz --directory=${DOTFILES}/rg-bin
-    find ${DOTFILES}/rg-bin -maxdepth 1 -mindepth 1 -type d | xargs -I{} mv {}/rg ${DOTFILES}/bin/
-    rm -rf tmp-rg.tar.gz ${DOTFILES}/rg-bin
-  fi
-
-  # install delta
-  if [ ! -e ${DOTFILES}/bin/delta ]; then
-    if [ "$(uname)" == 'Darwin' ]; then
-      curl -L -o tmp-delta.tar.gz https://github.com/dandavison/delta/releases/download/0.16.5/delta-0.16.5-x86_64-apple-darwin.tar.gz
-    else
-      curl -L -o tmp-delta.tar.gz https://github.com/dandavison/delta/releases/download/0.16.5/delta-0.16.5-x86_64-unknown-linux-gnu.tar.gz
-    fi
-    mkdir -p ${DOTFILES}/delta-bin
-    tar xzf tmp-delta.tar.gz --directory=${DOTFILES}/delta-bin
-    find ${DOTFILES}/delta-bin -maxdepth 1 -mindepth 1 -type d | xargs -I{} mv {}/delta ${DOTFILES}/bin/
-    rm -rf tmp-delta.tar.gz ${DOTFILES}/delta-bin
-  fi
+  install_rg
 
   # coc.nvim で使う
   asdf plugin-add nodejs
@@ -255,6 +232,95 @@ setup_neovim() {
   cp ${DOTFILES}/neovim/lua/env.lua.sample ${DOTFILES}/neovim/lua/env.lua
 
   printf "\e[30;42;1m new vim setup completed \e[m\n"
+}
+
+test_neovim() {
+  echo '1. ~/.config/nvim/init.luaが存在するか'
+  if [ ! -e ${HOME}/.config/nvim/init.lua ]; then
+    echo 'init.luaが存在しません'
+    exit 1
+  fi
+  echo 'ok'
+
+  echo '2. nvimがインストールされているか'
+  if [ $(which nvim) == '' ]; then
+    echo 'nvimがインストールされていません'
+    exit 1
+  fi
+  echo 'ok'
+
+  echo '3. neovimを実行して、:checkhealthが正常に動作するか'
+  nvim -c ':checkhealth'
+  echo 'ok'
+
+}
+
+setup_tools() {
+  install_delta
+  install_rg
+  install_fd
+}
+
+install_delta() {
+  url=''
+  if [ "$(uname)" == 'Darwin' ]; then
+    url='https://github.com/dandavison/delta/releases/download/0.16.5/delta-0.16.5-x86_64-apple-darwin.tar.gz'
+  else
+    url='https://github.com/dandavison/delta/releases/download/0.16.5/delta-0.16.5-x86_64-unknown-linux-gnu.tar.gz'
+  fi
+  install_binary_from_tar_gz $url delta
+}
+
+install_rg() {
+  url=''
+  if [ "$(uname)" == 'Darwin' ]; then
+    url='https://github.com/BurntSushi/ripgrep/releases/download/13.0.0/ripgrep-13.0.0-x86_64-apple-darwin.tar.gz'
+  else
+    url='https://github.com/BurntSushi/ripgrep/releases/download/13.0.0/ripgrep-13.0.0-x86_64-unknown-linux-musl.tar.gz'
+  fi
+  install_binary_from_tar_gz $url rg
+}
+
+install_fd() {
+  url=''
+  if [ "$(uname)" == 'Darwin' ]; then
+    url='https://github.com/sharkdp/fd/releases/download/v8.7.0/fd-v8.7.0-x86_64-apple-darwin.tar.gz'
+  else
+    url='https://github.com/BurntSushi/ripgrep/releases/download/13.0.0/ripgrep-13.0.0-x86_64-unknown-linux-musl.tar.gz'
+  fi
+  install_binary_from_tar_gz $url fd
+}
+
+install_binary_from_tar_gz() {
+  url=$1
+  name=$2
+  # delete tmp-${name}.tar.gz ${DOTFILES}/${name}-bin
+  if [ ! -e tmp-${name}.tar.gz ]; then
+    rm -rf tmp-${name}.tar.gz ${DOTFILES}/${name}-bin
+  fi
+  if [ -e ${DOTFILES}/${name}-bin ]; then
+    rm -rf ${DOTFILES}/${name}-bin
+  fi
+  if [ ! -e ${DOTFILES}/installs/${name} ]; then
+    mkdir -p ${DOTFILES}/${name}-bin
+    curl -L -o tmp-${name}.tar.gz $url
+    tar xzf tmp-${name}.tar.gz --directory=${DOTFILES}/${name}-bin
+    # ディレクトリ名が変わるので、ディレクトリ名を取得して移動する
+    find ${DOTFILES}/${name}-bin -maxdepth 1 -mindepth 1 -type d | xargs -I{} mv {}/${name} ${DOTFILES}/installs
+    rm -rf tmp-${name}.tar.gz ${DOTFILES}/${name}-bin
+  else # すでにインストール済みの場合
+    echo ${name} 'is already installed'
+  fi
+}
+
+
+setup_asdf() {
+  if [ ! -e ${HOME}/.asdf ]; then
+    git clone https://github.com/asdf-vm/asdf.git ${HOME}/.asdf --branch v0.12.0
+    . ${HOME}/.asdf/asdf.sh
+  else
+    echo 'asdf is already installed'
+  fi
 }
 
 main

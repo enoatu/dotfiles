@@ -186,6 +186,7 @@ autoload -Uz zmv
 alias zmv='noglob zmv -W'
 export PERL5LIB=$HOME/work/Moove/lib:$HOME/work/moove/lib:$PERL5LIB
 export PATH="$HOME/dotfiles/bin:$PATH"
+export PATH="$HOME/dotfiles/installs:$PATH"
 export PATH="$HOME/dotfiles/neovim/install/nvim/bin:$PATH"
 # test
 # [ -d ../node/.nodenv ] && export PATH="$HOME/dotfiles/zsh/nodenv/bin:$PATH"
