@@ -5,8 +5,8 @@
 /zsh/zsh-autosuggestions*
 .dirs
 bin/setlocalgit
-installs/*
-!installs/.gitkeep
+/installs/*
+!/installs/.gitkeep
 *node_modules
 private-dotfiles
 nerd-fonts
