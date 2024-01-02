@@ -5,7 +5,7 @@ WORKDIR /root
 # コピペできるようにENVなど定義しない
 
 # 1. default
-# 2. asdf curl git
+# 2. asdf curl git xz-utils xz-utilsはnodeのxz圧縮を解凍するために必要
 # 3. locales (for nvim), language-pack-jaがないとnvimが動かない
 # 4. unzip, wget(masonで必要)
 # 5. tmux あったら嬉しい
@@ -14,7 +14,7 @@ WORKDIR /root
 RUN \
   apt-get update && \
   apt-get install -y zsh tar \
-  curl git \
+  curl git xz-utils \
   locales language-pack-ja \
   unzip wget \
   tmux
