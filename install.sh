@@ -5,8 +5,6 @@ DOTFILES="${HOME}/dotfiles"
 ADDITIONAL_DOTFILES=${ADDITIONAL_DOTFILES:-"${DOTFILES}/private-dotfiles"}
 ADDITIONAL_REPO_URL=${ADDITIONAL_REPO_URL:-"https://enoatu@github.com/enoatu/private-dotfiles.git"}
 ADDITIONAL_REPO_BRANCH=${ADDITIONAL_REPO_BRANCH:-"main"}
-UNOFFICEIAL_NODE=${DOTFILES}/installs/node-v18.19.0-linux-x64-glibc-217/bin/node
-UNOFFICEIAL_NPM=${DOTFILES}/installs/node-v18.19.0-linux-x64-glibc-217/bin/npm
 
 # need
 # curl tar git
@@ -45,8 +43,7 @@ main() {
     setup_tmux
     ;;
   tools)
-    #setup_tools
-    install_unofficial_node
+    setup_tools
     ;;
   additional)
     ADDITIONAL_INSTALL_SELECT=1
@@ -212,18 +209,8 @@ setup_neovim() {
   (
     cd ${DOTFILES}/neovim
     asdf install nodejs 18.16.0
-    $HOME/.asdf/installs/nodejs/18.16.0/bin/node -v
-    if [ $? -ne 0 ]; then
-      echo 'asdf で nodejsのインストールに失敗しました'
-      echo 'nodejsをバイナリでインストールします'
-      install_unofficial_node
-      export PATH=$HOME/.asdf/installs/nodejs/18.19.0/bin:$PATH
-    else
-      echo 'asdf で nodejsのインストールに成功しました'
-      asdf local nodejs 18.16.0
-      export PATH=$HOME/.asdf/installs/nodejs/18.16.0/bin:$PATH
-    fi
-
+    asdf local nodejs 18.16.0
+    npm install -g neovim
     # yarn = cocで使用
     npm install -g neovim zx yarn@1 @githubnext/github-copilot-cli
 
@@ -257,17 +244,6 @@ setup_neovim() {
 
   $is_exec_test && test_neovim
   printf "\e[30;42;1m new vim setup completed \e[m\n"
-}
-
-install_unofficial_node() {
-  name='node-v18.19.0-linux-x64-glibc-217'
-  if [ -e ${HOME}/.asdf/installs/nodejs/18.19.0 ]; then
-    rm -rf ${HOME}/.asdf/installs/nodejs/18.19.0
-  fi
-  cd ${DOTFILES}/lib
-  tar xzf ${name}.tar.gz --directory=${HOME}/.asdf/installs/nodejs/
-  mv ${HOME}/.asdf/installs/nodejs/${name} ${HOME}/.asdf/installs/nodejs/18.19.0
-  cd -
 }
 
 test_neovim() {
