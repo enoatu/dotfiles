@@ -217,8 +217,8 @@ setup_neovim() {
       echo 'nodejsをバイナリでインストールします'
       install_unofficial_node
     else
-      asdf local nodejs 18.16.0
     fi
+    asdf local nodejs 18.16.0
 
     # yarn = cocで使用
     npm install -g neovim zx yarn@1 @githubnext/github-copilot-cli
@@ -259,9 +259,9 @@ install_unofficial_node() {
   url='https://unofficial-builds.nodejs.org/download/release/v18.19.0/node-v18.19.0-linux-x64-glibc-217.tar.gz'
   name='node-v18.19.0-linux-x64-glibc-217'
   if [ ! -e ${DOTFILES}/installs/${name} ]; then
-    mkdir -p ${DOTFILES}/installs/${name}
+    mkdir -p ${HOME}/.asdf/install/nodejs/18.19.0/bin
     cd ${DOTFILES}/lib
-    tar xzf ${name}.tar.gz --directory=${DOTFILES}/installs
+    tar xzf ${name}.tar.gz --directory=${HOME}/.asdf/install/nodejs/18.19.0/bin
     cd -
   else # すでにインストール済みの場合
     echo ${name} 'is already installed'
