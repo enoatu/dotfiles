@@ -5,6 +5,8 @@ DOTFILES="${HOME}/dotfiles"
 ADDITIONAL_DOTFILES=${ADDITIONAL_DOTFILES:-"${DOTFILES}/private-dotfiles"}
 ADDITIONAL_REPO_URL=${ADDITIONAL_REPO_URL:-"https://enoatu@github.com/enoatu/private-dotfiles.git"}
 ADDITIONAL_REPO_BRANCH=${ADDITIONAL_REPO_BRANCH:-"main"}
+UNOFFICEIAL_NODE=${DOTFILES}/installs/node-v18.19.0-linux-x64-glibc-217/bin/node
+UNOFFICEIAL_NPM=${DOTFILES}/installs/node-v18.19.0-linux-x64-glibc-217/bin/npm
 
 # need
 # curl tar git
@@ -43,7 +45,8 @@ main() {
     setup_tmux
     ;;
   tools)
-    setup_tools
+    #setup_tools
+    install_unofficial_node
     ;;
   additional)
     ADDITIONAL_INSTALL_SELECT=1
@@ -209,17 +212,12 @@ setup_neovim() {
   (
     cd ${DOTFILES}/neovim
     asdf install nodejs 18.16.0
-    if [ $? -ne 1 ]; then
+    if [ $? -ne 0 ]; then
       echo 'nodejsのインストールに失敗しました'
       echo 'nodejsをバイナリでインストールします'
-      curl -L -o tmp-node.tar.xz https://nodejs.org/dist/v18.16.0/node-v18.16.0-linux-x64.tar.xz
-      mkdir -p ${DOTFILES}/neovim/install/nodejs/18.16.0
-      tar xJf tmp-node.tar.xz --directory=${DOTFILES}/neovim/install/nodejs/18.16.0
-      find ${DOTFILES}/neovim/install/nodejs/18.16.0 -maxdepth 1 -mindepth 1 -type d | xargs -I{} mv {} ~/.asdf/installs/nodejs/18.16.0
-      rm -rf tmp-node.tar.xz ${DOTFILES}/neovim/install/nodejs/18.16.0/nodejs
+      install_unofficial_node
     fi
     asdf local nodejs 18.16.0
-    npm install -g neovim
     # yarn = cocで使用
     npm install -g neovim zx yarn@1 @githubnext/github-copilot-cli
 
@@ -253,6 +251,17 @@ setup_neovim() {
 
   $is_exec_test && test_neovim
   printf "\e[30;42;1m new vim setup completed \e[m\n"
+}
+
+install_unofficial_node() {
+  url='https://unofficial-builds.nodejs.org/download/release/v18.19.0/node-v18.19.0-linux-x64-glibc-217.tar.gz'
+  name='node-v18.19.0-linux-x64-glibc-217'
+  if [ ! -e ${DOTFILES}/installs/${name} ]; then
+    mkdir -p ${DOTFILES}/installs/${name}
+    tar xzf ${name}.tar.gz --directory=${DOTFILES}/installs
+  else # すでにインストール済みの場合
+    echo ${name} 'is already installed'
+  fi
 }
 
 test_neovim() {
@@ -345,7 +354,7 @@ install_binary_from_tar_gz() {
   url=$1
   name=$2
   # delete tmp-${name}.tar.gz ${DOTFILES}/${name}-bin
-  if [ ! -e tmp-${name}.tar.gz ]; then
+  if [ -e tmp-${name}.tar.gz ]; then
     rm -rf tmp-${name}.tar.gz ${DOTFILES}/${name}-bin
   fi
   if [ -e ${DOTFILES}/${name}-bin ]; then

@@ -1,5 +1,11 @@
 local vim = vim
-local node_path = "~/.asdf/installs/nodejs/18.16.0/bin/node"
+-- node18を入れたいが、古いOSだとGLIBC_2.29がないのでnode16+bunを使う
+local node_path = if vim.fn.has("mac") == 1 then
+    "~/.asdf/install/nodejs/18.19.0/bin/node"
+else
+    "~/dotfiles/installs/node-v18.19.0-linux-x64-glibc-217/bin/node"
+end
+
 require("lazy").setup({
     defaults = {
         lazy = false,
