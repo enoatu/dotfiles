@@ -212,6 +212,7 @@ setup_neovim() {
   (
     cd ${DOTFILES}/neovim
     asdf install nodejs 18.16.0
+    $HOME/.asdf/installs/nodejs/18.16.0/bin/node -v
     if [ $? -ne 0 ]; then
       echo 'nodejsのインストールに失敗しました'
       echo 'nodejsをバイナリでインストールします'
