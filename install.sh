@@ -217,6 +217,7 @@ setup_neovim() {
       echo 'asdf で nodejsのインストールに失敗しました'
       echo 'nodejsをバイナリでインストールします'
       install_unofficial_node
+      export PATH=$HOME/.asdf/installs/nodejs/18.19.0/bin:$PATH
     else
       echo 'asdf で nodejsのインストールに成功しました'
       asdf local nodejs 18.16.0
