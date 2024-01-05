@@ -214,11 +214,14 @@ setup_neovim() {
     asdf install nodejs 18.16.0
     $HOME/.asdf/installs/nodejs/18.16.0/bin/node -v
     if [ $? -ne 0 ]; then
-      echo 'nodejsのインストールに失敗しました'
+      echo 'asdf で nodejsのインストールに失敗しました'
       echo 'nodejsをバイナリでインストールします'
       install_unofficial_node
+    else
+      echo 'asdf で nodejsのインストールに成功しました'
+      asdf local nodejs 18.16.0
+      export PATH=$HOME/.asdf/installs/nodejs/18.16.0/bin:$PATH
     fi
-    asdf local nodejs 18.16.0
 
     # yarn = cocで使用
     npm install -g neovim zx yarn@1 @githubnext/github-copilot-cli
