@@ -16,16 +16,20 @@ RUN \
     apt-get update && \
     apt-get install -y zsh tar \
     curl git \
-    locales language-pack-ja \
+    locales \
     tmux \
     build-essential
 
-# nvim locale error fix
+# 1.change shell (rootユーザーのものが変わるため注意する
+# 2.nvim locale error fix
 RUN \
+    chsh -s /usr/bin/zsh && \
     locale-gen ja_JP.UTF-8 && \
     localedef -f UTF-8 -i ja_JP ja_JP.UTF-8
-# clone dotfiles
-#RUN \
-#    git clone https://github.com/enoatu/dotfiles.git && \
-#    cd dotfiles && \
-#    ./install.sh
+
+RUN \
+echo <<EOF
+  git clone https://github.com/enoatu/dotfiles.git && \
+  cd dotfiles && \
+  ./install.sh
+EOF

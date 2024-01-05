@@ -255,14 +255,14 @@ test_neovim() {
   echo 'ok'
 
   echo '2. nvimがインストールされているか'
-  if [ "$(which nvim)" == '' ]; then
+  if [ ! -e ${DOTFILES}/neovim/install/nvim/bin/nvim ]; then
     echo 'nvimがインストールされていません'
     exit 1
   fi
   echo 'ok'
 
   echo '3. neovimを実行して、:checkhealthが正常に動作するか'
-  nvim -c ':checkhealth'
+  ${DOTFILES}/neovim/install/nvim/bin/nvim/ -c ':checkhealth'
   echo 'ok'
 }
 

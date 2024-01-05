@@ -1,11 +1,18 @@
-FROM ubuntu:18.04
+FROM ubuntu:22.04
+
+# なぜか ubuntuでnvimが動かない
+# docker run -it --rm ubuntu:22.04 /bin/bash
+# apt update && apt install -y neovim && nvim
+# E970: Failed to initialize lua interpreter/root
+# Vim: Finished.
+# これは docker run -it --rm ubuntu:24.04 /bin/bash でも発生。そのため放置する
 
 WORKDIR /root
 
 # コピペできるようにENVなど定義しない
 
 # 1. default
-# 2. asdf curl git xz-utils xz-utilsはnodeのxz圧縮を解凍するために必要
+# 2. asdf curl git
 # 3. locales (for nvim), language-pack-jaがないとnvimが動かない
 # 4. unzip, wget(masonで必要)
 # 5. tmux あったら嬉しい
@@ -14,12 +21,12 @@ WORKDIR /root
 RUN \
   apt-get update && \
   apt-get install -y zsh tar \
-  curl git xz-utils \
+  curl git \
   locales language-pack-ja \
   unzip wget \
   tmux
 
-# 1.change shell
+# 1.change shell (rootユーザーのものが変わるため注意する
 # 2.nvim locale error fix
 RUN \
   chsh -s /usr/bin/zsh && \
