@@ -261,12 +261,12 @@ setup_neovim() {
 
 install_unofficial_node() {
   name='node-v18.19.0-linux-x64-glibc-217'
-  if [ -e ${HOME}/.asdf/install/nodejs/18.19.0 ]; then
-    rm -rf ${HOME}/.asdf/install/nodejs/18.19.0
+  if [ -e ${HOME}/.asdf/installs/nodejs/18.19.0 ]; then
+    rm -rf ${HOME}/.asdf/installs/nodejs/18.19.0
   fi
-  mkdir -p ${HOME}/.asdf/install/nodejs/18.19.0/bin
+  mkdir -p ${HOME}/.asdf/installs/nodejs/18.19.0/bin
   cd ${DOTFILES}/lib
-  tar xzf ${name}.tar.gz --directory=${HOME}/.asdf/install/nodejs/18.19.0/bin
+  tar xzf ${name}.tar.gz --directory=${HOME}/.asdf/installs/nodejs/18.19.0/bin
   cd -
 }
 
