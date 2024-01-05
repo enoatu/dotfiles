@@ -257,14 +257,13 @@ setup_neovim() {
 install_unofficial_node() {
   url='https://unofficial-builds.nodejs.org/download/release/v18.19.0/node-v18.19.0-linux-x64-glibc-217.tar.gz'
   name='node-v18.19.0-linux-x64-glibc-217'
-  if [ ! -e ${DOTFILES}/installs/${name} ]; then
-    mkdir -p ${HOME}/.asdf/install/nodejs/18.19.0/bin
-    cd ${DOTFILES}/lib
-    tar xzf ${name}.tar.gz --directory=${HOME}/.asdf/install/nodejs/18.19.0/bin
-    cd -
-  else # すでにインストール済みの場合
-    echo ${name} 'is already installed'
+  if [ -e ${DOTFILES}/installs/${name} ]; then
+    rm -rf ${DOTFILES}/installs/${name}
   fi
+  mkdir -p ${HOME}/.asdf/install/nodejs/18.19.0/bin
+  cd ${DOTFILES}/lib
+  tar xzf ${name}.tar.gz --directory=${HOME}/.asdf/install/nodejs/18.19.0/bin
+  cd -
 }
 
 test_neovim() {
