@@ -264,11 +264,9 @@ install_unofficial_node() {
   if [ -e ${HOME}/.asdf/installs/nodejs/18.19.0 ]; then
     rm -rf ${HOME}/.asdf/installs/nodejs/18.19.0
   fi
-  mkdir -p ${HOME}/.asdf/installs/nodejs/18.19.0/bin
   cd ${DOTFILES}/lib
-  tar xzf ${name}.tar.gz --directory=${HOME}/.asdf/installs/nodejs/18.19.0/bin
-  mv ${HOME}/.asdf/installs/nodejs/18.19.0/bin/${name}/* ${HOME}/.asdf/installs/nodejs/18.19.0/
-  rm -rf ${HOME}/.asdf/installs/nodejs/18.19.0/bin/${name}
+  tar xzf ${name}.tar.gz --directory=${HOME}/.asdf/installs/nodejs/
+  mv ${HOME}/.asdf/installs/nodejs/${name} ${HOME}/.asdf/installs/nodejs/18.19.0
   cd -
 }
 
