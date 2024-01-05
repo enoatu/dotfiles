@@ -216,7 +216,6 @@ setup_neovim() {
       echo 'nodejsのインストールに失敗しました'
       echo 'nodejsをバイナリでインストールします'
       install_unofficial_node
-    else
     fi
     asdf local nodejs 18.16.0
 
