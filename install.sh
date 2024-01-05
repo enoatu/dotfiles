@@ -258,7 +258,9 @@ install_unofficial_node() {
   name='node-v18.19.0-linux-x64-glibc-217'
   if [ ! -e ${DOTFILES}/installs/${name} ]; then
     mkdir -p ${DOTFILES}/installs/${name}
-    tar xzf lib/${name}.tar.gz --directory=${DOTFILES}/installs
+    cd ${DOTFILES}/lib
+    tar xzf ${name}.tar.gz --directory=${DOTFILES}/installs
+    cd -
   else # すでにインストール済みの場合
     echo ${name} 'is already installed'
   fi
