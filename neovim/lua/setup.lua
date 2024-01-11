@@ -1,6 +1,5 @@
 local vim = vim
--- node18を入れたいが、古いOSだとGLIBC_2.29がないのでnode16+bunを使う
-local node_path = "~/.asdf/install/nodejs/18.19.0/bin/node"
+local node_path = "~/.asdf/install/nodejs/18.16.0/bin/node"
 
 require("lazy").setup({
     defaults = {
