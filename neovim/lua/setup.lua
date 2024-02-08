@@ -1,4 +1,4 @@
-tqlocal vim = vim
+local vim = vim
 local node_path = "~/.asdf/installs/nodejs/18.16.0/bin/node"
 
 require("lazy").setup({
