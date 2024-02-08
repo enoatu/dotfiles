@@ -87,6 +87,7 @@ alias cmc='~/dotfiles/bin/gitcommit.sh construction'
 
 alias d='docker'
 alias dc='/usr/local/bin/docker compose'
+alias dcl='/usr/local/bin/docker compose logs -f --tail=3000'
 
 alias t='terraform'
 alias vim='nvim'
