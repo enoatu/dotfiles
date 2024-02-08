@@ -1,4 +1,4 @@
-local vim = vim
+tqlocal vim = vim
 local node_path = "~/.asdf/installs/nodejs/18.16.0/bin/node"
 
 require("lazy").setup({
@@ -209,6 +209,18 @@ require("lazy").setup({
                 vim.g.copilot_no_tab_map = true
             end,
         },
+        -- {重い
+        --     "fatih/vim-go",
+        --     init = function()
+        --         vim.g.go_fmt_autosave = false
+        --     end,
+        -- },
+        --{
+        --    "z0rzi/ai-chat.nvim",
+        --    config = function()
+        --        require('ai-chat').setup {}
+        --    end,
+        --},
         {
             "neoclide/coc.nvim",
             build = ":call coc#util#install()",
