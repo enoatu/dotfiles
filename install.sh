@@ -64,19 +64,7 @@ main() {
 setup_additional_dotfiles() {
   (
     if [ ! -e ${ADDITIONAL_DOTFILES} ]; then
-     git clone ${ADDITIONAL_REPO_URL} ${ADDITIONAL_DOTFILES}
-      if [ $? -ne 0 ]; then
-        # sshキー作成
-        if [ ! -e ${HOME}/.ssh/id_rsa && ! -e ${HOME}/.ssh/id_rsa.pub ]; then
-          ssh-keygen -t rsa -b 4096
-        fi
-        cat ${HOME}/.ssh/id_rsa.pub
-        echo '上記の公開鍵を、以下のURLに登録してください'
-        echo 'https://github.com/settings/keys'
-        echo '登録後、Enterを押してください'
-        read
-        git clone ${ADDITIONAL_REPO_URL} ${ADDITIONAL_DOTFILES}
-      fi
+      git clone ${ADDITIONAL_REPO_URL} ${ADDITIONAL_DOTFILES}
       cd ${ADDITIONAL_DOTFILES}
       git checkout ${ADDITIONAL_REPO_BRANCH}
     fi
@@ -270,6 +258,8 @@ setup_tools() {
   install_delta
   install_rg
   install_fd
+  # install_github_copilot_cli
+  # install_chat
   $is_exec_test && test_tools
 }
 
@@ -294,6 +284,39 @@ test_tools() {
     exit 1
   fi
   echo 'ok'
+}
+
+# bash -c "$(curl -fsSL https://raw.githubusercontent.com/aaamoon/copilot-gpt4-service/master/shells/get_copilot_token.sh)"
+
+install_github_copilot_cli() {
+  if [ ! -e ${DOTFILES}/installs/gh ]; then
+    (
+      cd ${DOTFILES}/installs
+      git clone --depth=1 https://github.com/cli/cli.git gh-cli
+      cd gh-cli
+      make
+      make install prefix=${DOTFILES}/installs/gh-temp
+      cd ..
+      mv gh-temp/bin/gh .
+      rm -rf gh-temp gh-cli
+    )
+    ${DOTFILES}/installs/gh auth login
+    ${DOTFILES}/installs/gh extension install github/gh-copilot
+    alias sg="gh copilot suggest -t shell"
+  fi
+}
+
+install_chat() {
+  if [ ! -e ${DOTFILES}/installs/copilot-gpt4-service ]; then
+    (
+      cd ${DOTFILES}/installs
+      git clone https://github.com/aaamoon/copilot-gpt4-service
+      cd copilot-gpt4-service
+      docker-compose build
+      #bash -c "$(curl -fsSL https://raw.githubusercontent.com/aaamoon/copilot-gpt4-service/master/shells/get_copilot_token.sh)"
+      echo "write TOKEN, docker-compose up -d"
+    )
+  fi
 }
 
 install_delta() {
