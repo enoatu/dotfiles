@@ -65,11 +65,11 @@ vim.keymap.set({ "n", "v" }, "<C-h>", "0", { noremap = true, silent = true, desc
 -- "行末
 vim.keymap.set({ "n", "v" }, "<C-l>", "$", { noremap = true, silent = true, desc = "行末に移動" })
 
-vim.keymap.set({ "n", "v" }, "<leader><S-h>", "<C-w>h", { desc = "Go to left window", noremap = true, silent = true })
-vim.keymap.set({ "n", "v" }, "<leader><S-j>", "<C-w>j", { desc = "Go to lower window", noremap = true, silent = true })
-vim.keymap.set({ "n", "v" }, "<leader><S-k>", "<C-w>k", { desc = "Go to upper window", noremap = true, silent = true })
-vim.keymap.set({ "n", "v" }, "<leader><S-l>", "<C-w>l", { desc = "Go to right window", noremap = true, silent = true })
-vim.keymap.set({ "n", "v" }, "<leader>d", "<C-w>c", { desc = "Close current window", noremap = true, silent = true })
+-- vim.keymap.set({ "n", "v" }, "<leader><S-h>", "<C-w>h", { desc = "Go to left window", noremap = true, silent = true })
+-- vim.keymap.set({ "n", "v" }, "<leader><S-j>", "<C-w>j", { desc = "Go to lower window", noremap = true, silent = true })
+-- vim.keymap.set({ "n", "v" }, "<leader><S-k>", "<C-w>k", { desc = "Go to upper window", noremap = true, silent = true })
+-- vim.keymap.set({ "n", "v" }, "<leader><S-l>", "<C-w>l", { desc = "Go to right window", noremap = true, silent = true })
+-- vim.keymap.set({ "n", "v" }, "<leader>d", "<C-w>c", { desc = "Close current window", noremap = true, silent = true })
 
 vim.keymap.set("v", "<BS>", "<Del>", { noremap = true })
 vim.keymap.set("i", "<BS>", "<BS>", { noremap = true })
@@ -411,5 +411,7 @@ opt.wrap = true
 
 -- Disable
 vim.keymap.set({ "i", "n" }, "<esc>", "<esc>", { desc = "Escape and clear hlsearch" })
+vim.keymap.set({ "n" }, "L", "", { desc = "" })
+vim.keymap.set({ "n" }, "H", "", { desc = "" })
 vim.keymap.set({ "i", "n" }, "<C-K>", ":call BufferList()<CR>", { desc = "BufferList", noremap = true, silent = true })
-vim.keymap.set({ "i", "n" }, "<C-j>", ":AnyJump<CR>", { desc = "AnyJump", noremap = true, silent = true })
+vim.keymap.set({ "n" }, "<C-j>", ":AnyJump<CR>", { desc = "AnyJump", noremap = true, silent = true })

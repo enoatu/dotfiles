@@ -193,7 +193,7 @@ setup_neovim() {
   install_rg
 
   # coc.nvim で使う
-  asdf plugin-add nodejs
+  asdf plugin add nodejs
   (
     cd ${DOTFILES}/neovim
     asdf install nodejs 18.16.0
@@ -203,24 +203,34 @@ setup_neovim() {
     npm install -g neovim zx yarn@1 @githubnext/github-copilot-cli
 
     # coc-snippets で使う
-    #asdf plugin-add python
+    #asdf plugin add python
     #asdf install python 3.9.7
     #asdf global python 3.9.7
 
     # まだ不要
-    # asdf plugin-add perl
+    # asdf plugin add perl
     # asdf install perl 5.30.0
     # asdf global perl 5.30.0
     # exec $SHELL -l
     # cpan Neovim::Ext
 
     # まだ不要
-    # asdf plugin-add ruby
+    # asdf plugin add ruby
     # asdf install ruby 3.2.1
     # asdf global ruby 3.2.1
     # exec $SHELL -l
     # gem install neovim
   )
+
+  (
+     asdf plugin add rust
+     asdf install rust latest
+     # vim ~/.zshrc.local
+     # source "/Users/enotiru/.asdf/installs/rust/1.76.0/env"
+     asdf global rust 1.76.0
+     rustup component add rust-src
+     rustup component add rust-analyzer
+   )
 
   # for nvim
   ln -sf ${DOTFILES}/neovim/init.lua ${HOME}/.config/nvim/init.lua

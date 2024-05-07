@@ -51,31 +51,6 @@ require("lazy").setup({
                     "$",
                     { noremap = true, silent = true, desc = "行末に移動" },
                 },
-                {
-                    "<leader><S-h>",
-                    "<C-w>h",
-                    { desc = "Go to left window", noremap = true, silent = true },
-                },
-                {
-                    "<leader><S-j>",
-                    "<C-w>j",
-                    { desc = "Go to lower window", noremap = true, silent = true },
-                },
-                {
-                    "<leader><S-k>",
-                    "<C-w>k",
-                    { desc = "Go to upper window", noremap = true, silent = true },
-                },
-                {
-                    "<leader><S-l>",
-                    "<C-w>l",
-                    { desc = "Go to right window", noremap = true, silent = true },
-                },
-                {
-                    "<leader>d",
-                    "<C-w>c",
-                    { desc = "Close current window", noremap = true, silent = true },
-                },
             },
         },
         { -- #A32B26 等の文字列に色をつける
@@ -93,7 +68,7 @@ require("lazy").setup({
                 vim.g.any_jump_window_height_ratio = 0.9
                 vim.g.any_jump_max_search_results = 20
                 -- Normal mode: Jump to definition under cursor
-                vim.keymap.set("n", "<C-j>", ":AnyJump<CR>", { noremap = true })
+                -- vim.keymap.set("n", "<C-j>", ":AnyJump<CR>", { noremap = true })
                 -- Visual mode: jump to selected text in visual mode
                 vim.keymap.set("v", "<C-j>", ":AnyJumpVisual<CR>", { noremap = true })
                 -- Normal mode: open previous opened file (after jump)
@@ -152,6 +127,25 @@ require("lazy").setup({
             end,
         },
         {
+            "enoatu/backseat.nvim",
+            config = function()
+                require("backseat").setup({
+                    -- openai_api_key = '', -- Get yours from platform.openai.com/account/api-keys
+                    -- openai_api_endpoint = 'http://localhost:8080',
+                    -- openai_model_id = 'gpt-4', --gpt-4 (If you do not have access to a model, it says "The model does not exist")
+                    openai_model_id = 'gpt-3.5-turbo', --gpt-4 (If you do not have access to a model, it says "The model does not exist")
+                    language = 'japanese', -- Such as 'japanese', 'french', 'pirate', 'LOLCAT'
+                    -- -- split_threshold = 100,
+                    -- additional_instruction = "Respond snarkily", -- (GPT-3 will probably deny this request, but GPT-4 complies)
+                    highlight = {
+                        icon = '', -- ''
+                        group = 'Underlined', -- デフォルトのhighlight group一覧:
+                    }
+                })
+            end,
+            enabled = false,
+        },
+        {
             "kylechui/nvim-surround",
             config = function()
                 require("nvim-surround").setup({
@@ -188,6 +182,11 @@ require("lazy").setup({
             build = ":lua print('need exec Copilot auth')",
             init = function()
                 vim.g.copilot_node_command = node_path
+                vim.g.copilot_filetypes = { markdown = true, gitcommit = true, yaml = true }
+                -- 確定キーをTABからC-lに変更
+                vim.g.copilot_no_tab_map = true
+                -- マッピングを自動で設定
+                vim.g.copilot_assume_mapped = false
                 -- 確定キーをTABからC-lに変更
                 vim.keymap.set("i", "<C-l>", 'copilot#Accept("<CR>")', {
                     noremap = true,
@@ -198,15 +197,6 @@ require("lazy").setup({
                     replace_keycodes = false,
                     remap = true,
                 })
-                vim.keymap.set("i", "<C-j>", "copilot#Next()", {
-                    noremap = true,
-                    desc = "copilotで後の候補へ",
-                    expr = true,
-                    silent = true,
-                    script = true,
-                    replace_keycodes = false,
-                })
-                vim.g.copilot_no_tab_map = true
             end,
         },
         -- {重い
@@ -225,7 +215,7 @@ require("lazy").setup({
             "neoclide/coc.nvim",
             build = ":call coc#util#install()",
             init = function()
-                vim.g.coc_node_path = node_path
+                -- vim.g.coc_node_path = node_path
                 -- インストール時実行
                 -- call coc#util#install()
                 -- coc-snippets を使用する場合は以下実行
@@ -257,10 +247,10 @@ require("lazy").setup({
                 -- 選択したコードをフォーマットする
                 vim.keymap.set("x", "cf", "<Plug>(coc-format-selected)", { silent = true })
                 vim.keymap.set("n", "cf", "<Plug>(coc-format-selected)", { silent = true })
-                -- :Format all
+                -- :Format
                 vim.cmd('command! -nargs=0 Format :call CocAction("format")')
-                -- :ORでインポートの整理（不要なインポートの削除、並べ替えなど）
-                vim.cmd('command! -nargs=0 OR :call CocActionAsync("runCommand", "editor.action.organizeImport")')
+                -- :FormatImportでインポートの整理（不要なインポートの削除、並べ替えなど）
+                vim.cmd('command! -nargs=0 FormatImport :call CocActionAsync("runCommand", "editor.action.organizeImport")')
                 -- すべての診断情報を表示
                 vim.keymap.set("n", "dg", ":CocList diagnostics<CR>", { silent = true })
                 -- [dと]dを使用して診断情報をナビゲート
