@@ -193,8 +193,7 @@ export PATH="$HOME/dotfiles/neovim/install/nvim/bin:$PATH"
 # [ -d ../node/.nodenv ] && export PATH="$HOME/dotfiles/zsh/nodenv/bin:$PATH"
 # [ -d ../node/.nodenv ] && eval "$(nodenv init -)"
 # [ -f ../node/node_modules/zx/zx.mjs ] && export PATH="
-export PATH="/usr/bin:/usr/local:/usr/local/bin:$PATH"
-export PATH="/usr/lib:$PATH"
+export PATH="/usr/local/bin:/usr/bin:$PATH"
 #autoload -Uz vcs_info
 #setopt prompt_subst
 #zstyle ':vcs_info:git:*' check-for-changes true
