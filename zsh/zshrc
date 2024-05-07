@@ -193,7 +193,7 @@ export PATH="$HOME/dotfiles/neovim/install/nvim/bin:$PATH"
 # [ -d ../node/.nodenv ] && export PATH="$HOME/dotfiles/zsh/nodenv/bin:$PATH"
 # [ -d ../node/.nodenv ] && eval "$(nodenv init -)"
 # [ -f ../node/node_modules/zx/zx.mjs ] && export PATH="
-export PATH="/usr/local/bin:/usr/bin:$PATH"
+export PATH="/usr/local/bin:$PATH"
 #autoload -Uz vcs_info
 #setopt prompt_subst
 #zstyle ':vcs_info:git:*' check-for-changes true
@@ -214,15 +214,22 @@ zstyle ':vcs_info:git+set-message:*' hooks git-config-user git-stash-count
 precmd () { vcs_info }
 GIT='${vcs_info_msg_0_}'
 
-export PATH="$HOME/dotfiles/neovim/install/nvim/bin:$PATH"
-
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
 
 #black red green yellow blue magenta cyan white
 PROMPT="%(?.%{${fg[green]}%}.%{${fg[red]}%})(%D %*%)%n${reset_color}@${hostcolor}${host}${reset_color}${fg[green]}(%j)${reset_color}${GIT}%~
 %# "
 
+# asdf
+ASDF_DIR=$HOME/.asdf
 . $HOME/.asdf/asdf.sh
+# 補完
+fpath=(${ASDF_DIR}/completions $fpath)
+autoload -Uz compinit && compinit
+# asdf でインストールしたプログラムのパスを通す
+for d in $(find ${ASDF_DIR}/installs -maxdepth 1 -mindepth 1 -type d); do
+  PATH="${d}/bin:${PATH}"
+done
 
 # gitリポジトリにいる場合、set-messageフックでgit-config-user関数が呼び出されるように登録
 
