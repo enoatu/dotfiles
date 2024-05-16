@@ -249,5 +249,10 @@ function +vi-git-stash-count {
 #[[ $- != *i* ]] && return
 #[[ -z "$TMUX" ]] && exec tmux
 
+# python rye
+[ -s "$HOME/.rye/env" ] && source "$HOME/.rye/env"
+export PYTHONPATH=$HOME/.rye/tools/pip/lib/python3.12/site-packages:$PYTHONPATH
+export PATH="$HOME/.rye/tools/pip/bin:$PATH"
+
 # bun completions
 [ -s "~/.bun/_bun" ] && source "~/.bun/_bun"

@@ -73,5 +73,16 @@
   "cSpell.userWords": [
     "eyecatch"
   ],
-  "snippets.ultisnips.pythonPrompt": false
+  "snippets.ultisnips.pythonPrompt": false,
+  "python.linting.pylintEnabled": false,
+  "python.linting.mypyEnabled": true,
+  "python.linting.enabled": true,
+  "jedi": {
+    "workspace": {
+      "environmentPath": "/Users/enotiru/.rye/shims/python"
+    },
+    "executable": {
+      "command": "/Users/enotiru/.rye/tools/pip/bin/jedi-language-server",
+    }
+  }
 }
