@@ -41,8 +41,19 @@ brew install --cask iterm2
 brew install --cask google-japanese-ime
 
 # install GIPHY CAPTURE
-# brew install --cask clipy
-# brew install tailscale
-# brew install --cask dropbox
-# brew install --cask microsoft-edge
-# brew install --cask firefox
+brew install --cask dropbox
+
+brew install tailscale
+brew install --cask clipy
+brew install --cask microsoft-edge
+brew install --cask firefox
+
+# install vscode
+brew install --cask visual-studio-code
+# install vscode plugins
+code --install-extension ms-vscode.go
+
+# install iterm2
+brew install --cask iterm2
+brew install --cask google-japanese-ime
+
