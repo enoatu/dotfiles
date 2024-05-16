@@ -1,5 +1,6 @@
 local vim = vim
 local node_path = "~/.asdf/installs/nodejs/18.16.0/bin/node"
+vim.g.python3_host_prog = "~/.rye/shims/python3"
 
 require("lazy").setup({
     defaults = {

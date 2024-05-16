@@ -33,7 +33,6 @@ vim.o.wildmode = "list:longest"
 -- vim.api.nvim_command("autocmd WinEnter * if &diff | set wrap | endif")
 -- leader key
 vim.g.mapleader = " "
-vim.g.maplocalleader = " "
 -- nnoremap <Leader>d :Gdiff<CR>:windo set wrap<CR>
 vim.keymap.set("n", "<Leader>d", ":Gdiff<CR>:windo set wrap<CR>")
 -- "タブ、空白、改行の可視化
