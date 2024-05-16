@@ -222,6 +222,17 @@ setup_neovim() {
     # gem install neovim
   )
 
+  # python
+  (
+    RYE_PATH=~/.rye/shims/rye
+    curl -sSf https://rye-up.com/get | RYE_INSTALL_OPTION="--yes" bash \
+    && $RYE_PATH config --set-bool behavior.global-python=true \
+    && $RYE_PATH config --set-bool behavior.use-uv=true
+    $RYE_PATH install pip
+    PIP_PATH=~/.rye/shims/pip
+    $PIPPATH install pynvim # neovim パッケージは古いので、pynvimを使う
+  )
+
   (
      asdf plugin add rust
      asdf install rust latest
