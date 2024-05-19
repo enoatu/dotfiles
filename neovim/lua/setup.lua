@@ -1,6 +1,5 @@
 local vim = vim
 local node_path = "~/.asdf/installs/nodejs/18.16.0/bin/node"
-vim.g.python3_host_prog = "~/.rye/shims/python3"
 
 require("lazy").setup({
     defaults = {
@@ -134,17 +133,37 @@ require("lazy").setup({
                     -- openai_api_key = '', -- Get yours from platform.openai.com/account/api-keys
                     -- openai_api_endpoint = 'http://localhost:8080',
                     -- openai_model_id = 'gpt-4', --gpt-4 (If you do not have access to a model, it says "The model does not exist")
-                    openai_model_id = 'gpt-3.5-turbo', --gpt-4 (If you do not have access to a model, it says "The model does not exist")
-                    language = 'japanese', -- Such as 'japanese', 'french', 'pirate', 'LOLCAT'
+                    openai_model_id = "gpt-3.5-turbo", --gpt-4 (If you do not have access to a model, it says "The model does not exist")
+                    language = "japanese", -- Such as 'japanese', 'french', 'pirate', 'LOLCAT'
                     -- -- split_threshold = 100,
                     -- additional_instruction = "Respond snarkily", -- (GPT-3 will probably deny this request, but GPT-4 complies)
                     highlight = {
-                        icon = '', -- ''
-                        group = 'Underlined', -- デフォルトのhighlight group一覧:
-                    }
+                        icon = "", -- ''
+                        group = "Underlined", -- デフォルトのhighlight group一覧:
+                    },
                 })
             end,
             enabled = false,
+        },
+        {
+            'linux-cultist/venv-selector.nvim',
+            dependencies = { 'neovim/nvim-lspconfig', 'nvim-telescope/telescope.nvim', 'mfussenegger/nvim-dap-python' },
+            opts = {
+                -- Your options go here
+                -- name = "venv",
+                -- auto_refresh = false
+            },
+            event = 'VeryLazy', -- Optional: needed only if you want to type `:VenvSelect` without a keymapping
+            keys = {
+                -- Keymap to open VenvSelector to pick a venv.
+                { '<leader>vs', '<cmd>VenvSelect<cr>' },
+                -- Keymap to retrieve the venv from a cache (the one previously used for the same project directory).
+                { '<leader>vc', '<cmd>VenvSelectCached<cr>' },
+            },
+        },
+        {
+            "numirias/semshi",
+            run = ":UpdateRemotePlugins",
         },
         {
             "kylechui/nvim-surround",
@@ -200,6 +219,57 @@ require("lazy").setup({
                 })
             end,
         },
+        -- { 'AndreM222/copilot-lualine' },
+        -- {
+        --     "zbirenbaum/copilot.lua",
+        --     cmd = "Copilot",
+        --     event = "InsertEnter",
+        --     config = function()
+        --         require("copilot").setup({
+        --             panel = {
+        --                 enabled = true,
+        --                 auto_refresh = false,
+        --                 keymap = {
+        --                     jump_prev = "[[",
+        --                     jump_next = "]]",
+        --                     accept = "<CR>",
+        --                     refresh = "gr",
+        --                     open = "<M-CR>"
+        --                 },
+        --                 layout = {
+        --                     position = "bottom", -- | top | left | right
+        --                     ratio = 0.4
+        --                 },
+        --             },
+        --             suggestion = {
+        --                 enabled = true,
+        --                 auto_trigger = false,
+        --                 debounce = 75,
+        --                 keymap = {
+        --                     accept = "<M-l>",
+        --                     accept_word = false,
+        --                     accept_line = false,
+        --                     next = "<M-]>",
+        --                     prev = "<M-[>",
+        --                     dismiss = "<C-]>",
+        --                 },
+        --             },
+        --             filetypes = {
+        --                 yaml = false,
+        --                 markdown = false,
+        --                 help = false,
+        --                 gitcommit = false,
+        --                 gitrebase = false,
+        --                 hgcommit = false,
+        --                 svn = false,
+        --                 cvs = false,
+        --                 ["."] = false,
+        --             },
+        --             copilot_node_command = 'node', -- Node.js version must be > 18.x
+        --             server_opts_overrides = {},
+        --         })
+        --     end,
+        -- },
         -- {重い
         --     "fatih/vim-go",
         --     init = function()
@@ -212,6 +282,36 @@ require("lazy").setup({
         --        require('ai-chat').setup {}
         --    end,
         --},
+        -- {
+        --     "codota/tabnine-nvim",
+        --     build = "./dl_binaries.sh",
+        --     init = function()
+        --         vim.g.tabnine = {
+        --             enabled = true,
+        --             config = {
+        --                 max_lines = 1000,
+        --                 max_num_results = 100,
+        --                 sort = true,
+        --             },
+        --             ignore_pattern = nil,
+        --             completeopt = "menu,menuone,noinsert",
+        --             priority = 5000,
+        --             sort = true,
+        --             show_prediction_strength = true,
+        --             snippet_placeholder = "..",
+        --             max_num_results = 10,
+        --             max_lines = 1000,
+        --             priority = 5000,
+        --             show_prediction_strength = true,
+        --             sort = true,
+        --             tabnine_max_lines = 1000,
+        --             tabnine_max_num_results = 60,
+        --             tabnine_sort = true,
+        --             tabnine_show_prediction_strength = true,
+        --             tabnine_snippet_placeholder = "..",
+        --         }
+        --     end,
+        -- },
         {
             "neoclide/coc.nvim",
             build = ":call coc#util#install()",
@@ -251,7 +351,9 @@ require("lazy").setup({
                 -- :Format
                 vim.cmd('command! -nargs=0 Format :call CocAction("format")')
                 -- :FormatImportでインポートの整理（不要なインポートの削除、並べ替えなど）
-                vim.cmd('command! -nargs=0 FormatImport :call CocActionAsync("runCommand", "editor.action.organizeImport")')
+                vim.cmd(
+                    'command! -nargs=0 FormatImport :call CocActionAsync("runCommand", "editor.action.organizeImport")'
+                )
                 -- すべての診断情報を表示
                 vim.keymap.set("n", "dg", ":CocList diagnostics<CR>", { silent = true })
                 -- [dと]dを使用して診断情報をナビゲート
