@@ -225,7 +225,7 @@ setup_neovim() {
   # python
   (
     RYE_PATH=~/.rye/shims/rye
-    curl -sSf https://rye-up.com/get | RYE_INSTALL_OPTION="--yes" bash \
+    curl -sSf https://rye-up.com/get | RYE_TOOLCHAIN_VERSION="3.11" RYE_INSTALL_OPTION="--yes" bash \
     && $RYE_PATH config --set-bool behavior.global-python=true \
     && $RYE_PATH config --set-bool behavior.use-uv=true
     $RYE_PATH install pip

@@ -33,3 +33,7 @@ echo <<EOF
   cd dotfiles && \
   ./install.sh
 EOF
+
+# タイムゾーン設定
+RUN ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime \
+    && dpkg-reconfigure -f noninteractive tzdata
