@@ -23,10 +23,12 @@ main() {
       gb
       ;;
     "c")
-      gbc $2 $3
+      echo "${@:2}"
+      gbc "${@:2}"
       ;;
     "gbc")
-      gbc $2 $3
+      echo "${@:2}"
+      gbc "${@:2}"
       ;;
     "help")
       show_help
@@ -97,7 +99,9 @@ gbc() { ## create|c git ブランチを作成
   local branch_name
   local description
   branch_name=$1
-  description=$2
+  # スペースを許可する
+  description="${@:2}"
+  echo $2
   # base_branch がなかったら現在のブランチを取得
   if [ -z "$2" ]; then
     echo "description is required"
