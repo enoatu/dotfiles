@@ -54,9 +54,15 @@ gb() { ## git branch 一覧を表示する
   # fzf の左側にはブランチ名,あればdescriptionを表示する
   # descriptionがある場合はgit-branch-descriptions のbranchname,descriptionの形式から取り出せる
   GIT_BRANCH_DESCRIPTIONS_PATH=enotiru-my-box/git-branch-descriptions
-  if [ ! -f $GIT_BRANCH_DESCRIPTIONS_PATH ]; then
-    echo "git-branch-descriptions is not found"
+  if [ ! -d .git ]; then
+    echo "not a git repository"
     return 1
+  fi
+  if [ ! -d enotiru-my-box ]; then
+    mkdir enotiru-my-box
+  fi
+  if [ ! -f $GIT_BRANCH_DESCRIPTIONS_PATH ]; then
+    touch $GIT_BRANCH_DESCRIPTIONS_PATH
   fi
   local branches
   branches=$(git branch --format="%(refname:short)" --sort=-committerdate | sed 's/ /_/g')
