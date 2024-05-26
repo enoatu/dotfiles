@@ -1,25 +1,88 @@
-#!/usr/bin/env zx
-$.verbose = false
+#/usr/bin/env bash
 
-const MAX_TEXT_LENGTH = 100
+main() {
+  local action
+  action=$1
+  case $action in
+    "gitstashpopreset")
+      gitstashpopreset
+      ;;
+    "a")
+      ga
+      ;;
+    "add")
+      ga
+      ;;
+    "gbc")
+      gbc
+      ;;
+    "help")
+      show_help
+      ;;
+    *)
+      # fzf
+      # 左側: helpを表示して選択する
+      # 右側: 選択している関数のコードを表示する
+      selected=$(grep -E '^\w+\(\) \{ ##' $0 | awk 'BEGIN {FS="\\(\\) \\{ ##"} {print $1}' | fzf --preview="grep -A 10 -E '^{}\\(\\) ' $0 | fold -s -w 80") # HELP_IGNORE
+      if [[ -n "$selected" ]]; then
+        $selected
+      else
+        show_help
+      fi
+      ;;
+  esac
+}
 
-const [ ,...args ] = argv._
-console.log(argv)
+gitstashpopreset() { ## gitstashpopreset 一度 git stash したものを pop してコンフリクトを解消する
+  git checkout --ours . && git reset && git checkout .
+}
 
-const ignoreList = await $`git status --ignored --short  | grep "^\!\!" | cut -d' ' -f 2`
+ga() { ## add|a git add する
+  local selected
+  selected=$(\git status -s | fzf -m --ansi --preview="echo {} | awk '{print \$2}' | xargs \git diff" | awk '{print $2}')
+  if [[ -n "$selected" ]]; then
+    git add `paste -s - <<< $selected`
+  fi
+  git status
+}
 
-const excludeArgs = ignoreList.stdout.trim().split(/\n/).map(ignore =>
-  // BSD grep is last slash
-  ignore.endsWith('/') ? `--exclude-dir=${ignore.slice(0, -1)}` : `--exclude=${ignore}`
-)
-excludeArgs.push('--exclude-dir=.git')
-excludeArgs.push('--exclude=yarn.lock')
-excludeArgs.push('--exclude=package-lock.json')
+gbc() { ## create|c git ブランチを作成
+  # 第1引数にブランチ名を指定
+  # 第2引数にdescriptionを指定
+  # .git がない場合はエラー
+  if [ ! -d .git ]; then
+    echo "not a git repository"
+    return 1
+  fi
+  # enotiru-my-box/ がない場合は作成する
+  if [ ! -d enotiru-my-box ]; then
+    mkdir enotiru-my-box
+  fi
+  local branch_name
+  local description
+  branch_name=$1
+  description=$2
+  # base_branch がなかったら現在のブランチを取得
+  if [ -z "$2" ]; then
+    description="no description"
+  fi
+  if [ -z "$branch_name" ]; then
+    echo "branch name is required"
+    return 1
+  fi
+  git checkout -b $branch_name
 
-const result = await $`grep ${excludeArgs} -ir ${args}`
+  # git-branch-descriptions がない場合は作成する
+  GIT_BRANCH_DESCRIPTIONS_PATH=enotiru-my-box/git-branch-descriptions
+  if [ ! -f $GIT_BRANCH_DESCRIPTIONS_PATH ]; then
+    touch $GIT_BRANCH_DESCRIPTIONS_PATH
+  fi
+  # git-branch-descriptions にbranchname,descriptionの形式で保存する
+  echo "$branch_name,$description" >> $GIT_BRANCH_DESCRIPTIONS_PATH
+}
 
-const cuttedResult = result.stdout.trim().split(/\n/).reduce((all, current) => {
-  const str = (current.length > MAX_TEXT_LENGTH) ? current.substr(0, MAX_TEXT_LENGTH) : current
-  return all + str + '\n'
-}, '')
-console.log(cuttedResult)
+show_help() { ## help|h ヘルプを表示する
+  grep -E '{\s*##' $0 | grep -v "HELP_IGNORE" | awk 'BEGIN {FS="## "} {print $2}'
+}
+
+main $@
