@@ -132,84 +132,6 @@ dw() {
   fi
 }
 
-ga() {
-  local selected
-  selected=$(\git status -s | fzf -m --ansi --preview="echo {} | awk '{print \$2}' | xargs \git diff" | awk '{print $2}')
-  if [[ -n "$selected" ]]; then
-    git add `paste -s - <<< $selected`
-  fi
-  git status
-}
-
-# git ブランチを作成
-# 第1引数にブランチ名を指定
-# 第2引数にdescriptionを指定
-gbc() {
-  # .git がない場合はエラー
-  if [ ! -d .git ]; then
-    echo "not a git repository"
-    return 1
-  fi
-  # enotiru-my-box/ がない場合は作成する
-  if [ ! -d enotiru-my-box ]; then
-    mkdir enotiru-my-box
-  fi
-  local branch_name
-  local description
-  branch_name=$1
-  description=$2
-  # base_branch がなかったら現在のブランチを取得
-  if [ -z "$2" ]; then
-    description="no description"
-  fi
-  if [ -z "$branch_name" ]; then
-    echo "branch name is required"
-    return 1
-  fi
-  git checkout -b $branch_name
-
-  # git-branch-descriptions がない場合は作成する
-  GIT_BRANCH_DESCRIPTIONS_PATH=enotiru-my-box/git-branch-descriptions
-  if [ ! -f $GIT_BRANCH_DESCRIPTIONS_PATH ]; then
-    touch $GIT_BRANCH_DESCRIPTIONS_PATH
-  fi
-  # git-branch-descriptions にbranchname,descriptionの形式で保存する
-  echo "$branch_name,$description" >> $GIT_BRANCH_DESCRIPTIONS_PATH
-}
-
-# fzf でgit ブランチ一覧を表示
-# 日付順で表示
-# staging, main, master, develop は１番上に表示
-# fzf には | branchname | description |のようなテーブル形で表示してあり、選択したブランチにチェックアウトする
-# description はgit-branch-descriptions に保存されている
-gc() {
-  if [ ! -d .git ]; then
-    echo "not a git repository"
-    return 1
-  fi
-  GIT_BRANCH_DESCRIPTIONS_PATH=enotiru-my-box/git-branch-descriptions
-  if [ ! -d enotiru-my-box ]; then
-    mkdir enotiru-my-box
-  fi
-  if [ ! -f $GIT_BRANCH_DESCRIPTIONS_PATH ]; then
-    touch $GIT_BRANCH_DESCRIPTIONS_PATH
-  fi
-
-  local branches
-
-  while read branch; do
-    branch_name=$(echo $branch | awk -F, '{print $1}')
-    description=$(echo $branch | awk -F, '{print $2}')
-    if [ -z "$description" ]; then
-      description="no description"
-    fi
-    echo "$branch_name | $description"
-  done < $GIT_BRANCH_DESCRIPTIONS_PATH | fzf --ansi --preview="echo {} | awk '{print \$1}' | xargs git log --oneline -n 10" | awk '{print $1}' | xargs git checkout
-}
-
-# git ブランチのdescriptionを追加
-gitadd
-
 # backspace,deleteキーを使えるように
 stty erase '^H'
 stty erase '^?'
@@ -273,15 +195,13 @@ export PATH="/usr/local/bin:$PATH"
 #precmd () { vcs_info }
 
 get_git_branch_description() {
-  local branch_name
-  branch_name=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
-  if [ -n "$branch_name" ]; then
-    local description
-    description=$(git config branch.$branch_name.description 2>/dev/null)
-    if [ -n "$description" ]; then
-      echo "[$description]"
-    fi
-  fi
+  # git-branch-descriptions がない場合return
+  GIT_BRANCH_DESCRIPTIONS_PATH=enotiru-my-box/git-branch-descriptions
+  [ ! -f $GIT_BRANCH_DESCRIPTIONS_PATH ] && return
+  # git-branch-descriptions にbranchname,descriptionの形式で保存されている
+  local branchname=$(git rev-parse --abbrev-ref HEAD)
+  local description=$(grep -E "^$branchname," $GIT_BRANCH_DESCRIPTIONS_PATH | cut -d ',' -f 2)
+  [ -n "$description" ] && echo "($description)"
 }
 
 autoload -Uz vcs_info
