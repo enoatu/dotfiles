@@ -110,7 +110,10 @@ dr() {
   local dirs=$HOME/dotfiles/.dirs
   arg=$1
   if [ -z "$arg" ]; then
-    return
+    # fzf でディレクトリを選択 プレビューは表示しない
+    target_dir=$(tac $dirs | fzf --height 40% --reverse --border --preview-window=hidden | awk -F"\t" '{print $2}' | head -n1)
+    [ -z $target_dir ] && return 1
+    cd $target_dir
   elif [ "$arg" = '-l' ]; then
     cat $dirs
   else
