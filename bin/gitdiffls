@@ -21,5 +21,10 @@ if (argv._[0]) {
   arg = 'HEAD'
 }
 
-const result = await $`cat <(git status -u --short | grep "^\?\?" | cut -d' ' -f 2) <(git diff --name-only ${arg}) | sort`
+const is_untracked = argv.untracked || argv.u
+
+const result = is_untracked
+  ? await $`cat <(git status -u --short | grep "^\?\?" | cut -d' ' -f 2) <(git diff --name-only ${arg}) | sort`
+  :
+   await $`git diff --name-only ${arg} | sort`
 console.log(result.stdout)
