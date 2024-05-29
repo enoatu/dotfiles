@@ -124,6 +124,57 @@ require("lazy").setup({
                         -- 設定によっては行単位でstage することもできる
                     end,
                 })
+                require("scrollbar.handlers.gitsigns").setup()
+            end,
+        },
+        { -- スクロールバーを表示
+            "petertriho/nvim-scrollbar",
+            config = function()
+                local colors = require("tokyonight.colors").setup()
+                require("scrollbar").setup({
+                    handle = {
+                        text = " ",
+                        color = "#016669",
+                        blend = 55,
+                    },
+                    marks = {
+                        GitAdd = {
+                            text = "+",
+                            priority = 7,
+                            gui = nil,
+                            color = nil,
+                            cterm = nil,
+                            color_nr = nil, -- cterm
+                            highlight = "GitSignsAdd",
+                        },
+                        GitChange = {
+                            text = "~",
+                            priority = 7,
+                            gui = nil,
+                            color = nil,
+                            cterm = nil,
+                            color_nr = nil, -- cterm
+                            highlight = "GitSignsChange",
+                        },
+                        GitDelete = {
+                            text = "_",
+                            priority = 7,
+                            gui = nil,
+                            color = nil,
+                            cterm = nil,
+                            color_nr = nil, -- cterm
+                            highlight = "GitSignsDelete",
+                        },
+                    },
+                    handlers = {
+                        cursor = false,
+                        diagnostic = true,
+                        gitsigns = true, -- Requires gitsigns
+                        handle = true,
+                        search = false, -- Requires hlslens
+                        ale = false, -- Requires ALE
+                    },
+                })
             end,
         },
         {
