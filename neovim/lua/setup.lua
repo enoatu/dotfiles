@@ -780,8 +780,49 @@ require("lazy").setup({
                 require("ibl").setup({ indent = { highlight = highlight } })
             end,
         },
+        {
+            "shellRaining/hlchunk.nvim",
+            event = { "BufReadPre", "BufNewFile" },
+            config = function()
+                require("hlchunk").setup({
+                    chunk = {
+                        enable = true,
+                        style = {
+                            { fg = "#FFFFFF" },
+                        },
+                        use_treesitter = true,
+                        chars = {
+                            horizontal_line = "─",
+                            vertical_line = "│",
+                            left_top = "╭",
+                            left_bottom = "╰",
+                            right_arrow = ">",
+                        },
+                        textobject = "",
+                        max_file_size = 1024 * 1024,
+                        error_sign = true,
+                    },
+                    -- 初回読み込み時にレンダリングされない問題が解決されたらindent-blanklineから置き換える
+                    -- indent = {
+                    --     enable = true,
+                    --     chars = {
+                    --         "│",
+                    --     },
+                    --     style = {
+                    --         "#A32B26",
+                    --         "#F0B01E",
+                    --         "#016669",
+                    --         "#936419",
+                    --         "#14CDE6",
+                    --         "#C678DD",
+                    --     },
+                    -- }
+                })
+            end
+        },
         { -- アニメーションで現在のインデントを教えてくれる
             "echasnovski/mini.indentscope",
+            enabled = false,
         },
         { -- キーマップを表示 (leader + sk)
             "folke/which-key.nvim",
