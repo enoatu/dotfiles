@@ -693,6 +693,19 @@ require("lazy").setup({
                 },
             },
         },
+        {-- 整形ツール
+          'Wansmer/treesj',
+            keys = {
+                { "n", "<CMD>TSJToggle<CR>", desc = "Toggle Inline/Block" },
+            },
+            opts = {
+                use_default_keymaps = false
+            },
+            dependencies = { 'nvim-treesitter/nvim-treesitter' }, -- if you install parsers with `nvim-treesitter`
+            config = function()
+                require('treesj').setup()
+            end,
+        },
         -- lazy: UI --
         { -- notify 強化
             "rcarriga/nvim-notify",
