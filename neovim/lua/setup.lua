@@ -558,6 +558,28 @@ require("lazy").setup({
         },
         { -- buffer 削除
             "echasnovski/mini.bufremove",
+            enabled = false,
+        },
+        {
+            "monaqa/dial.nvim",
+            keys = {
+                { "<C-a>", "<Plug>(dial-increment)", mode = { "n", "v" }},
+                { "<C-x>", "<Plug>(dial-decrement)", mode = { "n", "v" }},
+                { "g<C-a>", "g<Plug>(dial-increment)", mode = { "n", "v" }, remap = true },
+                { "g<C-x>", "g<Plug>(dial-decrement)", mode = { "n", "v" }, remap = true },
+            },
+            config = function()
+                local augend = require("dial.augend")
+                require("dial.config").augends:register_group{
+                    default = {
+                        augend.integer.alias.decimal,
+                        augend.constant.new{ elements = {"let", "const"} },
+                        augend.constant.new{ elements = {"var", "const", "let"} },
+                        augend.constant.new{ elements = {"true", "false"} },
+                        augend.constant.new{ elements = {"True", "False"} },
+                    },
+                }
+            end,
         },
         { -- diagnostics list
             "folke/trouble.nvim",
@@ -675,6 +697,7 @@ require("lazy").setup({
                     "python",
                     "query",
                     "regex",
+                    "vue",
                     "tsx",
                     "typescript",
                     "vim",
@@ -693,7 +716,7 @@ require("lazy").setup({
                 },
             },
         },
-        {-- 整形ツール
+        {-- オブジェクトなど整形ツール n でトグル
           'Wansmer/treesj',
             keys = {
                 { "n", "<CMD>TSJToggle<CR>", desc = "Toggle Inline/Block" },
@@ -844,7 +867,7 @@ require("lazy").setup({
                 require("ibl").setup({ indent = { highlight = highlight } })
             end,
         },
-        {
+        {-- インデント可視化、チャンク表示
             "shellRaining/hlchunk.nvim",
             event = { "BufReadPre", "BufNewFile" },
             config = function()
