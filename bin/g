@@ -67,16 +67,18 @@ gb() { ## git branch 一覧を表示する
     touch $GIT_BRANCH_DESCRIPTIONS_PATH
   fi
   local branches
-  branches=$(git branch --format="%(refname:short)" --sort=-committerdate | sed 's/ /_/g')
+  branches=$(git branch --format="%(refname:short)" --sort=-committerdate)
   local descriptions
-  descriptions=$(cat $GIT_BRANCH_DESCRIPTIONS_PATH | sed 's/,/ /g')
+  descriptions=$(cat $GIT_BRANCH_DESCRIPTIONS_PATH)
   local branch
   local description
   local branch_description
   for branch in $branches; do
-    branch_description=$(echo $descriptions | grep $branch)
+    # ダブルクォーテーションで囲まないと改行が消える
+    branch_description=$(echo "$descriptions" | grep $branch)
+    #echo $branch_description
     if [ -n "$branch_description" ]; then
-      description=$(echo $branch_description | awk '{print $2}')
+      description=$(echo $branch_description | awk -F, '{print $2}')
       echo "$branch $description"
     else
       echo $branch
