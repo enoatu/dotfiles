@@ -83,7 +83,7 @@ gb() { ## git branch 一覧を表示する
     else
       echo $branch
     fi
-  done | fzf --preview="echo {} | awk '{print \$1}' | xargs git log -n 1 --pretty=format:%s" | awk '{print $1}' | xargs git checkout
+  done | fzf | awk '{print $1}' | xargs git checkout
 }
 
 gbc() { ## create|c git ブランチを作成
