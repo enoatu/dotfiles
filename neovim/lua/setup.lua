@@ -560,7 +560,7 @@ require("lazy").setup({
             "echasnovski/mini.bufremove",
             enabled = false,
         },
-        {
+        { -- ダイヤルを回すように値を変更
             "monaqa/dial.nvim",
             keys = {
                 { "<C-a>", "<Plug>(dial-increment)", mode = { "n", "v" }},
@@ -716,10 +716,10 @@ require("lazy").setup({
                 },
             },
         },
-        {-- オブジェクトなど整形ツール n でトグル
+        {-- オブジェクトなど整形ツール C-o でトグル
           'Wansmer/treesj',
             keys = {
-                { "n", "<CMD>TSJToggle<CR>", desc = "Toggle Inline/Block" },
+                { "<C-o>", "<CMD>TSJToggle<CR>", desc = "Toggle Inline/Block" },
             },
             opts = {
                 use_default_keymaps = false
