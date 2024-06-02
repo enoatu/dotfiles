@@ -1,65 +1,16 @@
 local vim = vim
 local node_path = "~/.asdf/installs/nodejs/18.16.0/bin/node"
 
-local has_words_before = function()
-    if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then
-        return false
-    end
-    local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-    return col ~= 0 and vim.api.nvim_buf_get_text(0, line - 1, 0, line - 1, col, {})[1]:match("^%s*$") == nil
-end
-
 require("lazy").setup({
-    defaults = {
-        lazy = false,
-        version = "*", -- try installing the latest stable version for plugins that support semver
-    },
-    install = { colorscheme = { "tokyonight" } },
-    -- checker = { enabled = true }, -- automatically check for plugin updates
-    performance = {
-        rtp = {
-            -- disable some rtp plugins
-            disabled_plugins = {
-                "gzip",
-                -- "matchit",
-                -- "matchparen",
-                -- "netrwPlugin",
-                "tarPlugin",
-                "tohtml",
-                "tutor",
-                "zipPlugin",
-            },
-        },
-    },
     spec = {
         {
-            "LazyVim/LazyVim",
-            import = "lazyvim.plugins",
-            keys = {
-                -- lazyvim バージョンによっては必要 2023/12/10
-                -- { -- かぶるので上書きする silent じゃないとPress ENTER or type command to continueが出る
-                --     "<C-K>",
-                --     ":call BufferList()<CR>",
-                --     desc = "BufferList",
-                --     { noremap = true, silent = true },
-                -- },
-                -- {
-                --     "<C-j>",
-                --     ":AnyJump<CR>",
-                --     desc = "AnyJump",
-                --     { noremap = true, silent = true },
-                -- },
-                {
-                    "<C-h>",
-                    "0",
-                    { noremap = true, silent = true, desc = "行頭に移動" },
-                },
-                {
-                    "<C-l>",
-                    "$",
-                    { noremap = true, silent = true, desc = "行末に移動" },
-                },
-            },
+            "folke/tokyonight.nvim",
+            lazy = false, -- make sure we load this during startup if it is your main colorscheme
+            priority = 1000, -- make sure to load this before all the other start plugins
+            config = function()
+            -- load the colorscheme here
+            vim.cmd([[colorscheme tokyonight]])
+            end,
         },
         { -- #A32B26 等の文字列に色をつける
             "norcalli/nvim-colorizer.lua",
@@ -205,24 +156,23 @@ require("lazy").setup({
             enabled = false,
         },
         {
-            "linux-cultist/venv-selector.nvim",
-            dependencies = { "neovim/nvim-lspconfig", "nvim-telescope/telescope.nvim", "mfussenegger/nvim-dap-python" },
+            'linux-cultist/venv-selector.nvim',
+            dependencies = { 'neovim/nvim-lspconfig', 'nvim-telescope/telescope.nvim', 'mfussenegger/nvim-dap-python' },
             opts = {
                 -- Your options go here
                 -- name = "venv",
                 -- auto_refresh = false
             },
-            event = "VeryLazy", -- Optional: needed only if you want to type `:VenvSelect` without a keymapping
+            event = 'VeryLazy', -- Optional: needed only if you want to type `:VenvSelect` without a keymapping
             keys = {
                 -- Keymap to open VenvSelector to pick a venv.
-                { "<leader>vs", "<cmd>VenvSelect<cr>" },
+                { '<leader>vs', '<cmd>VenvSelect<cr>' },
                 -- Keymap to retrieve the venv from a cache (the one previously used for the same project directory).
-                { "<leader>vc", "<cmd>VenvSelectCached<cr>" },
+                { '<leader>vc', '<cmd>VenvSelectCached<cr>' },
             },
         },
         {
             "numirias/semshi",
-            enabled = true,
             run = ":UpdateRemotePlugins",
         },
         {
@@ -258,26 +208,6 @@ require("lazy").setup({
             end,
         },
         {
-            "tzachar/cmp-tabnine",
-            build = "./install.sh",
-            config = function()
-                local tabnine = require("cmp_tabnine.config")
-                tabnine:setup({
-                    max_lines = 1000,
-                    max_num_results = 100,
-                    sort = true,
-                })
-            end,
-        },
-        {
-            "zbirenbaum/copilot.lua",
-            cmd = "Copilot",
-            event = "InsertEnter",
-            config = function()
-                require("copilot").setup({})
-            end,
-        },
-        {
             "github/copilot.vim",
             build = ":lua print('need exec Copilot auth')",
             init = function()
@@ -299,69 +229,6 @@ require("lazy").setup({
                 })
             end,
         },
-        { "AndreM222/copilot-lualine" },
-        -- {
-        --     "zbirenbaum/copilot.lua",
-        --     cmd = "Copilot",
-        --     event = "InsertEnter",
-        --     config = function()
-        --         require("copilot").setup({
-        --             panel = {
-        --                 enabled = true,
-        --                 auto_refresh = false,
-        --                 keymap = {
-        --                     jump_prev = "[[",
-        --                     jump_next = "]]",
-        --                     accept = "<CR>",
-        --                     refresh = "gr",
-        --                     open = "<M-CR>"
-        --                 },
-        --                 layout = {
-        --                     position = "bottom", -- | top | left | right
-        --                     ratio = 0.4
-        --                 },
-        --             },
-        --             suggestion = {
-        --                 enabled = true,
-        --                 auto_trigger = false,
-        --                 debounce = 75,
-        --                 keymap = {
-        --                     accept = "<M-l>",
-        --                     accept_word = false,
-        --                     accept_line = false,
-        --                     next = "<M-]>",
-        --                     prev = "<M-[>",
-        --                     dismiss = "<C-]>",
-        --                 },
-        --             },
-        --             filetypes = {
-        --                 yaml = false,
-        --                 markdown = false,
-        --                 help = false,
-        --                 gitcommit = false,
-        --                 gitrebase = false,
-        --                 hgcommit = false,
-        --                 svn = false,
-        --                 cvs = false,
-        --                 ["."] = false,
-        --             },
-        --             copilot_node_command = 'node', -- Node.js version must be > 18.x
-        --             server_opts_overrides = {},
-        --         })
-        --     end,
-        -- },
-        -- {重い
-        --     "fatih/vim-go",
-        --     init = function()
-        --         vim.g.go_fmt_autosave = false
-        --     end,
-        -- },
-        --{
-        --    "z0rzi/ai-chat.nvim",
-        --    config = function()
-        --        require('ai-chat').setup {}
-        --    end,
-        --},
         -- {
         --     "codota/tabnine-nvim",
         --     build = "./dl_binaries.sh",
@@ -395,7 +262,6 @@ require("lazy").setup({
         {
             "neoclide/coc.nvim",
             build = ":call coc#util#install()",
-            enabled = false,
             init = function()
                 -- vim.g.coc_node_path = node_path
                 -- インストール時実行
@@ -442,212 +308,11 @@ require("lazy").setup({
                 vim.keymap.set("n", "]d", "<Plug>(coc-diagnostic-next)", { silent = true })
             end,
         },
-        -- lazy plugins: https://www.lazyvim.org/plugins
-        { -- snippet engine by lua
-            "L3MON4D3/LuaSnip",
-        },
         { -- snippet collection
             "rafamadriz/friendly-snippets",
         },
-        {
-            "zbirenbaum/copilot-cmp",
-            config = function()
-                require("copilot_cmp").setup()
-            end,
-        },
-        { -- snippet engine by lua?
-            -- "enoatu/nvim-cmp",
-            "hrsh7th/nvim-cmp",
-            enabled = true,
-            -- branch = "feat/above",
-            event = "InsertEnter",
-            dependencies = {
-                "hrsh7th/cmp-nvim-lsp",
-                "hrsh7th/cmp-buffer",
-                "hrsh7th/cmp-path",
-                "saadparwaiz1/cmp_luasnip",
-                "onsails/lspkind.nvim",
-            },
-            ---@param opts cmp.ConfigSchema
-            opts = function(_, opts)
-                vim.api.nvim_set_hl(0, "CmpGhostText", { link = "Comment", default = true })
-
-                local cmp = require("cmp")
-                local defaults = require("cmp.config.default")()
-                return {
-                    completion = {
-                        completeopt = "menu,menuone,noinsert",
-                    },
-                    -- view = {
-                    --     entries = {
-                    --         name = "custom",
-                    --         vertical_positioning = "above",
-                    --         selection_order = "down_top",
-                    --     },
-                    --     docs = {
-                    --         auto_open = true,
-                    --     },
-                    -- },
-                    window = {
-                        completion = {
-                            border = "rounded",
-                            winhighlight = "Normal:CmpPmenu,FloatBorder:CmpPmenu,CursorLine:PmenuSel,Search:None",
-                            col_offset = 0,
-                            side_padding = 1,
-                            max_height = 10,
-                            -- Adjust the position to above the current line
-                            relative = "editor",
-                            row = -3,
-                            style = "minimal",
-                        },
-                        documentation = cmp.config.window.bordered({
-                            border = "rounded",
-                            winhighlight = "Normal:Pmenu,FloatBorder:Pmenu,Search:None",
-                            col_offset = -10,
-                            side_padding = 0,
-                            scrolloff = 0,
-                        }),
-                    },
-                    snippet = {
-                        expand = function(args)
-                            require("luasnip").lsp_expand(args.body)
-                        end,
-                    },
-                    mapping = cmp.mapping.preset.insert({
-                        -- tabで補完を確定させる
-                        ["<Tab>"] = vim.schedule_wrap(function(fallback)
-                            if cmp.visible() and has_words_before() then
-                                cmp.mapping.confirm({ select = true })
-                            else
-                                fallback()
-                            end
-                        end),
-                        ["<C-n>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
-                        ["<C-p>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
-                        ["<C-b>"] = cmp.mapping.scroll_docs(-4),
-                        ["<C-f>"] = cmp.mapping.scroll_docs(4),
-                        ["<C-Space>"] = cmp.mapping.complete(),
-                        ["<C-e>"] = cmp.mapping.abort(),
-                        ["<CR>"] = cmp.mapping(function(fallback)
-                            if cmp.visible() then
-                                cmp.abort()
-                            end
-                            fallback()
-                        end, { "i", "s" }),
-                        ["<S-CR>"] = cmp.mapping.confirm({
-                            behavior = cmp.ConfirmBehavior.Replace,
-                            select = true,
-                        }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-                    }),
-                    sources = cmp.config.sources({
-                        { name = "cmp_tabnine", priority = 8 },
-                        { name = "copilot", priority = 7 },
-                        { name = "cmp-copilot", priority = 6 },
-                        { name = "nvim_lsp" },
-                        { name = "luasnip" },
-                        { name = "buffer" },
-                        { name = "path" },
-                    }),
-                    formatting = {
-                        format = function(entry, item)
-                            local icons = require("lazyvim.config").icons.kinds
-                            local lspkind = require("lspkind")
-                            local source_mapping = {
-                                buffer = "[Buffer]",
-                                nvim_lsp = "[LSP]",
-                                nvim_lua = "[Lua]",
-                                cmp_tabnine = "[TN]",
-                                path = "[Path]",
-                            }
-                            if icons[item.kind] then
-                                item.kind = icons[item.kind] .. item.kind
-                            else
-                                item.kind = lspkind.symbolic(item.kind, { mode = "symbol" })
-                            end
-                            item.menu = source_mapping[entry.source.name]
-                            if entry.source.name == "cmp_tabnine" then
-                                local detail = (entry.completion_item.labelDetails or {}).detail
-                                item.kind = ""
-                                if detail and detail:find(".*%%.*") then
-                                    item.kind = item.kind .. " " .. detail
-                                end
-
-                                if (entry.completion_item.data or {}).multiline then
-                                    item.kind = item.kind .. " " .. "[ML]"
-                                end
-                            end
-                            local maxwidth = 80
-                            item.abbr = string.sub(item.abbr, 1, maxwidth)
-                            return item
-                        end,
-                    },
-                    sorting = {
-                        priority_weight = 2,
-                        comparators = {
-                            require("copilot_cmp.comparators").prioritize,
-
-                            -- Below is the default comparitor list and order for nvim-cmp
-                            cmp.config.compare.offset,
-                            -- cmp.config.compare.scopes, --this is commented in nvim-cmp too
-                            cmp.config.compare.exact,
-                            cmp.config.compare.score,
-                            cmp.config.compare.recently_used,
-                            cmp.config.compare.locality,
-                            cmp.config.compare.kind,
-                            cmp.config.compare.sort_text,
-                            cmp.config.compare.length,
-                            cmp.config.compare.order,
-                        },
-                    },
-                    experimental = {
-                        ghost_text = false, -- copilotと競合する
-                        -- ghost_text = {
-                        --     hl_group = "CmpGhostText",
-                        -- },
-                    },
-                }
-            end,
-        },
-
-        {
-            "hrsh7th/cmp-nvim-lsp",
-        },
-        {
-            "hrsh7th/cmp-buffer",
-        },
-        {
-            "hrsh7th/cmp-path",
-        },
-        {
-            "saadparwaiz1/cmp_luasnip",
-        },
-        -- mini.pairs
-        -- mini.surround
-        -- nvim-ts-context-commentstring
-        -- mini.comment
-        -- mini.ai
-        { -- 括弧の補完
-            "echasnovski/mini.pairs",
-            enabled = false,
-        },
-        { -- 囲む
-            "echasnovski/mini.surround",
-            enabled = false,
-        },
-        { -- コメント gc
-            "JoosepAlviste/nvim-ts-context-commentstring",
-            enabled = false,
-        },
         { -- コメント gc (行ごと)
             "echasnovski/mini.comment",
-        },
-        { -- ui系
-            "echasnovski/mini.ai",
-        },
-        -- Editor
-        {
-            "nvim-neo-tree/neo-tree.nvim",
-            enabled = false,
         },
         { -- 複数ファイル検索・置換 (<leader>c で置換)
             "nvim-pack/nvim-spectre",
@@ -665,6 +330,7 @@ require("lazy").setup({
         },
         { -- fzf
             "nvim-telescope/telescope.nvim",
+            deps = { "nvim-lua/popup.nvim", "nvim-lua/plenary.nvim" },
             keys = {
                 {
                     "<leader>.",
@@ -673,114 +339,32 @@ require("lazy").setup({
                 },
             },
         },
-        { -- 検索f の強化版 shogehogeで検索
-            "folke/flash.nvim",
-            enabled = false,
-        },
         { -- flash のtelescope configtmu
             "nvim-telescope/telescope.nvim",
-        },
-        { -- カーソルの他の単語もハイライト
-            "RRethy/vim-illuminate",
-            enabled = false, -- gcc 必要かもなので
-        },
-        { -- buffer 削除
-            "echasnovski/mini.bufremove",
-            enabled = false,
         },
         { -- ダイヤルを回すように値を変更
             "monaqa/dial.nvim",
             keys = {
-                { "<C-a>", "<Plug>(dial-increment)", mode = { "n", "v" } },
-                { "<C-x>", "<Plug>(dial-decrement)", mode = { "n", "v" } },
+                { "<C-a>", "<Plug>(dial-increment)", mode = { "n", "v" }},
+                { "<C-x>", "<Plug>(dial-decrement)", mode = { "n", "v" }},
                 { "g<C-a>", "g<Plug>(dial-increment)", mode = { "n", "v" }, remap = true },
                 { "g<C-x>", "g<Plug>(dial-decrement)", mode = { "n", "v" }, remap = true },
             },
             config = function()
                 local augend = require("dial.augend")
-                require("dial.config").augends:register_group({
+                require("dial.config").augends:register_group{
                     default = {
                         augend.integer.alias.decimal,
-                        augend.constant.new({ elements = { "let", "const" } }),
-                        augend.constant.new({ elements = { "var", "const", "let" } }),
-                        augend.constant.new({ elements = { "true", "false" } }),
-                        augend.constant.new({ elements = { "True", "False" } }),
+                        augend.constant.new{ elements = {"let", "const"} },
+                        augend.constant.new{ elements = {"var", "const", "let"} },
+                        augend.constant.new{ elements = {"true", "false"} },
+                        augend.constant.new{ elements = {"True", "False"} },
                     },
-                })
+                }
             end,
         },
         { -- diagnostics list
             "folke/trouble.nvim",
-        },
-        { -- todo comment list [t などで移動 <leader>stで検索
-            "folke/todo-comments.nvim",
-        },
-        -- ...
-        -- LSP
-        -- { import = "lazyvim.plugins.extras.ui.mini-animate" }, -- 動きが遅くなる
-        {
-            import = "lazyvim.plugins.extras.lang.clang",
-            enabled = vim.g.enable_plugin_lsp_clang or false,
-        },
-        {
-            import = "lazyvim.plugins.extras.lang.cmake",
-            enabled = vim.g.enable_plugin_lsp_cmake or false,
-        },
-        {
-            import = "lazyvim.plugins.extras.lang.docker",
-            enabled = vim.g.enable_plugin_lsp_docker or false,
-        },
-        {
-            import = "lazyvim.plugins.extras.lang.go",
-            enabled = vim.g.enable_plugin_lsp_go or false,
-        },
-        {
-            import = "lazyvim.plugins.extras.lang.elixir",
-            enabled = vim.g.enable_plugin_lsp_elixir or false,
-        },
-        {
-            import = "lazyvim.plugins.extras.lang.java",
-            enabled = vim.g.enable_plugin_lsp_java or false,
-        },
-        {
-            import = "lazyvim.plugins.extras.lang.json",
-            enabled = vim.g.enable_plugin_lsp_json or false,
-        },
-        {
-            import = "lazyvim.plugins.extras.lang.python-semshi",
-            enabled = vim.g.enable_plugin_lsp_python_semshi or false,
-        },
-        {
-            import = "lazyvim.plugins.extras.lang.python",
-            enabled = vim.g.enable_plugin_lsp_python or false,
-        },
-        {
-            import = "lazyvim.plugins.extras.lang.ruby",
-            enabled = vim.g.enable_plugin_lsp_ruby or false,
-        },
-        {
-            import = "lazyvim.plugins.extras.lang.rust",
-            enabled = vim.g.enable_plugin_lsp_rust or false,
-        },
-        {
-            import = "lazyvim.plugins.extras.lang.tailwind",
-            enabled = vim.g.enable_plugin_lsp_tailwind or false,
-        },
-        {
-            import = "lazyvim.plugins.extras.lang.terraform",
-            enabled = vim.g.enable_plugin_lsp_terraform or false,
-        },
-        {
-            import = "lazyvim.plugins.extras.lang.tex",
-            enabled = vim.g.enable_plugin_lsp_tex or false,
-        },
-        {
-            import = "lazyvim.plugins.extras.lang.typescript",
-            enabled = vim.g.enable_plugin_lsp_typescript or false,
-        },
-        {
-            import = "lazyvim.plugins.extras.lang.yaml",
-            enabled = vim.g.enable_plugin_lsp_yaml or false,
         },
         --
         { -- lspconfig
@@ -788,21 +372,6 @@ require("lazy").setup({
             config = function()
                 vim.g.autoformat = true
             end,
-        },
-        { -- lspをjsonで管理
-            "folke/neoconf.nvim",
-        },
-        { -- lua- language-serverを自動的に構成
-            "folke/neodev.nvim",
-        },
-        { -- mason lsp
-            "williamboman/mason-lspconfig.nvim",
-        },
-        {
-            "hrsh7th/cmp-nvim-lsp",
-        },
-        { -- lsp cli
-            "williamboman/mason.nvim",
         },
         -- TreeSitter
         -- Need A C compiler in your path and libstdc++ installed
@@ -844,17 +413,17 @@ require("lazy").setup({
                 },
             },
         },
-        { -- オブジェクトなど整形ツール C-o でトグル
-            "Wansmer/treesj",
+        {-- オブジェクトなど整形ツール c-n でトグル
+          'Wansmer/treesj',
             keys = {
-                { "<C-o>", "<CMD>TSJToggle<CR>", desc = "Toggle Inline/Block" },
+                { "<C-n>", "<CMD>TSJToggle<CR>", desc = "Toggle Inline/Block" },
             },
             opts = {
-                use_default_keymaps = false,
+                use_default_keymaps = false
             },
-            dependencies = { "nvim-treesitter/nvim-treesitter" }, -- if you install parsers with `nvim-treesitter`
+            dependencies = { 'nvim-treesitter/nvim-treesitter' }, -- if you install parsers with `nvim-treesitter`
             config = function()
-                require("treesj").setup()
+                require('treesj').setup()
             end,
         },
         -- lazy: UI --
@@ -875,16 +444,14 @@ require("lazy").setup({
                 },
             },
         },
-        { -- 上部のbufferタブ
-            "akinsho/bufferline.nvim",
-            enabled = false,
-        },
         {
             "nvim-lualine/lualine.nvim",
             event = "VeryLazy",
+            dependencies = { 'nvim-tree/nvim-web-devicons' },
             opts = function()
-                local icons = require("lazyvim.config").icons
-                local Util = require("lazyvim.util")
+                -- local icons = require("lazyvim.config").icons
+                -- local Util = require("lazyvim.util")
+
                 return {
                     options = {
                         theme = "auto",
@@ -897,12 +464,6 @@ require("lazy").setup({
                         lualine_c = {
                             {
                                 "diagnostics",
-                                symbols = {
-                                    error = icons.diagnostics.Error,
-                                    warn = icons.diagnostics.Warn,
-                                    info = icons.diagnostics.Info,
-                                    hint = icons.diagnostics.Hint,
-                                },
                             },
                             { "filetype", icon_only = true, separator = "", padding = { left = 1, right = 0 } },
                             { "filename", path = 1, symbols = { modified = " + ", readonly = "", unnamed = "" } },
@@ -918,33 +479,27 @@ require("lazy").setup({
                             {
                                 function() return require("noice").api.status.command.get() end,
                                 cond = function() return package.loaded["noice"] and require("noice").api.status.command.has() end,
-                                color = Util.ui.fg("Statement"),
+                                -- color = Util.fg("Statement"),
                             },
                             -- stylua: ignore
                             {
                                 function() return require("noice").api.status.mode.get() end,
                                 cond = function() return package.loaded["noice"] and require("noice").api.status.mode.has() end,
-                                color = Util.ui.fg("Constant"),
+                                -- color = Util.fg("Constant"),
                             },
                             -- stylua: ignore
                             {
                                 function() return "  " .. require("dap").status() end,
                                 cond = function () return package.loaded["dap"] and require("dap").status() ~= "" end,
-                                color = Util.ui.fg("Debug"),
+                                -- color = Util.fg("Debug"),
                             },
-                            "copilot",
                             {
                                 require("lazy.status").updates,
                                 cond = require("lazy.status").has_updates,
-                                color = Util.ui.fg("Special"),
+                                -- color = Util.fg("Special"),
                             },
                             {
                                 "diff",
-                                symbols = {
-                                    added = icons.git.added,
-                                    modified = icons.git.modified,
-                                    removed = icons.git.removed,
-                                },
                             },
                         },
                         lualine_y = {
@@ -995,7 +550,7 @@ require("lazy").setup({
                 require("ibl").setup({ indent = { highlight = highlight } })
             end,
         },
-        { -- インデント可視化、チャンク表示
+        {-- インデント可視化、チャンク表示
             "shellRaining/hlchunk.nvim",
             event = { "BufReadPre", "BufNewFile" },
             config = function()
@@ -1033,7 +588,7 @@ require("lazy").setup({
                     --     },
                     -- }
                 })
-            end,
+            end
         },
         { -- アニメーションで現在のインデントを教えてくれる
             "echasnovski/mini.indentscope",
@@ -1044,7 +599,6 @@ require("lazy").setup({
         },
         { -- メッセージやcmdlineなどおしゃれに
             "folke/noice.nvim",
-            enabled = false,
         },
         { -- 最初の画面
             "nvimdev/dashboard-nvim",
@@ -1057,15 +611,8 @@ require("lazy").setup({
                 }
             end,
         },
-        { -- lsp 関数のどこにいるかを表示:動作していなさそう
-            "SmiteshP/nvim-navic",
-            enabled = false,
-        },
         { -- アイコン
             "nvim-tree/nvim-web-devicons",
-        },
-        { -- UI ライブラリ
-            "MunifTanjim/nui.nvim",
         },
         -- lazy: Util --
         { -- 読み込み時間を測る
@@ -1073,9 +620,6 @@ require("lazy").setup({
         },
         { -- セッション管理
             "folke/persistence.nvim",
-        },
-        { -- asyncなど 他のライブラリで使う
-            "plenary.nvim",
         },
     },
 })
