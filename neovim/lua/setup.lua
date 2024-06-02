@@ -37,12 +37,12 @@ require("lazy").setup({
             import = "lazyvim.plugins",
             keys = {
                 -- lazyvim バージョンによっては必要 2023/12/10
-                -- { -- かぶるので上書きする silent じゃないとPress ENTER or type command to continueが出る
-                --     "<C-K>",
-                --     ":call BufferList()<CR>",
-                --     desc = "BufferList",
-                --     { noremap = true, silent = true },
-                -- },
+                { -- かぶるので上書きする silent じゃないとPress ENTER or type command to continueが出る
+                    "<C-K>",
+                    ":call BufferList()<CR>",
+                    desc = "BufferList",
+                    { noremap = true, silent = true },
+                },
                 -- {
                 --     "<C-j>",
                 --     ":AnyJump<CR>",
@@ -223,7 +223,7 @@ require("lazy").setup({
         {
             "numirias/semshi",
             enabled = true,
-            run = ":UpdateRemotePlugins",
+            build = ":UpdateRemotePlugins",
         },
         {
             "kylechui/nvim-surround",
@@ -395,7 +395,6 @@ require("lazy").setup({
         {
             "neoclide/coc.nvim",
             build = ":call coc#util#install()",
-            enabled = false,
             init = function()
                 -- vim.g.coc_node_path = node_path
                 -- インストール時実行
