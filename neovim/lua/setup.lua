@@ -43,12 +43,12 @@ require("lazy").setup({
                     desc = "BufferList",
                     { noremap = true, silent = true },
                 },
-                -- {
-                --     "<C-j>",
-                --     ":AnyJump<CR>",
-                --     desc = "AnyJump",
-                --     { noremap = true, silent = true },
-                -- },
+                {
+                    "<C-j>",
+                    ":AnyJump<CR>",
+                    desc = "AnyJump",
+                    { noremap = true, silent = true },
+                },
                 {
                     "<C-h>",
                     "0",
@@ -225,14 +225,14 @@ require("lazy").setup({
             enabled = true,
             build = ":UpdateRemotePlugins",
         },
-        {
+        { -- 囲む
             "kylechui/nvim-surround",
             config = function()
                 require("nvim-surround").setup({
                     keymaps = {
                         insert = "<C-g>s",
                         insert_line = "<C-g>S",
-                        normal = "e",
+                        normal = "e", -- ee" で囲む
                         normal_cur = "es",
                         normal_line = "yS",
                         normal_cur_line = "ySS",
@@ -394,6 +394,8 @@ require("lazy").setup({
         -- },
         {
             "neoclide/coc.nvim",
+            -- 最新版だとcoc-tsserverが動かない
+            commit = "fab97c7db68f24e5cc3c1cf753d3bd1819beef8f",
             build = ":call coc#util#install()",
             init = function()
                 -- vim.g.coc_node_path = node_path
@@ -517,10 +519,9 @@ require("lazy").setup({
                         ["<Tab>"] = vim.schedule_wrap(function(fallback)
                             if cmp.visible() and has_words_before() then
                                 cmp.mapping.confirm({ select = true })
-                            else
-                                fallback()
                             end
-                        end),
+                            vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Tab>", true, true, true), "n", true)
+                        end, { "i", "s" }),
                         ["<C-n>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
                         ["<C-p>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
                         ["<C-b>"] = cmp.mapping.scroll_docs(-4),
