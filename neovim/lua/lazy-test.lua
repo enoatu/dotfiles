@@ -54,7 +54,74 @@ require("lazy").setup({
             { "<c-b>", function() if not require("noice.lsp").scroll(-4) then return "<c-b>" end end, silent = true, expr = true, desc = "Scroll backward", mode = {"i", "n", "s"}},
         },
     },
-
+    {
+        "enoatu/nvim-smartchr",
+        enabled = true,
+        config = function()
+            require("nvim-smartchr").setup({
+                mappings = {
+                    default = {
+                        { ".", { ".", " . " }, { loop = true } },
+                        { ",", { ", ", "," }, { loop = true } },
+                        { "&", { " & ", " && ", "&" }, { loop = true } },
+                        { "?", { "? ", "?" }, { loop = true } },
+                        { "=", { " = ", " => ", " == ", " === ", "=" } },
+                    },
+                    ["perl|php|python|rust"] = {
+                        { "-", { "-", "->", " - ", "--", "-" }, { loop = false } },
+                        { ":", { "::", ": ", ":" }, { loop = true } },
+                        { "=", { "=", " = ", " => ", " == ", " === ", " eq " }, { loop = true } },
+                    },
+                    ["tt2html"] = {
+                        { "[", { "[%", "[%-", "[" } },
+                        { "]", { "%]", "-%]", "]" } },
+                    },
+                },
+            })
+        end,
+    },
+    {
+        "kana/vim-smartchr",
+        enabled = false,
+        config = function()
+            vim.cmd([[
+            function! SwitchSmartChr()
+            if &filetype =~ 'perl\|php\|python\|golong\|rust'
+            inoremap <expr> . smartchr#loop('.', ' . ')
+            inoremap <expr> , smartchr#loop(', ', ',')
+            inoremap <expr> - smartchr#loop('->', ' - ', '--', '-')
+            inoremap <expr> = smartchr#loop('=', ' = ', ' => ', ' == ', ' === ', ' eq ')
+            inoremap <expr> & smartchr#loop(' & ', ' && ', '&')
+            inoremap <expr> ? smartchr#loop('? ', '?')
+            inoremap <expr> : smartchr#loop('::', ': ', ':')
+            inoremap <expr> [ smartchr#one_of('[')
+            inoremap <expr> ] smartchr#one_of(']')
+            elseif &filetype == "javascript"
+            inoremap <expr> . smartchr#one_of('.')
+            inoremap <expr> , smartchr#loop(',', ', ')
+            inoremap <expr> - smartchr#one_of('-')
+            inoremap <expr> = smartchr#one_of('=')
+            inoremap <expr> & smartchr#one_of('&')
+            inoremap <expr> ? smartchr#one_of('?')
+            inoremap <expr> : smartchr#one_of(':')
+            inoremap <expr> [ smartchr#one_of('[%', '[%-', '[')
+            inoremap <expr> ] smartchr#one_of('%]', '-%]', ']')
+            else
+            inoremap <expr> . smartchr#one_of('.')
+            inoremap <expr> , smartchr#loop(',', ', ')
+            inoremap <expr> - smartchr#one_of('-')
+            inoremap <expr> = smartchr#one_of('=')
+            inoremap <expr> & smartchr#one_of('&')
+            inoremap <expr> ? smartchr#one_of('?')
+            inoremap <expr> : smartchr#one_of(':')
+            inoremap <expr> [ smartchr#one_of('[')
+            inoremap <expr> ] smartchr#one_of(']')
+            endif
+            endfunction
+            autocmd BufEnter * call SwitchSmartChr()
+        ]])
+        end,
+    },
     { -- UI ライブラリ
         "MunifTanjim/nui.nvim",
     },

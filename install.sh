@@ -16,8 +16,7 @@ for OPT in "$@"; do
   '--no-test' | '-n')
     is_exec_test=false
     ;;
-  *)
-    ;;
+  *) ;;
   esac
 done
 
@@ -225,23 +224,23 @@ setup_neovim() {
   # python
   (
     RYE_PATH=~/.rye/shims/rye
-    curl -sSf https://rye-up.com/get | RYE_TOOLCHAIN_VERSION="3.11" RYE_INSTALL_OPTION="--yes" bash \
-    && $RYE_PATH config --set-bool behavior.global-python=true \
-    && $RYE_PATH config --set-bool behavior.use-uv=true
+    curl -LsSf https://rye-up.com/get | RYE_TOOLCHAIN_VERSION="3.11" RYE_INSTALL_OPTION="--yes" bash &&
+      $RYE_PATH config --set-bool behavior.global-python=true &&
+      $RYE_PATH config --set-bool behavior.use-uv=true
     $RYE_PATH install pip
     PIP_PATH=~/.rye/shims/pip
     $PIPPATH install pynvim # neovim パッケージは古いので、pynvimを使う
   )
 
   (
-     asdf plugin add rust
-     asdf install rust latest
-     # vim ~/.zshrc.local
-     # source "/Users/enotiru/.asdf/installs/rust/1.76.0/env"
-     asdf global rust 1.76.0
-     rustup component add rust-src
-     rustup component add rust-analyzer
-   )
+    asdf plugin add rust
+    asdf install rust latest
+    # vim ~/.zshrc.local
+    # source "/Users/enotiru/.asdf/installs/rust/1.76.0/env"
+    asdf global rust 1.76.0
+    rustup component add rust-src
+    rustup component add rust-analyzer
+  )
 
   # for nvim
   ln -sf ${DOTFILES}/neovim/init.lua ${HOME}/.config/nvim/init.lua
@@ -397,7 +396,6 @@ install_binary_from_tar_gz() {
     echo ${name} 'is already installed'
   fi
 }
-
 
 setup_asdf() {
   if [ ! -e ${HOME}/.asdf ]; then

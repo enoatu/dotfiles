@@ -59,6 +59,11 @@ require("lazy").setup({
                     "$",
                     { noremap = true, silent = true, desc = "行末に移動" },
                 },
+                {
+                    "<C-q>",
+                    ":b #<CR>",
+                    { noremap = true, silent = true, desc = "前回のバッファに移動" },
+                },
             },
         },
         { -- #A32B26 等の文字列に色をつける
@@ -203,6 +208,31 @@ require("lazy").setup({
                 })
             end,
             enabled = false,
+        },
+        {
+            "enoatu/nvim-smartchr",
+            enabled = false,
+            config = function()
+                require("nvim-smartchr").setup({
+                    mappings = {
+                        default = {
+                            { ".", { ".", " . " }, { loop = true } },
+                            { ",", { ", ", "," }, { loop = true } },
+                            { "&", { " & ", " && ", "&" }, { loop = true } },
+                            { "?", { "? ", "?" }, { loop = true } },
+                            { "=", { " = ", " => ", " == ", " === ", "=" }, { loop = true } },
+                        },
+                        ["perl|php|python|rust"] = {
+                            { "-", { "->", " - ", "--", "-" } },
+                            { ":", { "::", ": ", ":" }, { loop = true } },
+                        },
+                        ["tt2html"] = {
+                            { "[", { "[%", "[%-", "[" } },
+                            { "]", { "%]", "-%]", "]" } },
+                        },
+                    },
+                })
+            end,
         },
         {
             "linux-cultist/venv-selector.nvim",

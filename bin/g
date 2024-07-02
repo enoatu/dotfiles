@@ -89,8 +89,7 @@ gb() { ## git branch 一覧を表示する
   done | fzf | awk '{print $1}' | xargs git checkout
 }
 adddesc() { ## add-desc 現在のブランチに説明をつける
-  echo $1 $2 $3
-  description="${@:1}"
+  local description="$@"
   if [ -z "$description" ]; then
     echo "description is required"
     return 1
@@ -100,14 +99,15 @@ adddesc() { ## add-desc 現在のブランチに説明をつける
     echo "not a git repository"
     return 1
   fi
-  local description
   GIT_BRANCH_DESCRIPTIONS_PATH=enotiru-my-box/git-branch-descriptions
   if [ ! -f $GIT_BRANCH_DESCRIPTIONS_PATH ]; then
     touch $GIT_BRANCH_DESCRIPTIONS_PATH
   fi
   # git-branch-descriptions にbranchname,descriptionの形式で保存する
-  # すでにある場合は行ごと上書きする
-  sed -i '' -e "/$current_branch/d" $GIT_BRANCH_DESCRIPTIONS_PATH
+  # すでにある場合は行ごと上書きする sed で置換する
+  # 必須: スラッシュが入っているのでエスケープが必要
+
+  sed -i -e "\#$current_branch#d" $GIT_BRANCH_DESCRIPTIONS_PATH
   echo "$current_branch,$description" >> $GIT_BRANCH_DESCRIPTIONS_PATH
 }
 
