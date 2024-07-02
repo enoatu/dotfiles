@@ -69,8 +69,6 @@ require("lazy").setup({
         { -- #A32B26 等の文字列に色をつける
             "norcalli/nvim-colorizer.lua",
             config = function()
-                vim.o.termguicolors = true
-                vim.o.t_Co = 256
                 require("colorizer").setup()
             end,
         },
