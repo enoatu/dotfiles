@@ -250,11 +250,6 @@ require("lazy").setup({
                 { "<leader>vc", "<cmd>VenvSelectCached<cr>" },
             },
         },
-        {
-            "numirias/semshi",
-            enabled = true,
-            build = ":UpdateRemotePlugins",
-        },
         { -- 囲む
             "kylechui/nvim-surround",
             config = function()
