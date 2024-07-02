@@ -22,6 +22,10 @@ done
 
 main() {
   cd ${HOME}/dotfiles
+  # -- もし実行ユーザーとdotfilesの所有者が異なる場合は権限を変更する linux docker 用
+  # if [ "$(whoami)" != "$(stat -c %U ${DOTFILES})" ]; then
+  #   sudo chown -R $(whoami) ${DOTFILES}
+  # fi
   echo '? (all or nvim or zsh or tmux or git or tools or additional(a)) '
   read answer
   case "$answer" in
