@@ -136,6 +136,12 @@ require("lazy").setup({
                     end,
                 })
                 require("scrollbar.handlers.gitsigns").setup()
+                vim.api.nvim_create_autocmd("FileType", {
+                    pattern = "python",
+                    callback = function()
+                        vim.b.coc_root_patterns = { ".env" }
+                    end,
+                })
             end,
         },
         { -- スクロールバーを表示
@@ -464,6 +470,11 @@ require("lazy").setup({
                 -- [dと]dを使用して診断情報をナビゲート
                 vim.keymap.set("n", "[d", "<Plug>(coc-diagnostic-prev)", { silent = true })
                 vim.keymap.set("n", "]d", "<Plug>(coc-diagnostic-next)", { silent = true })
+
+                -- pythonなど、見えにくいので調整
+                vim.api.nvim_set_hl(0, "CocInlayHint", { fg = "lightgray", bg = "darkcyan" })
+                vim.api.nvim_set_hl(0, "CocInlayHintType", { fg = "lightgray", bg = "darkcyan" })
+                vim.api.nvim_set_hl(0, "CocInlayHintParameter", { fg = "lightgray", bg = "darkcyan" })
             end,
         },
         -- lazy plugins: https://www.lazyvim.org/plugins
