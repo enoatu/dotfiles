@@ -1069,6 +1069,9 @@ require("lazy").setup({
                 })
             end,
         },
+        {
+            "iamcco/markdown-preview.nvim",
+        },
         { -- アニメーションで現在のインデントを教えてくれる
             "echasnovski/mini.indentscope",
             enabled = false,

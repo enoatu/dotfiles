@@ -7,7 +7,7 @@
   "intelephense.diagnostics.undefinedMethods": false,
   "intelephense.diagnostics.undefinedProperties": false,
   "intelephense.diagnostics.undefinedTypes":false,
-  "snippets.loadVSCodeProjectSnippets": false, // workspaceFolder/.vscodeからロードしない
+  // "snippets.loadVSCodeProjectSnippets": false, // workspaceFolder/.vscodeからロードしない
   "languageserver": {
     "terraform": {
       "command": "terraform-lsp",
@@ -19,8 +19,7 @@
       "settings": {}
     }
   },
-  "cSpell.diagnosticLevel": "hints",
-  "diagnostic.checkCurrentLine": true,
+  "cSpell.diagnosticLevel": "Hint",
   "diagnostic.infoSign": "",
   "diagnostic.hintSign": "",
   "diagnostic.warningSign": "⚠️",
@@ -73,10 +72,10 @@
   "cSpell.userWords": [
     "eyecatch"
   ],
-  "snippets.ultisnips.pythonPrompt": false,
-  "python.linting.pylintEnabled": false,
-  "python.linting.mypyEnabled": true,
-  "python.linting.enabled": true,
+  //"snippets.ultisnips.pythonPrompt": false,
+  //"python.linting.pylintEnabled": false,
+  //"python.linting.mypyEnabled": true,
+  //"python.linting.enabled": true,
   "jedi": {
     "workspace": {
       "environmentPath": "/Users/enotiru/.rye/shims/python"
@@ -84,5 +83,7 @@
     "executable": {
       "command": "/Users/enotiru/.rye/tools/pip/bin/jedi-language-server",
     }
-  }
+  },
+  //"python.analysis.indexing": true,
+  //"python.analysis.packageIndexDepths": [["", 10],],
 }
