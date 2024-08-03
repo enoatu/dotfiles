@@ -4,50 +4,41 @@ set -eu
 PRIVATE_DOTFILES="$HOME/dotfiles/private-dotfiles"
 
 main() {
-    echo '? gitconfig(git) or project_root(pr)'
-    read answer
-    case "$answer" in
-    gitconfig)
-        change_gitconfig
-        ;;
-    git)
-        change_gitconfig
-        ;;
-    *)
-        printf "\e[30;42;1mexit\e[m\n"
-        ;;
-    esac
-    exec $SHELL -l
+  echo '? gitconfig(git) or project_root(pr)'
+  read answer
+  case "$answer" in
+  gitconfig)
+    change_gitconfig
+    ;;
+  git)
+    change_gitconfig
+    ;;
+  *)
+    printf "\e[30;42;1mexit\e[m\n"
+    ;;
+  esac
+  exec $SHELL -l
 }
 
 change_gitconfig() {
-    echo '? (my or moove(m) or moove.proxy(mp)) '
-    read git_answer
-    case "$git_answer" in
-    my)
-        ln -sf $PRIVATE_DOTFILES/git/gitconfig.my ~/.gitconfig
-        printf "\e[30;42;1mchanged\e[m\n"
-        ;;
-    m)
-        ln -sf $PRIVATE_DOTFILES/git/gitconfig.moove ~/.gitconfig
-        printf "\e[30;42;1mchanged\e[m\n"
-        ;;
-    moove)
-        ln -sf $PRIVATE_DOTFILES/git/gitconfig.moove ~/.gitconfig
-        printf "\e[30;42;1mchanged\e[m\n"
-        ;;
-    mp)
-        ln -sf $PRIVATE_DOTFILES/git/gitconfig.moove-proxy ~/.gitconfig
-        printf "\e[30;42;1mchanged\e[m\n"
-        ;;
-    moove.proxy)
-        ln -sf $PRIVATE_DOTFILES/git/gitconfig.moove-proxy ~/.gitconfig
-        printf "\e[30;42;1mchanged\e[m\n"
-        ;;
-    *)
-        printf "\e[30;42;1mexit\e[m\n"
-        ;;
-    esac
+  echo '? (moove(m) or moove.proxy(mp)) '
+  read git_answer
+  case "$git_answer" in
+  m)
+    git config --global --unset http.proxy
+    git config --global --unset https.proxy
+    printf "\e[30;42;1mchanged\e[m\n"
+    ;;
+  mp)
+    git config --global http.proxy socks5://127.0.0.1:1080
+    git config --global https.proxy socks5://127.0.0.1:1080
+    ln -sf $PRIVATE_DOTFILES/git/gitconfig.moove-proxy ~/.gitconfig
+    printf "\e[30;42;1mchanged\e[m\n"
+    ;;
+  *)
+    printf "\e[30;42;1mexit\e[m\n"
+    ;;
+  esac
 }
 
 main

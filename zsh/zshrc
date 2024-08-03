@@ -101,66 +101,6 @@ gitstashpopreset() {
 
 alias v='(){vim $(gitdiffls $1)}'
 
-gs() {
-  #git diff master HEAD --name-only
-  git status
-}
-
-#サブモジュールごとに実行する
-s() {
-  (
-    CURRENT_DIR=$(pwd)
-    function catch {
-      # 失敗したらカレントディレクトリへ
-      cd $CURRENT_DIR
-    }
-    trap catch ERR
-
-    if [ -z "$1" ]; then
-        echo "Missing Command" >&2
-        return
-    fi
-
-    IFS=$'\n'
-    for DIR in $(git submodule foreach -q sh -c pwd); do
-      (
-        echo "[[$DIR]]>>"
-        cd "$DIR" && "$@"
-      ) &
-    done
-    wait
-  )
-}
-
-dr() {
-  local dirs=$HOME/dotfiles/.dirs
-  arg=$1
-  if [ -z "$arg" ]; then
-    # fzf でディレクトリを選択 プレビューは表示しない
-    target_dir=$(tac $dirs | fzf --height 40% --reverse --border --preview-window=hidden | awk -F"\t" '{print $2}' | head -n1)
-    [ -z $target_dir ] && return 1
-    cd $target_dir
-  elif [ "$arg" = '-l' ]; then
-    cat $dirs
-  else
-    target_dir=$(tac $dirs | awk -F"\t" -v arg=$arg '$1 == arg {print $2}' | head -n1)
-    [ -z $target_dir ] && return 1
-    cd $target_dir
-  fi
-}
-
-dw() {
-  local dirs=$HOME/dotfiles/.dirs
-  arg=$1
-  if [ -z "$arg" ]; then
-    return;
-  elif [ "$arg" = '-l' ]; then
-    cat $dirs
-  else
-    echo "$arg\t`pwd`" >> $dirs
-  fi
-}
-
 # backspace,deleteキーを使えるように
 stty erase '^H'
 stty erase '^?'
@@ -172,10 +112,6 @@ zstyle ':completion:*:default' menu select=2
 
 # 補完で大文字にもマッチ
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
-
-# Ctrl+rでヒストリーのインクリメンタルサーチ、Ctrl+sで逆順
-# bindkey '^r' history-incremental-pattern-search-backward
-# bindkey '^s' history-incremental-pattern-search-forward
 
 export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'
 setopt hist_ignore_all_dups  # 重複するコマンドラインは古い方を削除する
@@ -214,14 +150,6 @@ export PATH="$HOME/dotfiles/neovim/install/nvim/bin:$PATH"
 # [ -d ../node/.nodenv ] && eval "$(nodenv init -)"
 # [ -f ../node/node_modules/zx/zx.mjs ] && export PATH="
 export PATH="/usr/local/bin:$PATH"
-#autoload -Uz vcs_info
-#setopt prompt_subst
-#zstyle ':vcs_info:git:*' check-for-changes true
-#zstyle ':vcs_info:git:*' stagedstr "%F{yellow}!"
-#zstyle ':vcs_info:git:*' unstagedstr "%F{red}+"
-#zstyle ':vcs_info:*' formats "%F{green}%c%u[%b]%f"
-#zstyle ':vcs_info:*' actionformats '[%b|%a]'
-#precmd () { vcs_info }
 
 get_git_branch_description() {
   # git-branch-descriptions がない場合return
@@ -262,10 +190,9 @@ for d in $(find ${ASDF_DIR}/installs -maxdepth 1 -mindepth 1 -type d); do
 done
 
 # gitリポジトリにいる場合、set-messageフックでgit-config-user関数が呼び出されるように登録
-
 # "+vi-<フック名>"関数で、hook_com[misc]にgit config user.emailの結果を代入する
 function +vi-git-config-user(){
-  hook_com[misc]+=`readlink  ~/.gitconfig | cut -f 2 -d '.'`
+  hook_com[misc]+=$(git config user.name)
 }
 
 function +vi-git-stash-count {
@@ -275,6 +202,22 @@ function +vi-git-stash-count {
   fi
 }
 
+DOTFILES=${HOME}/dotfiles
+if [ ! -e ${DOTFILES}/zsh/fzf.zsh ]; then
+  (
+    cd ${DOTFILES}/zsh
+    git clone https://github.com/junegunn/fzf.git ./fzf
+    ./fzf/install --no-fish --no-bash
+    mv ${HOME}/.fzf.zsh ${DOTFILES}/zsh/fzf.zsh
+  )
+fi
+if [ ! -e ${DOTFILES}/zsh/zsh-autosuggestions.zsh ]; then
+  (
+    cd ${DOTFILES}/zsh
+    git clone https://github.com/zsh-users/zsh-autosuggestions ./zsh-autosuggestions
+    mv ./zsh-autosuggestions/zsh-autosuggestions.zsh ${DOTFILES}/zsh/zsh-autosuggestions.zsh
+  )
+fi
 ## tmux ログイン時起動
 #[[ $- != *i* ]] && return
 #[[ -z "$TMUX" ]] && exec tmux
@@ -286,3 +229,76 @@ export PATH="$HOME/.rye/tools/pip/bin:$PATH"
 
 # bun completions
 [ -s "~/.bun/_bun" ] && source "~/.bun/_bun"
+
+
+#サブモジュールごとに実行する
+s() {
+  (
+    CURRENT_DIR=$(pwd)
+    function catch {
+      # 失敗したらカレントディレクトリへ
+      cd $CURRENT_DIR
+    }
+    trap catch ERR
+
+    if [ -z "$1" ]; then
+        echo "Missing Command" >&2
+        return
+    fi
+
+    IFS=$'\n'
+    TMP_DIR=$(mktemp -d)
+    for DIR in $(git submodule foreach -q sh -c pwd); do
+      (
+        cd "$DIR"
+        OUTPUT=$("$@" 2>&1)
+        BASENAME=$(basename "$DIR")
+        echo "$OUTPUT" > "$TMP_DIR/$BASENAME.log"
+      ) &
+    done
+    wait
+
+    for LOG in "$TMP_DIR"/*.log; do
+      BASENAME=$(basename "$LOG" .log)
+      echo "[[$BASENAME]]>>"
+      cat "$LOG"
+    done
+
+    rm -rf "$TMP_DIR"
+  )
+}
+
+gs() {
+  #git diff master HEAD --name-only
+  git status
+}
+
+dr() {
+  local dirs=$HOME/dotfiles/.dirs
+  arg=$1
+  if [ -z "$arg" ]; then
+    # fzf でディレクトリを選択 プレビューは表示しない
+    target_dir=$(tac $dirs | fzf --height 40% --reverse --border --preview-window=hidden | awk -F"\t" '{print $2}' | head -n1)
+    [ -z $target_dir ] && return 1
+    cd $target_dir
+  elif [ "$arg" = '-l' ]; then
+    cat $dirs
+  else
+    target_dir=$(tac $dirs | awk -F"\t" -v arg=$arg '$1 == arg {print $2}' | head -n1)
+    [ -z $target_dir ] && return 1
+    cd $target_dir
+  fi
+}
+
+dw() {
+  local dirs=$HOME/dotfiles/.dirs
+  arg=$1
+  if [ -z "$arg" ]; then
+    return;
+  elif [ "$arg" = '-l' ]; then
+    cat $dirs
+  else
+    echo "$arg\t`pwd`" >> $dirs
+  fi
+}
+
