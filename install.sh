@@ -4,9 +4,9 @@ set -ue
 
 DOTFILES="${HOME}/dotfiles"
 ADDITIONAL_DOTFILES=${ADDITIONAL_DOTFILES:-"${DOTFILES}/private-dotfiles"}
-ADDITIONAL_REPO_URL=${ADDITIONAL_REPO_URL:-"https://enoatu@github.com/enoatu/private-dotfiles.git"}
 ADDITIONAL_REPO_BRANCH=${ADDITIONAL_REPO_BRANCH:-"main"}
 ADDITIONAL_REPO_GITHUB_TOKEN=${ADDITIONAL_REPO_GITHUB_TOKEN:-$TOKEN}
+ADDITIONAL_REPO_URL=${ADDITIONAL_REPO_URL:-"https://${ADDITIONAL_REPO_GITHUB_TOKEN}@github.com/enoatu/private-dotfiles.git"}
 
 # tool
 BAT_VERSION="0.18.3"
@@ -133,11 +133,7 @@ setup_additional_dotfiles() {
   (
     if [ ! -e ${ADDITIONAL_DOTFILES} ]; then
       # ADDITIONAL_REPO_GITHUB_TOKEN が設定されている場合は、トークンを使ってクローンする
-      if [ -n "${ADDITIONAL_REPO_GITHUB_TOKEN}" ]; then
-        git clone https://${ADDITIONAL_REPO_GITHUB_TOKEN}@${ADDITIONAL_REPO_URL} ${ADDITIONAL_DOTFILES}
-      else
-        git clone ${ADDITIONAL_REPO_URL} ${ADDITIONAL_DOTFILES}
-      fi
+      git clone ${ADDITIONAL_REPO_URL} ${ADDITIONAL_DOTFILES}
       cd ${ADDITIONAL_DOTFILES}
       git checkout ${ADDITIONAL_REPO_BRANCH}
     fi
