@@ -71,7 +71,7 @@ setup_tmux() {
 install_neovim() {
   _print_start
 
-  install_asdf
+  _install_asdf
 
   installs=(
     neovim@${NEOVIM_VERSION}
@@ -114,6 +114,8 @@ install_neovim() {
 setup_tools() {
   _print_start
   (
+    _install_asdf
+
     installs=(
       bat@${BAT_VERSION}
       delta@${DELTA_VERSION}
