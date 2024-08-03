@@ -207,7 +207,7 @@ if [ ! -e ${DOTFILES}/zsh/fzf.zsh ]; then
   (
     cd ${DOTFILES}/zsh
     git clone https://github.com/junegunn/fzf.git ./fzf
-    ./fzf/install --no-fish --no-bash
+    ./fzf/install --no-fish --no-bash --all
     mv ${HOME}/.fzf.zsh ${DOTFILES}/zsh/fzf.zsh
   )
 fi
