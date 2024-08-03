@@ -79,11 +79,11 @@ setup_neovim() {
     nodejs@${NODE_VERSION}
     ripgrep@${RIPGREP_VERSION}
     rye@${RYE_VERSION}
-    # "perl ${PERL_VERSION}" # cpan Neovim::Ext
-    # "ruby ${RUBY_VERSION}" # gem install neovim
-    # "python ${PYTHON_VERSION}"
-    # "rust ${RUST_VERSION}" #source "/Users/enotiru/.asdf/installs/rust/1.76.0/env" && rustup component add rust-src rust-analyzer
   )
+  # "perl ${PERL_VERSION}" # cpan Neovim::Ext
+  # "ruby ${RUBY_VERSION}" # gem install neovim
+  # "python ${PYTHON_VERSION}"
+  # "rust ${RUST_VERSION}" #source "/Users/enotiru/.asdf/installs/rust/1.76.0/env" && rustup component add rust-src rust-analyzer
   _asdf_install $installs | _or_fail 'asdf install failed'
 
   if [ -e ${HOME}/.config/nvim ]; then
@@ -135,7 +135,6 @@ setup_additional_dotfiles() {
   _print_start
   (
     if [ ! -e ${ADDITIONAL_DOTFILES} ]; then
-      # ADDITIONAL_REPO_GITHUB_TOKEN が設定されている場合は、トークンを使ってクローンする
       git clone ${ADDITIONAL_REPO_URL} ${ADDITIONAL_DOTFILES}
       cd ${ADDITIONAL_DOTFILES}
       git checkout ${ADDITIONAL_REPO_BRANCH}
