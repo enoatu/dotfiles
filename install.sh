@@ -5,7 +5,7 @@ set -ue
 DOTFILES="${HOME}/dotfiles"
 ADDITIONAL_DOTFILES=${ADDITIONAL_DOTFILES:-"${DOTFILES}/private-dotfiles"}
 ADDITIONAL_REPO_BRANCH=${ADDITIONAL_REPO_BRANCH:-"main"}
-ADDITIONAL_REPO_GITHUB_TOKEN=${ADDITIONAL_REPO_GITHUB_TOKEN:-$TOKEN}
+ADDITIONAL_REPO_GITHUB_TOKEN=${ADDITIONAL_REPO_GITHUB_TOKEN:-""}
 ADDITIONAL_REPO_URL=${ADDITIONAL_REPO_URL:-"https://${ADDITIONAL_REPO_GITHUB_TOKEN}@github.com/enoatu/private-dotfiles.git"}
 
 # tool
@@ -32,6 +32,7 @@ main() {
   setup_zsh
   setup_git
   setup_tmux
+  setup_neovim
   setup_tools
   setup_additional_dotfiles
   echo "done"
@@ -68,7 +69,7 @@ setup_tmux() {
   _print_complete
 }
 
-install_neovim() {
+setup_neovim() {
   _print_start
 
   _install_asdf
