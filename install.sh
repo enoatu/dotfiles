@@ -8,6 +8,9 @@ ADDITIONAL_REPO_BRANCH=${ADDITIONAL_REPO_BRANCH:-"main"}
 ADDITIONAL_REPO_GITHUB_TOKEN=${ADDITIONAL_REPO_GITHUB_TOKEN:-""}
 ADDITIONAL_REPO_URL=${ADDITIONAL_REPO_URL:-"https://${ADDITIONAL_REPO_GITHUB_TOKEN}@github.com/enoatu/private-dotfiles.git"}
 
+# asdf
+ASDF_VERSION="12.0.0"
+
 # tool
 BAT_VERSION="0.18.3"
 DELTA_VERSION="0.16.5"
@@ -84,7 +87,7 @@ setup_neovim() {
   # "ruby ${RUBY_VERSION}" # gem install neovim
   # "python ${PYTHON_VERSION}"
   # "rust ${RUST_VERSION}" #source "/Users/enotiru/.asdf/installs/rust/1.76.0/env" && rustup component add rust-src rust-analyzer
-  _asdf_install $installs | _or_fail 'asdf install failed'
+  _asdf_install $installs || _or_fail 'asdf install failed'
 
   if [ -e ${HOME}/.config/nvim ]; then
     rm -rf ${HOME}/.config/nvim
@@ -168,7 +171,7 @@ _asdf_install() {
 
 _install_asdf() {
   if [ ! -e ${HOME}/.asdf ]; then
-    git clone https://github.com/asdf-vm/asdf.git ${HOME}/.asdf --branch v0.14.0
+    git clone https://github.com/asdf-vm/asdf.git ${HOME}/.asdf --branch v${ASDF_VERSION}
   else
     echo 'asdf is already installed'
   fi
@@ -185,7 +188,7 @@ _print_complete() {
 
 _or_fail() {
   if [ $? -ne 0 ]; then
-    echo $1
+    printf "\e[30;41;1madditional_dotfiles failed\e[m $1 $* \n\n"
     exit 1
   fi
 }
