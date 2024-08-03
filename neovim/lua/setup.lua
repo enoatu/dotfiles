@@ -288,6 +288,7 @@ require("lazy").setup({
         },
         {
             "tzachar/cmp-tabnine",
+            enabled = false,
             build = "./install.sh",
             config = function()
                 local tabnine = require("cmp_tabnine.config")
@@ -425,7 +426,7 @@ require("lazy").setup({
             "neoclide/coc.nvim",
             -- 最新版だとcoc-tsserverが動かない
             commit = "fab97c7db68f24e5cc3c1cf753d3bd1819beef8f",
-            build = ":call coc#util#install()",
+            build = "yarn install --frozen-lockfile",
             init = function()
                 -- vim.g.coc_node_path = node_path
                 -- インストール時実行
@@ -574,7 +575,7 @@ require("lazy").setup({
                         }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
                     }),
                     sources = cmp.config.sources({
-                        { name = "cmp_tabnine", priority = 8 },
+                        -- { name = "cmp_tabnine", priority = 8 },
                         { name = "copilot", priority = 7 },
                         { name = "cmp-copilot", priority = 6 },
                         { name = "nvim_lsp" },
@@ -590,7 +591,7 @@ require("lazy").setup({
                                 buffer = "[Buffer]",
                                 nvim_lsp = "[LSP]",
                                 nvim_lua = "[Lua]",
-                                cmp_tabnine = "[TN]",
+                                -- cmp_tabnine = "[TN]",
                                 path = "[Path]",
                             }
                             if icons[item.kind] then
@@ -599,17 +600,17 @@ require("lazy").setup({
                                 item.kind = lspkind.symbolic(item.kind, { mode = "symbol" })
                             end
                             item.menu = source_mapping[entry.source.name]
-                            if entry.source.name == "cmp_tabnine" then
-                                local detail = (entry.completion_item.labelDetails or {}).detail
-                                item.kind = ""
-                                if detail and detail:find(".*%%.*") then
-                                    item.kind = item.kind .. " " .. detail
-                                end
+                            -- if entry.source.name == "cmp_tabnine" then
+                            --     local detail = (entry.completion_item.labelDetails or {}).detail
+                            --     item.kind = ""
+                            --     if detail and detail:find(".*%%.*") then
+                            --         item.kind = item.kind .. " " .. detail
+                            --     end
 
-                                if (entry.completion_item.data or {}).multiline then
-                                    item.kind = item.kind .. " " .. "[ML]"
-                                end
-                            end
+                            --     if (entry.completion_item.data or {}).multiline then
+                            --         item.kind = item.kind .. " " .. "[ML]"
+                            --     end
+                            -- end
                             local maxwidth = 80
                             item.abbr = string.sub(item.abbr, 1, maxwidth)
                             return item
