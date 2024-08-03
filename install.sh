@@ -122,12 +122,12 @@ setup_tools() {
 
     installs=(
       bat@${BAT_VERSION}
-      delta@${DELTA_VERSION}
+      delta@${DELTA_VERSION}@REPO_URL=https://github.com/pedropombeiro/asdf-delta.git
       fd@${FD_VERSION}
       nodejs@${NODE_VERSION}
       ripgrep@${RIPGREP_VERSION}
       rye@${RYE_VERSION}
-      tmux@${TMUX_VERSION}@IF_NOT_EXISTS:tmux
+      tmux@${TMUX_VERSION}@IF_NOT_EXISTS_COMMAND=tmux
     )
     _asdf_install $installs || _or_fail 'install failed'
   )
@@ -152,20 +152,28 @@ setup_additional_dotfiles() {
 _asdf_install() {
   # 引数を配列に変換
   for item in "$@"; do
-    IFS='@' read -r name version if_not_exists<<<"$item"
+    IFS='@' read -r name version option<<<"$item"
     echo "installing $name $version >>>>>>"
-    if [ -n "$if_not_exists" ]; then
-      IFS=':' read -r if_not_exists if_not_exists_command<<<"$if_not_exists"
-      if [[ -n $(which $if_not_exists_command) ]]; then
-        echo "$if_not_exists_command is already installed"
-        continue
-      fi
-    else
-      asdf plugin add $name
-      asdf install $name $version
-      asdf global $name $version
-      echo "installed $name $version\n"
+    REPO_URL=''
+    if [ -n "$option" ]; then
+      IFS='=' read -r option_key option_value<<<"$option"
+      case $option_key in
+        IF_NOT_EXISTS_COMMAND)
+          if_not_exists_command=$option_value
+          if [[ -n $(which $if_not_exists_command) ]]; then
+            echo "$if_not_exists_command is already installed"
+            continue
+          fi
+          ;;
+        REPO_URL)
+          REPO_URL=$option_value
+          ;;
+      esac
     fi
+    asdf plugin add $name $REPO_URL
+    asdf install $name $version
+    asdf global $name $version
+    echo "installed $name $version\n"
   done
 }
 
