@@ -201,6 +201,8 @@ _install_asdf() {
     echo 'asdf is already installed'
   fi
   . ${HOME}/.asdf/asdf.sh
+  # 一時的に追加
+  export PATH="$HOME/.asdf/bin:$HOME/.asdf/shims:$PATH"
   rehash
   _test_exists_files ${HOME}/.asdf/asdf.sh
 }
