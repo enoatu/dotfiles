@@ -19,7 +19,7 @@ WORKDIR /root
 
 ## -----need sudo-------
 RUN \
-  apt-get update && \
+  apt update && \
   apt-get install -y zsh tar \
   curl git \
   locales language-pack-ja \

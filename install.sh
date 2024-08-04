@@ -179,6 +179,7 @@ _asdf_install() {
     cmd=''
     if_not_exists_command=''
     if [[ -n $opts ]]; then
+      should_continue=false
       IFS=','
       for opt in $opts; do
         IFS=':'
@@ -193,12 +194,14 @@ _asdf_install() {
           IF_NOT_EXISTS_COMMAND)
             if [[ -n $(which $option_value) ]]; then
               echo "$option_value is already installed"
+              should_continue=true
               continue
             fi
             ;;
         esac
         IFS=','
       done
+      [[ $should_continue == true ]] && continue
       IFS='@'
     fi
     asdf plugin add $name $repo_url

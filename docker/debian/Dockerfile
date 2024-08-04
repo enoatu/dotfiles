@@ -13,7 +13,6 @@ WORKDIR /root
 ## -----need sudo-------
 RUN \
     apt update && \
-    apt-get update && \
     apt-get install -y zsh tar \
     curl git \
     locales \
