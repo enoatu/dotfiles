@@ -50,6 +50,7 @@ setup_zsh() {
 
   ln -sf ${DOTFILES}/zsh/zshrc ${HOME}/.zshrc
   _test_exists_files ${HOME}/.zshrc
+  source ${HOME}/.zshrc
   echo 'Please exec "source ~${HOME}/.zshrc"'
 
   _print_complete
