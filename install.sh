@@ -32,11 +32,11 @@ RUST_VERSION="1.55.0"
 #   sudo chown -R $(whoami) ${DOTFILES}
 # fi
 main() {
-  setup_tools
   setup_zsh
   setup_git
   setup_tmux
   setup_neovim
+  setup_tools
   setup_additional_dotfiles
   echo "done"
 }
@@ -142,13 +142,13 @@ setup_tools() {
     _install_asdf
 
     installs=(
-      "tmux@${TMUX_VERSION}@CMD:tmux,IF_NOT_EXISTS_COMMAND:tmux"
       "bat@${BAT_VERSION}@CMD:bat"
       "delta@${DELTA_VERSION}@CMD:delta,REPO_URL:https://github.com/pedropombeiro/asdf-delta.git"
       "fd@${FD_VERSION}@CMD:fd"
       "nodejs@${NODE_VERSION}@CMD:node"
       "ripgrep@${RIPGREP_VERSION}@CMD:rg"
       "rye@${RYE_VERSION}@CMD:rye"
+      "tmux@${TMUX_VERSION}@CMD:tmux,IF_NOT_EXISTS_COMMAND:tmux"
     )
     _asdf_install $installs || fail 'install failed'
   )
@@ -179,9 +179,13 @@ _asdf_install() {
     cmd=''
     if_not_exists_command=''
     if [[ -n $opts ]]; then
-      should_continue=false
-      IFS=','
-      for opt in $opts; do
+      option_list=()
+      while [[ $opts ]]; do
+        IFS=',' read -r opt rest <<< "$opts"
+        option_list+=("$opt")
+        opts=$rest
+      done
+      for opt in "${option_list[@]}"; do
         IFS=':'
         read -r option_key option_value <<<"$opt"
         case $option_key in
