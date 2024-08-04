@@ -10,6 +10,7 @@ ADDITIONAL_REPO_URL=${ADDITIONAL_REPO_URL:-"https://${ADDITIONAL_REPO_GITHUB_TOK
 
 # asdf
 ASDF_VERSION="12.0.0"
+export BASH_VERSION="3.2.57" # for asdf
 
 # tool
 BAT_VERSION="0.18.3"
@@ -45,6 +46,7 @@ setup_zsh() {
   _print_start
 
   ln -sf ${DOTFILES}/zsh/zshrc ${HOME}/.zshrc
+  _test_exists_files ${HOME}/.zshrc
   echo 'Please exec "source ~${HOME}/.zshrc"'
 
   _print_complete
@@ -54,7 +56,7 @@ setup_git() {
   _print_start
 
   ln -sf ${DOTFILES}/git/gitconfig ${HOME}/.gitconfig
-  ln -sf ${DOTFILES}/git/gitignore ${HOME}/.gitignore_global
+  _test_exists_files ${HOME}/.gitconfig
 
   _print_complete
 }
@@ -78,21 +80,18 @@ setup_neovim() {
   _install_asdf
 
   installs=(
-    neovim@${NEOVIM_VERSION}
-    nodejs@${NODE_VERSION}
-    ripgrep@${RIPGREP_VERSION}
-    rye@${RYE_VERSION}
+    "neovim@${NEOVIM_VERSION}@CMD:nvim"
+    "nodejs@${NODE_VERSION}@CMD:node"
+    "ripgrep@${RIPGREP_VERSION}@CMD:rg"
+    "rye@${RYE_VERSION}@CMD:rye"
   )
   # "perl ${PERL_VERSION}" # cpan Neovim::Ext
   # "ruby ${RUBY_VERSION}" # gem install neovim
   # "python ${PYTHON_VERSION}"
   # "rust ${RUST_VERSION}" #source "/Users/enotiru/.asdf/installs/rust/1.76.0/env" && rustup component add rust-src rust-analyzer
-  _asdf_install $installs || _or_fail 'asdf install failed'
+  _asdf_install $installs || fail 'asdf install failed'
 
-  if [ -e ${HOME}/.config/nvim ]; then
-    rm -rf ${HOME}/.config/nvim
-  fi
-  mkdir -p ${HOME}/.config/nvim
+  rm -rf ${HOME}/.config/nvim && mkdir -p ${HOME}/.config/nvim
 
   # ~/.asdf/.tool_versions (ローカルでないことに注意) に golang 1.21 など記載することでプラグインエラーを回避できる
   asdf local nodejs ${NODE_VERSION} # coc.nvim で使う
@@ -103,6 +102,7 @@ setup_neovim() {
   rye config --set-bool behavior.use-uv=true
   rye install pip | true
   ~/.rye/shims/pip install pynvim # neovim パッケージは古いので、pynvimを使う
+  _test_exists_commands pip
 
   # for nvim
   ln -sf ${DOTFILES}/neovim/init.lua ${HOME}/.config/nvim/init.lua
@@ -111,6 +111,12 @@ setup_neovim() {
   ln -sf ${DOTFILES}/neovim/lazy-lock.json ${HOME}/.config/nvim/lazy-lock.json
   ln -sf ${DOTFILES}/neovim/.editorconfig ${HOME}/.editorconfig
   cp ${DOTFILES}/neovim/lua/env.lua.sample ${DOTFILES}/neovim/lua/env.lua
+  _test_exists_files \
+    ${HOME}/.config/nvim/init.lua \
+    ${HOME}/.config/nvim/lua \
+    ${HOME}/.config/nvim/coc-settings.json \
+    ${HOME}/.config/nvim/lazy-lock.json \
+    ${HOME}/.editorconfig
 
   _print_complete
 }
@@ -121,15 +127,15 @@ setup_tools() {
     _install_asdf
 
     installs=(
-      bat@${BAT_VERSION}
-      delta@${DELTA_VERSION}@REPO_URL=https://github.com/pedropombeiro/asdf-delta.git
-      fd@${FD_VERSION}
-      nodejs@${NODE_VERSION}
-      ripgrep@${RIPGREP_VERSION}
-      rye@${RYE_VERSION}
-      tmux@${TMUX_VERSION}@IF_NOT_EXISTS_COMMAND=tmux
+      "bat@${BAT_VERSION}@CMD:bat"
+      "delta@${DELTA_VERSION}@CMD:delta,REPO_UR:https://github.com/pedropombeiro/asdf-delta.git"
+      "fd@${FD_VERSION}@CMD:fd"
+      "nodejs@${NODE_VERSION}@CMD:node"
+      "ripgrep@${RIPGREP_VERSION}@CMD:rg"
+      "rye@${RYE_VERSION}@CMD:rye"
+      "tmux@${TMUX_VERSION}@CMD:tmux,IF_NOT_EXISTS_COMMAND:tmux"
     )
-    _asdf_install $installs || _or_fail 'install failed'
+    _asdf_install $installs || fail 'install failed'
   )
   _print_complete
 }
@@ -152,27 +158,38 @@ setup_additional_dotfiles() {
 _asdf_install() {
   # 引数を配列に変換
   for item in "$@"; do
-    IFS='@' read -r name version option<<<"$item"
+    IFS='@' read -r name version opts<<<"$item"
     echo "installing $name $version >>>>>>"
-    REPO_URL=''
-    if [ -n "$option" ]; then
-      IFS='=' read -r option_key option_value<<<"$option"
-      case $option_key in
-        IF_NOT_EXISTS_COMMAND)
-          if_not_exists_command=$option_value
-          if [[ -n $(which $if_not_exists_command) ]]; then
-            echo "$if_not_exists_command is already installed"
-            continue
-          fi
-          ;;
-        REPO_URL)
-          REPO_URL=$option_value
-          ;;
-      esac
+    repo_url=''
+    cmd=''
+    if_not_exists_command=''
+    if [[ -n $opts ]]; then
+      IFS=','
+      for opt in $opts; do
+        IFS=':'
+        read -r option_key option_value <<<"$opt"
+        case $option_key in
+          CMD)
+            cmd=$option_value
+            ;;
+          REPO_URL)
+            repo_url=$option_value
+            ;;
+          IF_NOT_EXISTS_COMMAND)
+            if [[ -n $(which $option_value) ]]; then
+              echo "$option_value is already installed"
+              continue
+            fi
+            ;;
+        esac
+        IFS=','
+      done
+      IFS='@'
     fi
-    asdf plugin add $name $REPO_URL
+    asdf plugin add $name $repo_url
     asdf install $name $version
     asdf global $name $version
+    _test_exists_commands $cmd
     echo "installed $name $version\n"
   done
 }
@@ -184,6 +201,20 @@ _install_asdf() {
     echo 'asdf is already installed'
   fi
   . ${HOME}/.asdf/asdf.sh
+  _test_exists_files ${HOME}/.asdf/asdf.sh
+}
+
+_test_exists_files() {
+  for file in "$@"; do
+    # -s で中身があるかどうかも確認している
+    [[ -s $file ]] || fail "$file file is not found"
+  done
+}
+
+_test_exists_commands() {
+  for command in "$@"; do
+    [[ -n $(which $command) ]] || fail "$command command is not found"
+  done
 }
 
 _print_start() {
@@ -194,9 +225,9 @@ _print_complete() {
   printf "\e[30;42;1mcompleted\e[m ${funcstack[2]} \n\n"
 }
 
-_or_fail() {
+fail() {
   if [ $? -ne 0 ]; then
-    printf "\e[30;41;1madditional_dotfiles failed\e[m $1 $* \n\n"
+    printf "\e[30;41;1mfailed\e[m $1 $* \n\n"
     exit 1
   fi
 }
