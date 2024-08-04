@@ -195,14 +195,14 @@ _asdf_install() {
             if [[ -n $(which $option_value) ]]; then
               echo "$option_value is already installed"
               should_continue=true
-              continue
+              break
             fi
             ;;
         esac
         IFS=','
       done
-      [[ $should_continue == true ]] && continue
       IFS='@'
+      [[ $should_continue == true ]] && continue
     fi
     asdf plugin add $name $repo_url
     asdf install $name $version
