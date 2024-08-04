@@ -1113,7 +1113,7 @@ require("lazy").setup({
             "folke/persistence.nvim",
         },
         { -- asyncなど 他のライブラリで使う
-            "plenary.nvim",
+            "nvim-lua/plenary.nvim",
         },
     },
 })
