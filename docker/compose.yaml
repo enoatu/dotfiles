@@ -5,11 +5,13 @@ services:
       context: .
       dockerfile: ./ubuntu/Dockerfile
     tty: true
+    # command: 'bash -c "docker run -it --rm docker-debian /bin/bash -c "git clone https://github.com/enoatu/dotfiles --depth 1&& cd dotfiles && ADDITIONAL_REPO_GITHUB_TOKEN= ./install.sh"'
   debian:
     build:
       context: .
       dockerfile: ./debian/Dockerfile
     tty: true
+    # command: 'bash -c "docker run -it --rm docker-debian /bin/bash -c "git clone https://github.com/enoatu/dotfiles --depth 1&& cd dotfiles && ADDITIONAL_REPO_GITHUB_TOKEN= ./install.sh"'
   #centos:
   #  build:
   #    context: .
