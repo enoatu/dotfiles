@@ -9,6 +9,7 @@ ADDITIONAL_REPO_GITHUB_TOKEN=${ADDITIONAL_REPO_GITHUB_TOKEN:-""}
 ADDITIONAL_REPO_URL=${ADDITIONAL_REPO_URL:-"https://${ADDITIONAL_REPO_GITHUB_TOKEN}@github.com/enoatu/private-dotfiles.git"}
 
 # asdf
+ASDF_VERSION="14.0.0"
 export BASH_VERSION="3.2.57" # for asdf
 
 # tool
@@ -195,7 +196,7 @@ _asdf_install() {
 
 _install_asdf() {
   if [ ! -e ${HOME}/.asdf ]; then
-    git clone https://github.com/asdf-vm/asdf.git ${HOME}/.asdf
+    git clone https://github.com/asdf-vm/asdf.git ${HOME}/.asdf --branch v${ASDF_VERSION}
   else
     echo 'asdf is already installed'
   fi
