@@ -200,6 +200,7 @@ _install_asdf() {
     echo 'asdf is already installed'
   fi
   . ${HOME}/.asdf/asdf.sh
+  rehash
   _test_exists_files ${HOME}/.asdf/asdf.sh
 }
 
