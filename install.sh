@@ -185,6 +185,7 @@ _asdf_install() {
         option_list+=("$opt")
         opts=$rest
       done
+      should_continue=false
       for opt in "${option_list[@]}"; do
         IFS=':'
         read -r option_key option_value <<<"$opt"
