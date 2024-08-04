@@ -97,9 +97,8 @@ setup_neovim() {
   npm install -g neovim zx yarn@1 # yarn = cocで使用
 
   # python
-  rye config --set-bool behavior.global-python=true &&
-  rye config --set-bool behavior.use-uv=true
-  rye install pip | true
+  rye config --set-bool behavior.global-python=true && rye config --set-bool behavior.use-uv=true
+  rye install pip
   ~/.rye/shims/pip install pynvim # neovim パッケージは古いので、pynvimを使う
   _test_exists_commands pip
 
