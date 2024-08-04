@@ -32,10 +32,6 @@ RUST_VERSION="1.55.0"
 #   sudo chown -R $(whoami) ${DOTFILES}
 # fi
 main() {
-  # 起動シェルがzshでない場合はエラー
-  if [ "$(basename $SHELL)" != "zsh" ]; then
-    fail "Please exec 'chsh -s $(which zsh)'"
-  fi
   setup_zsh
   setup_git
   setup_tmux
