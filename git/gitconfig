@@ -5,9 +5,6 @@
   fsmonitor = true # for use scalar
   untrackedcache = true # for use scalar
 
-[commit]
-  template = ~/dotfiles/git/gitmessages
-
 [color]
   ui = true
 

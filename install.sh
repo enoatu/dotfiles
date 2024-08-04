@@ -126,7 +126,7 @@ setup_tools() {
 
     installs=(
       "bat@${BAT_VERSION}@CMD:bat"
-      "delta@${DELTA_VERSION}@CMD:delta,REPO_UR:https://github.com/pedropombeiro/asdf-delta.git"
+      "delta@${DELTA_VERSION}@CMD:delta,REPO_URL:https://github.com/pedropombeiro/asdf-delta.git"
       "fd@${FD_VERSION}@CMD:fd"
       "nodejs@${NODE_VERSION}@CMD:node"
       "ripgrep@${RIPGREP_VERSION}@CMD:rg"
