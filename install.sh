@@ -46,6 +46,23 @@ setup_zsh() {
 
   ln -sf ${DOTFILES}/zsh/zshrc ${HOME}/.zshrc
   _test_exists_files ${HOME}/.zshrc
+  if [ ! -e ${DOTFILES}/zsh/fzf.zsh ]; then
+    (
+      cd ${DOTFILES}/zsh
+      git clone https://github.com/junegunn/fzf.git ./fzf
+      ./fzf/install --no-fish --no-bash --all
+      mv ${HOME}/.fzf.zsh ${DOTFILES}/zsh/fzf.zsh
+      _test_exists_files ${DOTFILES}/zsh/fzf.zsh
+    )
+  fi
+  if [ ! -e ${DOTFILES}/zsh/zsh-autosuggestions.zsh ]; then
+    (
+      cd ${DOTFILES}/zsh
+      git clone https://github.com/zsh-users/zsh-autosuggestions ./zsh-autosuggestions
+      mv ./zsh-autosuggestions/zsh-autosuggestions.zsh ${DOTFILES}/zsh/zsh-autosuggestions.zsh
+      _test_exists_files ${DOTFILES}/zsh/zsh-autosuggestions.zsh
+    )
+  fi
   echo 'Please exec "source ~${HOME}/.zshrc"'
 
   _print_complete
