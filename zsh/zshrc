@@ -48,11 +48,8 @@ setopt correct
 # エイリアス
 alias sudo='sudo ' # sudo ll など、sudo してもaliasを引き継げる
 alias vi='vim'
-alias lst='ls -ltr'
 alias l='ls -ltr'
-alias la='ls -la'
 alias ll='ls -l'
-alias so='source'
 alias gba='git branch --sort=-authordate'
 alias gf="git for-each-ref --sort=committerdate refs/heads/ --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(contents:subject) - %(authorname) (%(color:green)%(committerdate:relative)%(color:reset))'"
 
@@ -61,11 +58,13 @@ alias gf="git for-each-ref --sort=committerdate refs/heads/ --format='%(HEAD) %(
 alias h='fc -lt '%F %T' 1'
 alias cp='cp -i'
 alias rm='rm -i'
-alias mkdir='mkdir -p'
 #alias ..='c ../'
 alias p='pushd'
 alias diff='diff -U1'
 alias exsh='exec $SHELL -l'
+
+alias de='~/dotfiles/bin/docker_exec.sh'
+
 alias a='git add . && git status'
 alias ga='g a'
 alias r='git reset && git status'
@@ -75,8 +74,6 @@ alias gb='git branch'
 alias gd='git diff'
 alias gds='git diff --staged'
 alias gco='git checkout'
-alias gl='git log'
-alias gprom='git stash && git pull --rebase origin master && git stash pop'
 alias cmw='~/dotfiles/bin/gitcommit.sh wrench'
 alias cmp='~/dotfiles/bin/gitcommit.sh heavy_plus_sign'
 alias cmm='~/dotfiles/bin/gitcommit.sh heavy_minus_sign'
@@ -250,6 +247,44 @@ s() {
 
     rm -rf "$TMP_DIR"
   )
+}
+
+sg() {
+  COMMANDS=()
+  for DIR in $(git submodule foreach -q sh -c pwd); do
+    COMMANDS+=("cd $DIR && $@")
+  done
+  ~/dotfiles/bin/parallel_tmux_exec.sh $COMMANDS
+}
+
+# 選択したファイルを git stash する
+gss() {
+  # fzfでファイルを選択
+  selected_files=$(git ls-files -m | fzf -m)
+
+  # 選択されたファイルをステージング
+  if [ -n "$selected_files" ]; then
+    echo "$selected_files" | xargs git add
+    # ステージングしたファイルをstash
+    git stash push -m "Stashing selected files" -- $(echo "$selected_files")
+    # ステージングされたファイルをリセットして元の状態に戻す
+    echo "$selected_files" | xargs git reset
+    # リセットされたファイルの変更を取り消す
+    echo "$selected_files" | xargs git checkout --
+  else
+    echo "No files selected."
+  fi
+}
+
+# 選択したファイルを git reset する
+gr() {
+  # `fzf` を使ってステージングファイルを選択
+  files=$(git diff --name-only --cached | fzf -m)
+  if [ -n "$files" ]; then
+    echo "$files" | xargs git reset
+  else
+    echo "No files selected"
+  fi
 }
 
 gs() {
