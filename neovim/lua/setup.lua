@@ -369,7 +369,7 @@ require("lazy").setup({
                 chat = require("CopilotChat")
                 vim.api.nvim_create_user_command("CopilotCommit", function()
                     chat.ask(
-                        "コメントのルールに従い、変更に対するコミットメッセージを日本語で記述してください。出力は結果だけでお願いします",
+                        "コメントのルールに従い、変更に対するコミットメッセージを日本語で記述してください。。形式は体現止めでお願いします。出力は結果だけでお願いします",
                         {
                             selection = require("CopilotChat.select").buffer,
                             window = {
