@@ -27,10 +27,6 @@ RUBY_VERSION="3.2.1"
 PERL_VERSION="5.30.0"
 RUST_VERSION="1.55.0"
 
-# -- もし実行ユーザーとdotfilesの所有者が異なる場合は権限を変更する linux docker 用
-# if [ "$(whoami)" != "$(stat -c %U ${DOTFILES})" ]; then
-#   sudo chown -R $(whoami) ${DOTFILES}
-# fi
 main() {
   setup_zsh
   setup_git
@@ -99,7 +95,6 @@ setup_neovim() {
     "neovim@${NEOVIM_VERSION}@CMD:nvim"
     "nodejs@${NODE_VERSION}@CMD:node"
     "ripgrep@${RIPGREP_VERSION}@CMD:rg"
-    "rye@${RYE_VERSION}@CMD:rye"
   )
   # "perl ${PERL_VERSION}" # cpan Neovim::Ext
   # "ruby ${RUBY_VERSION}" # gem install neovim
@@ -107,25 +102,21 @@ setup_neovim() {
   # "rust ${RUST_VERSION}" #source "/Users/enotiru/.asdf/installs/rust/1.76.0/env" && rustup component add rust-src rust-analyzer
   _asdf_install $installs || fail 'asdf install failed'
 
-  rm -rf ${HOME}/.config/nvim && mkdir -p ${HOME}/.config/nvim
-
   # ~/.asdf/.tool_versions (ローカルでないことに注意) に golang 1.21 など記載することでプラグインエラーを回避できる
   asdf local nodejs ${NODE_VERSION} # coc.nvim で使う
   npm install -g neovim zx yarn@1 # yarn = cocで使用
 
-  # python
-  rye config --set-bool behavior.global-python=true && rye config --set-bool behavior.use-uv=true
-  rye install pip || true
-  ~/.rye/shims/pip install pynvim # neovim パッケージは古いので、pynvimを使う
-  _test_exists_commands pip
+  _install_pip
+  pip install pynvim # neovim パッケージは古いので、pynvimを使う
 
-  # for nvim
+  cp ${DOTFILES}/neovim/lua/env.lua.sample ${DOTFILES}/neovim/lua/env.lua
+
+  rm -rf ${HOME}/.config/nvim && mkdir -p ${HOME}/.config/nvim
   ln -sf ${DOTFILES}/neovim/init.lua ${HOME}/.config/nvim/init.lua
   ln -sf ${DOTFILES}/neovim/lua ${HOME}/.config/nvim/lua
   ln -sf ${DOTFILES}/neovim/coc-settings.json ${HOME}/.config/nvim/coc-settings.json
   ln -sf ${DOTFILES}/neovim/lazy-lock.json ${HOME}/.config/nvim/lazy-lock.json
   ln -sf ${DOTFILES}/neovim/.editorconfig ${HOME}/.editorconfig
-  cp ${DOTFILES}/neovim/lua/env.lua.sample ${DOTFILES}/neovim/lua/env.lua
   _test_exists_files \
     ${HOME}/.config/nvim/init.lua \
     ${HOME}/.config/nvim/lua \
@@ -151,6 +142,10 @@ setup_tools() {
       "tmux@${TMUX_VERSION}@CMD:tmux,IF_NOT_EXISTS_COMMAND:tmux"
     )
     _asdf_install $installs || fail 'install failed'
+
+    _install_pip
+    pip install trash-cli
+    _test_exists_commands trash-put trash-empty trash-list trash-put trash-restore trash-rm
   )
   _print_complete
 }
@@ -228,6 +223,25 @@ _install_asdf() {
   export PATH="$HOME/.asdf/bin:$HOME/.asdf/shims:$PATH"
   rehash
   _test_exists_files ${HOME}/.asdf/asdf.sh
+}
+
+_install_pip() {
+  if [[ -n $(which pip) ]]; then
+    echo 'pip is already installed'
+    return
+  fi
+
+  _install_asdf
+  installs=(
+    "rye@${RYE_VERSION}@CMD:rye"
+  )
+  _asdf_install $installs || fail 'install failed'
+  # pip
+  rye config --set-bool behavior.global-python=true && rye config --set-bool behavior.use-uv=true
+  rye install pip || true
+  # 一時的に追加
+  export PATH="$HOME/.rye/tools/pip/bin:$PATH"
+  _test_exists_commands pip
 }
 
 _test_exists_files() {
