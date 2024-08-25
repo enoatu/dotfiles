@@ -1,4 +1,12 @@
 #!/bin/sh
+
+# 前のmacから持ってくるもの
+# ~/.ssh
+# ~/.aws
+# ~/.zshrc.local
+# ~/.zsh_history
+# ~/Development/**/enotiru-my-box
+
 # install homebrew
 #/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 #(echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> $HOME/.zprofile
@@ -23,7 +31,7 @@
 
 # install asdf version manager
 git clone https://github.com/asdf/asdf.git ~/.asdf --branch v0.8.0
-echo ' . /opt/homebrew/opt/asdf/libexec/asdf.sh' >> ~/.zprofile
+echo ' . /opt/homebrew/opt/asdf/libexec/asdf.sh' >>~/.zprofile
 
 source ~/.zshrc
 
@@ -56,4 +64,3 @@ code --install-extension ms-vscode.go
 # install iterm2
 brew install --cask iterm2
 brew install --cask google-japanese-ime
-
