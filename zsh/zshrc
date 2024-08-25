@@ -1,6 +1,3 @@
-autoload -U compinit
-compinit
-
 # beep音消す
 setopt no_beep
 
@@ -28,13 +25,16 @@ compinit
 # emacsキーバインド
 bindkey -e
 
-# 他のターミナルとヒストリーを共有
-setopt share_history
-setopt extended_history
-
+# ヒストリの設定
 HISTFILE=~/.zsh_history
 HISTSIZE=1000000
 SAVEHIST=1000000
+setopt hist_ignore_all_dups  # 重複するコマンド行は古い方を削除
+setopt hist_ignore_dups      # 直前と同じコマンドラインはヒストリに追加しない
+setopt share_history         # コマンド履歴ファイルを共有する
+setopt append_history        # 履歴を追加 (毎回 .zsh_history を作るのではなく)
+setopt inc_append_history    # 履歴をインクリメンタルに追加
+setopt hist_reduce_blanks    # 余分な空白は詰めて記録
 
 # 自動でpushdを実行
 setopt auto_pushd
@@ -70,19 +70,13 @@ alias ga='g a'
 alias r='git reset && git status'
 alias c='git commit -m'
 alias am='git commit --amend'
+alias c='GIT_EDITOR="nvim -c \"CopilotCommit\"" git commit -v'
+alias gs='git status'
 alias gb='git branch'
 alias gd='git diff'
 alias gds='git diff --staged'
 alias gco='git checkout'
-alias cmw='~/dotfiles/bin/gitcommit.sh wrench'
-alias cmp='~/dotfiles/bin/gitcommit.sh heavy_plus_sign'
-alias cmm='~/dotfiles/bin/gitcommit.sh heavy_minus_sign'
-alias cmr='~/dotfiles/bin/gitcommit.sh recycle'
-alias cms='~/dotfiles/bin/gitcommit.sh space_invader'
-alias cmb='~/dotfiles/bin/gitcommit.sh bug'
-alias cmc='~/dotfiles/bin/gitcommit.sh construction'
 
-alias d='docker'
 alias dc='/usr/local/bin/docker compose'
 alias dcl='/usr/local/bin/docker compose logs -f --tail=3000'
 
@@ -285,11 +279,6 @@ gr() {
   else
     echo "No files selected"
   fi
-}
-
-gs() {
-  #git diff master HEAD --name-only
-  git status
 }
 
 dr() {
