@@ -275,7 +275,9 @@ require("lazy").setup({
         },
         {
             "tpope/vim-fugitive", -- vimscript
-            opt = {},
+            config = function()
+                vim.keymap.set("n", "<Leader>d", ":Gdiff<CR>:windo set wrap<CR>")
+            end,
         },
         {
             "enoatu/vim-bufferlist", -- vimscript
@@ -300,11 +302,112 @@ require("lazy").setup({
             end,
         },
         {
-            "zbirenbaum/copilot.lua",
-            cmd = "Copilot",
-            event = "InsertEnter",
+            "CopilotC-Nvim/CopilotChat.nvim",
             config = function()
-                require("copilot").setup({})
+                require("CopilotChat").setup({
+                    window = {
+                        layout = "float",
+                        relative = "cursor",
+                        width = 1,
+                        height = 0.8,
+                        row = 1,
+                    },
+                    prompts = {
+                        Explain = {
+                            prompt = "/COPILOT_EXPLAIN 上記のコードをわかりやすく日本語で説明してください",
+                            mapping = "<leader>ce",
+                            description = "AIにコードの説明をお願いする",
+                        },
+                        Review = {
+                            prompt = "/COPILOT_REVIEW 選択したコードをレビューしてください。レビューコメントは猫になりきって日本語でお願いします。",
+                            mapping = "<leader>cr",
+                            description = "AIにコードのレビューをお願いする",
+                        },
+                        Fix = {
+                            prompt = "/COPILOT_FIX このコードには問題があります。バグを修正したコードを表示してください。",
+                            mapping = "<leader>cf",
+                            description = "AIにコードの修正をお願いする",
+                        },
+                        Optimize = {
+                            prompt = "/COPILOT_REFACTOR 選択したコードを最適化し、パフォーマンスと可読性を向上させてください。",
+                            mapping = "<leader>co",
+                            description = "AIにコードの最適化をお願いする",
+                        },
+                        Docs = {
+                            prompt = "/COPILOT_GENERATE 選択したコードに関するドキュメントコメントを日本語で生成してください。",
+                            mapping = "<leader>cd",
+                            description = "AIにコードのドキュメント作りをお願いする",
+                        },
+                        Tests = {
+                            prompt = "/COPILOT_TESTS 選択したコードの詳細なユニットテストを書いてください。",
+                            mapping = "<leader>ct",
+                            description = "AIにコードのテストコード作成をお願いする",
+                        },
+                        FixDiagnostic = {
+                            prompt = "コードの診断結果に従って問題を修正してください。",
+                            mapping = "<leader>cd",
+                            description = "AIにコードの静的解析結果に基づいた修正をお願いする",
+                            selection = require("CopilotChat.select").diagnostics,
+                        },
+                        Commit = {
+                            prompt = "コメントのルールに従って変更に対するコミットメッセージを日本語で記述してください。",
+                            mapping = "<leader>cc",
+                            description = "AIにコミットメッセージの作成をお願いする",
+                            selection = require("CopilotChat.select").buffer,
+                        },
+                        CommitStaged = {
+                            prompt = "commitize の規則に従って、ステージ済みの変更に対するコミットメッセージを記述してください。 タイトルは最大50文字で、メッセージは72文字で折り返されるようにしてください。 メッセージ全体を gitcommit 言語のコード ブロックでラップしてください。メッセージは日本語でお願いします。",
+                            mapping = "<leader>cs",
+                            description = "AIにステージ済みのコミットメッセージの作成をお願いする",
+                            selection = function(source)
+                                return require("CopilotChat.select").gitdiff(source, true)
+                            end,
+                        },
+                    },
+                })
+                -- git commit -v で開いた内容をもとにコミットメッセージを生成するコマンドを作成する
+                chat = require("CopilotChat")
+                vim.api.nvim_create_user_command("CopilotCommit", function()
+                    chat.ask(
+                        "コメントのルールに従い、変更に対するコミットメッセージを日本語で記述してください。出力は結果だけでお願いします",
+                        {
+                            selection = require("CopilotChat.select").buffer,
+                            window = {
+                                layout = "float",
+                                relative = "cursor",
+                                width = 1,
+                                height = 0.8,
+                                row = 1,
+                            },
+                            show_help = false,
+                            auto_follow_cursor = true,
+                            callback = function(response)
+                                vim.schedule(function()
+                                    -- 改行含むresponseをコードに挿入する
+                                    response = response:gsub("```", "")
+                                    -- クリップボードにコミットメッセージをコピー
+                                    vim.fn.setreg("+", response)
+                                    -- windowを閉じる
+                                    vim.cmd('execute "normal q"')
+                                    -- コミットメッセージをペースト
+                                    vim.cmd('execute "normal p"')
+                                end)
+                            end,
+                        }
+                    )
+                end, {})
+                vim.api.nvim_create_user_command("CopilotChatInline", function(args)
+                    chat.ask(args.args, {
+                        selection = require("CopilotChat.select").visual,
+                        window = {
+                            layout = "float",
+                            relative = "cursor",
+                            width = 1,
+                            height = 0.4,
+                            row = 1,
+                        },
+                    })
+                end, { nargs = "*", range = true })
             end,
         },
         {
@@ -461,10 +564,12 @@ require("lazy").setup({
                 vim.keymap.set("x", "cf", "<Plug>(coc-format-selected)", { silent = true })
                 vim.keymap.set("n", "cf", "<Plug>(coc-format-selected)", { silent = true })
                 -- :Format
-                vim.cmd('command! -nargs=0 Format :call CocAction("format")')
+                vim.api.nvim_create_user_command("Format", "call CocAction('format')", { nargs = 0 })
                 -- :FormatImportでインポートの整理（不要なインポートの削除、並べ替えなど）
-                vim.cmd(
-                    'command! -nargs=0 FormatImport :call CocActionAsync("runCommand", "editor.action.organizeImport")'
+                vim.api.nvim_create_user_command(
+                    "FormatImport",
+                    "call CocActionAsync('runCommand', 'editor.action.organizeImport')",
+                    { nargs = 0 }
                 )
                 -- すべての診断情報を表示
                 vim.keymap.set("n", "dg", ":CocList diagnostics<CR>", { silent = true })
@@ -487,6 +592,7 @@ require("lazy").setup({
         },
         {
             "zbirenbaum/copilot-cmp",
+            enabled = false,
             config = function()
                 require("copilot_cmp").setup()
             end,
@@ -494,7 +600,7 @@ require("lazy").setup({
         { -- snippet engine by lua?
             -- "enoatu/nvim-cmp",
             "hrsh7th/nvim-cmp",
-            enabled = true,
+            enabled = false,
             -- branch = "feat/above",
             event = "InsertEnter",
             dependencies = {
@@ -646,15 +752,19 @@ require("lazy").setup({
 
         {
             "hrsh7th/cmp-nvim-lsp",
+            enabled = false,
         },
         {
             "hrsh7th/cmp-buffer",
+            enabled = false,
         },
         {
             "hrsh7th/cmp-path",
+            enabled = false,
         },
         {
             "saadparwaiz1/cmp_luasnip",
+            enabled = false,
         },
         -- mini.pairs
         -- mini.surround
@@ -1017,8 +1127,6 @@ require("lazy").setup({
                     "RainbowViolet",
                 }
                 local hooks = require("ibl.hooks")
-                -- create the highlight groups in the highlight setup hook, so they are reset
-                -- every time the colorscheme changes
                 hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
                     vim.api.nvim_set_hl(0, "RainbowRed", { fg = "#A32B26" })
                     vim.api.nvim_set_hl(0, "RainbowYellow", { fg = "#F0B01E" })

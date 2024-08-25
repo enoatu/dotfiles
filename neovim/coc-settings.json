@@ -24,6 +24,10 @@
   "diagnostic.hintSign": "",
   "diagnostic.warningSign": "⚠️",
   "diagnostic.errorSign": "❌",
+  "suggest.floatConfig": {
+    "border": true,
+  },
+  "bashIde.shfmt.path": "", // フォーマット無効化
   "cSpell.enabledLanguageIds": [
     "vim",
     "asciidoc",
