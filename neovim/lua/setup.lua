@@ -239,6 +239,14 @@ require("lazy").setup({
             end,
         },
         {
+            "enoatu/buffer-scope.nvim",
+            dir = "~/MyDevelopment/buffer-scope.nvim",
+            dependencies = { "nvim-telescope/telescope.nvim" },
+            config = function()
+                require("telescope").load_extension("buffer_scope")
+            end,
+        },
+        {
             "linux-cultist/venv-selector.nvim",
             dependencies = { "neovim/nvim-lspconfig", "nvim-telescope/telescope.nvim", "mfussenegger/nvim-dap-python" },
             opts = {
@@ -817,6 +825,13 @@ require("lazy").setup({
                     desc = "Find files noignore",
                 },
             },
+            config = function()
+                require("telescope").setup({
+                    defaults = {
+                        theme = "dropdown",
+                    },
+                })
+            end,
         },
         { -- 検索f の強化版 shogehogeで検索
             "folke/flash.nvim",

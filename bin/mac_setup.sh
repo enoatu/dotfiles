@@ -30,10 +30,10 @@
 # docker desktop install
 
 # install asdf version manager
-git clone https://github.com/asdf/asdf.git ~/.asdf --branch v0.8.0
-echo ' . /opt/homebrew/opt/asdf/libexec/asdf.sh' >>~/.zprofile
-
-source ~/.zshrc
+#git clone https://github.com/asdf/asdf.git ~/.asdf --branch v0.8.0
+#echo ' . /opt/homebrew/opt/asdf/libexec/asdf.sh' >>~/.zprofile
+#
+#source ~/.zshrc
 
 # install asdf plugins
 asdf plugin-add nodejs
