@@ -393,10 +393,15 @@ require("lazy").setup({
                                 vim.schedule(function()
                                     -- 改行含むresponseをコードに挿入する
                                     response = response:gsub("```", "")
+                                    -- 前後の改行を削除する
+                                    response = response.gsub(response, "^\n*", "")
+                                    response = response.gsub(response, "\n*$", "")
                                     -- クリップボードにコミットメッセージをコピー
                                     vim.fn.setreg("+", response)
                                     -- windowを閉じる
                                     vim.cmd('execute "normal q"')
+                                    -- 改行する
+                                    vim.cmd('execute "normal o"')
                                     -- コミットメッセージをペースト
                                     vim.cmd('execute "normal p"')
                                 end)
