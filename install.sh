@@ -192,7 +192,7 @@ _asdf_install() {
             repo_url=$option_value
             ;;
           IF_NOT_EXISTS_COMMAND)
-            if [[ -n $(which $option_value) ]]; then
+            if type $option_value >/dev/null 2>&1; then
               echo "$option_value is already installed"
               should_continue=true
               break
@@ -226,7 +226,7 @@ _install_asdf() {
 }
 
 _install_pip() {
-  if [[ -n $(which pip) ]]; then
+  if type pip >/dev/null 2>&1; then
     echo 'pip is already installed'
     return
   fi
@@ -253,7 +253,7 @@ _test_exists_files() {
 
 _test_exists_commands() {
   for command in "$@"; do
-    [[ -n $(which $command) ]] || fail "$command command is not found"
+    type $command >/dev/null 2>&1 || fail "$command command is not found"
   done
 }
 
