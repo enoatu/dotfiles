@@ -238,20 +238,20 @@ require("lazy").setup({
                 })
             end,
         },
-        {
-            "enoatu/buffer-scope.nvim",
-            dir = "~/MyDevelopment/buffer-scope.nvim",
-            dependencies = { "nvim-telescope/telescope.nvim" },
-            config = function()
-                require("telescope").load_extension("buffer_scope")
-                vim.api.nvim_set_keymap(
-                    "n",
-                    "<leader>bs",
-                    "<cmd>Telescope buffer_scope buffers<cr>",
-                    { noremap = true }
-                )
-            end,
-        },
+        -- {
+        --     "enoatu/buffer-scope.nvim",
+        --     dir = "~/MyDevelopment/buffer-scope.nvim",
+        --     dependencies = { "nvim-telescope/telescope.nvim" },
+        --     config = function()
+        --         require("telescope").load_extension("buffer_scope")
+        --         vim.api.nvim_set_keymap(
+        --             "n",
+        --             "<leader>bs",
+        --             "<cmd>Telescope buffer_scope buffers<cr>",
+        --             { noremap = true }
+        --         )
+        --     end,
+        -- },
         {
             "linux-cultist/venv-selector.nvim",
             dependencies = { "neovim/nvim-lspconfig", "nvim-telescope/telescope.nvim", "mfussenegger/nvim-dap-python" },
