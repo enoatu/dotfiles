@@ -45,6 +45,3 @@
 
 [include]
   path = ~/dotfiles/private-dotfiles/git/gitconfig
-[credential]
-  helper =
-  helper = /usr/local/bin/git-credential-manager
