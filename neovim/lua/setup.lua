@@ -21,9 +21,9 @@ require("lazy").setup({
             -- disable some rtp plugins
             disabled_plugins = {
                 "gzip",
-                -- "matchit",
-                -- "matchparen",
-                -- "netrwPlugin",
+                "matchit",
+                "matchparen",
+                "netrwPlugin",
                 "tarPlugin",
                 "tohtml",
                 "tutor",
@@ -244,6 +244,12 @@ require("lazy").setup({
             dependencies = { "nvim-telescope/telescope.nvim" },
             config = function()
                 require("telescope").load_extension("buffer_scope")
+                vim.api.nvim_set_keymap(
+                    "n",
+                    "<leader>bs",
+                    "<cmd>Telescope buffer_scope buffers<cr>",
+                    { noremap = true }
+                )
             end,
         },
         {
@@ -832,8 +838,14 @@ require("lazy").setup({
             },
             config = function()
                 require("telescope").setup({
-                    defaults = {
-                        theme = "dropdown",
+                    pickers = {
+                        buffers = {
+                            mappings = {
+                                n = {
+                                    ["<C-d>"] = "delete_buffer",
+                                },
+                            },
+                        },
                     },
                 })
             end,
@@ -845,9 +857,16 @@ require("lazy").setup({
         { -- flash のtelescope configtmu
             "nvim-telescope/telescope.nvim",
         },
+        { -- ファイルエクスプローラー
+            "stevearc/oil.nvim",
+            config = function()
+                require("oil").setup()
+                -- n で親ディレクトリを開く
+                vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
+            end,
+        },
         { -- カーソルの他の単語もハイライト
             "RRethy/vim-illuminate",
-            enabled = false, -- gcc 必要かもなので
         },
         { -- buffer 削除
             "echasnovski/mini.bufremove",
@@ -1042,7 +1061,7 @@ require("lazy").setup({
         },
         { -- 上部のbufferタブ
             "akinsho/bufferline.nvim",
-            enabled = false,
+            enabled = true,
         },
         {
             "nvim-lualine/lualine.nvim",
