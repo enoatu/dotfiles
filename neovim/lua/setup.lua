@@ -91,6 +91,7 @@ require("lazy").setup({
         {
             "lewis6991/gitsigns.nvim",
             lazy = false,
+            -- :help ibl.config.scope とすると | などの一覧が表示される
             config = function()
                 require("gitsigns").setup({
                     signs = {
@@ -135,17 +136,18 @@ require("lazy").setup({
                         -- 設定によっては行単位でstage することもできる
                     end,
                 })
-                require("scrollbar.handlers.gitsigns").setup()
-                vim.api.nvim_create_autocmd("FileType", {
-                    pattern = "python",
-                    callback = function()
-                        vim.b.coc_root_patterns = { ".env" }
-                    end,
-                })
+                -- require("scrollbar.handlers.gitsigns").setup()
+                -- vim.api.nvim_create_autocmd("FileType", {
+                --     pattern = "python",
+                --     callback = function()
+                --         vim.b.coc_root_patterns = { ".env" }
+                --     end,
+                -- })
             end,
         },
         { -- スクロールバーを表示
             "petertriho/nvim-scrollbar",
+            enabled = false,
             config = function()
                 local colors = require("tokyonight.colors").setup()
                 require("scrollbar").setup({
@@ -993,40 +995,48 @@ require("lazy").setup({
         {
             "nvim-treesitter/nvim-treesitter",
             opts = {
-                highlight = { enable = true },
-                indent = { enable = true },
-                ensure_installed = {
-                    "bash",
-                    "html",
-                    "javascript",
-                    "jsdoc",
-                    "json",
-                    "lua",
-                    "luadoc",
-                    "luap",
-                    "markdown",
-                    "markdown_inline",
-                    "python",
-                    "query",
-                    "regex",
-                    "vue",
-                    "tsx",
-                    "typescript",
-                    "vim",
-                    "vimdoc",
-                    "yaml",
+                highlight = {
+                    enable = true,
+                    disable = function(lang, buf)
+                        -- 1000 KB 超えのファイルでは tree-sitter によるシンタックスハイライトを行わない
+                        local max_filesize = 1000 * 1024
+                        local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+                        if ok and stats and stats.size > max_filesize then
+                            print("File too large, disabling treesitter highlight for " .. lang)
+                            return true
+                        end
+                    end,
                 },
+                indent = { enable = true },
+                auto_install = true,
                 -- 文法理解を利用して選択範囲を自動で見つけてくれる
                 incremental_selection = {
                     enable = true,
                     keymaps = {
-                        init_selection = "<C-y>",
-                        node_incremental = "<C-y>",
+                        init_selection = "@",
+                        node_incremental = "<C-@>",
                         scope_incremental = false,
                         node_decremental = "<bs>",
                     },
                 },
             },
+        },
+        {
+            "nvim-treesitter/nvim-treesitter-context",
+            config = function()
+                require("treesitter-context").setup({
+                    enable = true, -- 有効化
+                    max_lines = 0, -- 画面上に表示する行数の制限
+                    mode = "topline", -- カーソルではない
+                    patterns = {
+                        default = {
+                            "class",
+                            "function",
+                            "method",
+                        },
+                    },
+                })
+            end,
         },
         { -- オブジェクトなど整形ツール C-o でトグル
             "Wansmer/treesj",
@@ -1145,16 +1155,10 @@ require("lazy").setup({
                 }
             end,
         },
-        { -- インデントL字型
-            "HiPhish/rainbow-delimiters.nvim",
-        },
         { -- インデント可視化
             "lukas-reineke/indent-blankline.nvim",
             main = "ibl",
             lazy = false,
-            dependencies = {
-                "HiPhish/rainbow-delimiters.nvim",
-            },
             config = function()
                 vim.opt.termguicolors = true
                 local highlight = {
@@ -1174,12 +1178,18 @@ require("lazy").setup({
                     vim.api.nvim_set_hl(0, "RainbowGreen", { fg = "#14CDE6" })
                     vim.api.nvim_set_hl(0, "RainbowViolet", { fg = "#C678DD" })
                 end)
-                require("ibl").setup({ indent = { highlight = highlight } })
+                require("ibl").setup({
+                    indent = { highlight = highlight },
+                    scope = {
+                        enabled = false, -- 逆L字のインデントを非表示
+                    },
+                })
             end,
         },
         { -- インデント可視化、チャンク表示
             "shellRaining/hlchunk.nvim",
             event = { "BufReadPre", "BufNewFile" },
+            enabled = false,
             config = function()
                 require("hlchunk").setup({
                     chunk = {
@@ -1217,7 +1227,7 @@ require("lazy").setup({
                 })
             end,
         },
-        {
+        { -- マークダウンを表示(コマンド:MarkdownPreview)
             "iamcco/markdown-preview.nvim",
         },
         { -- アニメーションで現在のインデントを教えてくれる
