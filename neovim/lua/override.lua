@@ -53,7 +53,12 @@ vim.o.hlsearch = true
 
 -- 操作系
 -- 行頭
-vim.keymap.set({ "n", "v" }, "<C-h>", "0", { noremap = true, silent = true, desc = "行頭に移動" })
+vim.keymap.set(
+    { "n", "v" },
+    "<C-h>",
+    "^",
+    { noremap = true, silent = true, desc = "非空白文字の行頭に移動" }
+)
 -- 行末
 vim.keymap.set({ "n", "v" }, "<C-l>", "$", { noremap = true, silent = true, desc = "行末に移動" })
 

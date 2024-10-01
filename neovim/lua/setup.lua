@@ -1015,7 +1015,7 @@ require("lazy").setup({
                     keymaps = {
                         init_selection = "@",
                         node_incremental = "<C-@>",
-                        scope_incremental = false,
+                        scope_incremental = "<C-p>",
                         node_decremental = "<bs>",
                     },
                 },
