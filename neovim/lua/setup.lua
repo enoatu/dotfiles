@@ -1008,7 +1008,29 @@ require("lazy").setup({
                     end,
                 },
                 indent = { enable = true },
-                auto_install = true,
+                ensure_installed = {
+                    "bash",
+                    "html",
+                    "javascript",
+                    "jsdoc",
+                    "json",
+                    "lua",
+                    "luadoc",
+                    "luap",
+                    "markdown",
+                    "markdown_inline",
+                    "php",
+                    "python",
+                    "query",
+                    "regex",
+                    "vue",
+                    "tsx",
+                    "typescript",
+                    "vim",
+                    "vimdoc",
+                    "yaml",
+                },
+                auto_install = true, -- 上記にないものは自動でインストール
                 -- 文法理解を利用して選択範囲を自動で見つけてくれる
                 incremental_selection = {
                     enable = true,
@@ -1021,12 +1043,12 @@ require("lazy").setup({
                 },
             },
         },
-        {
+        { -- 画面上部に現在のインデントを表示
             "nvim-treesitter/nvim-treesitter-context",
             config = function()
                 require("treesitter-context").setup({
                     enable = true, -- 有効化
-                    max_lines = 0, -- 画面上に表示する行数の制限
+                    max_lines = 8, -- 画面上に表示する行数の制限 構文解析できない場合を考えて指定しておく
                     mode = "topline", -- カーソルではない
                     patterns = {
                         default = {
