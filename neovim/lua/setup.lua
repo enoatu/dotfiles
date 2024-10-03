@@ -22,7 +22,7 @@ require("lazy").setup({
             disabled_plugins = {
                 "gzip",
                 "matchit",
-                "matchparen",
+                -- "matchparen", 対応するカッコハイライト
                 "netrwPlugin",
                 "tarPlugin",
                 "tohtml",
