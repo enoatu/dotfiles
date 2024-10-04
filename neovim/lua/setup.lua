@@ -1045,6 +1045,7 @@ require("lazy").setup({
         },
         { -- 画面上部に現在のインデントを表示
             "nvim-treesitter/nvim-treesitter-context",
+            enabled = false,
             config = function()
                 require("treesitter-context").setup({
                     enable = true, -- 有効化
