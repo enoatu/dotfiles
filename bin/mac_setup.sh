@@ -51,7 +51,7 @@
 # defaults read -g KeyRepeat
 
 # リピート入力認識を限界突破させる(再起動必要)
-# defaults write -g InitialKeyRepeat -int 9
+# defaults write -g InitialKeyRepeat -int 12
 # 確認方法
 # defaults read -g InitialKeyRepeat
 
