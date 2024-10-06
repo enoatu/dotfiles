@@ -800,12 +800,30 @@ require("lazy").setup({
             "echasnovski/mini.surround",
             enabled = false,
         },
-        { -- コメント gc
+        { -- コメント の補完
             "JoosepAlviste/nvim-ts-context-commentstring",
-            enabled = false,
         },
         { -- コメント gc (行ごと)
             "echasnovski/mini.comment",
+            config = function()
+                require("mini.comment").setup({
+                    mappings = {
+                        -- Toggle comment (like `gcip` - comment inner paragraph) for both
+                        -- Normal and Visual modes
+                        comment = "gc",
+                        -- Toggle comment on current line
+                        comment_line = "gcc",
+                        -- Toggle comment on visual selection
+                        comment_visual = "/",
+                        -- Define 'comment' textobject (like `dgc` - delete whole comment block)
+                        -- Works also in Visual mode if mapping differs from `comment_visual`
+                        textobject = "gc",
+                    },
+                    pre_hook = function()
+                        return require("ts_context_commentstring.internal").calculate_commentstring()
+                    end,
+                })
+            end,
         },
         { -- ui系
             "echasnovski/mini.ai",
@@ -1045,7 +1063,7 @@ require("lazy").setup({
         },
         { -- 画面上部に現在のインデントを表示
             "nvim-treesitter/nvim-treesitter-context",
-            enabled = false,
+            enabled = false, -- 移動しているとneovimが落ちるので
             config = function()
                 require("treesitter-context").setup({
                     enable = true, -- 有効化
