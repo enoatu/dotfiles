@@ -99,3 +99,7 @@ vim.api.nvim_create_autocmd("FileType", {
         vim.opt_local.autoindent = true
     end,
 })
+
+-- ログを出す
+vim.cmd("set verbosefile=~/.cache/nvim/log")
+vim.cmd("set verbose=3")

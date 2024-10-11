@@ -870,12 +870,20 @@ require("lazy").setup({
                 })
             end,
         },
+        {
+            "smartpde/telescope-recent-files",
+            config = function()
+                vim.api.nvim_set_keymap(
+                    "n",
+                    "<Leader>i",
+                    [[<cmd>lua require('telescope').extensions.recent_files.pick()<CR>]],
+                    { noremap = true, silent = true }
+                )
+            end,
+        },
         { -- 検索f の強化版 shogehogeで検索
             "folke/flash.nvim",
             enabled = false,
-        },
-        { -- flash のtelescope configtmu
-            "nvim-telescope/telescope.nvim",
         },
         { -- ファイルエクスプローラー
             "stevearc/oil.nvim",
@@ -952,7 +960,8 @@ require("lazy").setup({
         },
         {
             import = "lazyvim.plugins.extras.lang.python-semshi",
-            enabled = vim.g.enable_plugin_lsp_python_semshi or false,
+            --- enabled = vim.g.enable_plugin_lsp_python_semshi or false,
+            enabled = false,
         },
         {
             import = "lazyvim.plugins.extras.lang.python",
@@ -1016,6 +1025,9 @@ require("lazy").setup({
                 highlight = {
                     enable = true,
                     disable = function(lang, buf)
+                        if lang == "htmldjango" then
+                            return true
+                        end
                         -- 1000 KB 超えのファイルでは tree-sitter によるシンタックスハイライトを行わない
                         local max_filesize = 1000 * 1024
                         local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
