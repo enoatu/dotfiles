@@ -37,6 +37,15 @@ CHILD_BRANCHES=("${@:2}")
 # 現在のブランチを記録
 CURRENT_BRANCH=$(git branch --show-current)
 
+# 親ブランチにチェックアウト
+git checkout "$PARENT_BRANCH" || { echo "Failed to checkout to $PARENT_BRANCH"; exit 1; }
+
+# 親ブランチもpushしておく
+if $PUSH; then
+  echo "Pushing $PARENT_BRANCH..."
+  git push || { echo "Failed to push $PARENT_BRANCH"; exit 1; }
+fi
+
 # 親ブランチから順にマージと必要に応じてプッシュを実行
 for BRANCH in "${CHILD_BRANCHES[@]}"; do
   echo "Checkout to $BRANCH..."
