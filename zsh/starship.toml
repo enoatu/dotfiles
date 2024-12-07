@@ -163,7 +163,7 @@ symbol = ''
 [time]
 disabled = false
 format = '[\($time\)]($style)'
-time_format = '%FT%T'
+time_format = '%y-%m-%dT%T'
 style = 'green'
 
 [jobs]
