@@ -2,6 +2,7 @@
 .project_root
 .current_dir
 /zsh/installs/*
+!/zsh/installs/.gitkeep
 .dirs
 bin/setlocalgit
 /installs/*
