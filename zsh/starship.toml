@@ -18,7 +18,7 @@ ${custom.git_stash_count}\
 $git_metrics\
 $git_status\
 $directory
-${custom.git_branch_description}\
+${custom.git_branch_description}
 $character"""
 
 right_format = """
