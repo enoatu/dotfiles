@@ -49,8 +49,22 @@ setopt correct
 # エイリアス
 alias sudo='sudo ' # sudo ll など、sudo してもaliasを引き継げる
 alias vi='vim'
-alias l='ls -ltr'
-alias ll='ls -l'
+
+# alias l='ls -ltr'
+# alias ll='ls -l'
+
+alias ei="eza --icons --git"
+alias ea="eza -a --icons --git"
+alias ee="eza -aahl --icons --git"
+alias et="eza -T -L 3 -a -I 'node_modules|.git|.cache' --icons"
+alias eta="eza -T -a -I 'node_modules|.git|.cache' --color=always --icons | less -r"
+alias ls=ei
+alias la=ea
+alias ll=ee
+# alias tree=et
+alias lta=eta
+alias l="clear && ls"
+
 alias gba='git branch --sort=-authordate'
 alias gf="git for-each-ref --sort=committerdate refs/heads/ --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(contents:subject) - %(authorname) (%(color:green)%(committerdate:relative)%(color:reset))'"
 
@@ -78,6 +92,7 @@ alias gd='git diff'
 alias gds='git diff --staged'
 alias gco='git checkout'
 
+alias docker-compose='/usr/local/bin/docker compose'
 alias dc='/usr/local/bin/docker compose'
 alias dcl='/usr/local/bin/docker compose logs -f --tail=3000'
 
@@ -112,6 +127,7 @@ setopt inc_append_history    # 実行するたびにファイルに書き込む
 setopt hist_no_store         # historyコマンドは登録しない
 setopt hist_reduce_blanks    # 余分な空白は詰めて記録する
 [ -f $HOME/dotfiles/zsh/fzf.zsh ] && source $HOME/dotfiles/zsh/fzf.zsh
+#[ -f $HOME/dotfiles/zsh/fzf-tab/fzf-tab.plugin.zsh ] && source $HOME/dotfiles/zsh/fzf-tab/fzf-tab.plugin.zsh
 
 # コマンドを途中まで入力後、historyから絞り込み
 # 例 ls まで打ってCtrl+pでlsコマンドをさかのぼる、Ctrl+bで逆順
@@ -311,3 +327,4 @@ dw() {
   fi
 }
 
+eval "$(/Users/enotiru/.local/bin/mise activate zsh)"
