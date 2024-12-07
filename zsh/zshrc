@@ -37,11 +37,11 @@ setopt append_history        # 履歴を追加 (毎回 .zsh_history を作るの
 setopt inc_append_history    # 履歴をインクリメンタルに追加
 setopt hist_reduce_blanks    # 余分な空白は詰めて記録
 
-# 自動でpushdを実行
-setopt auto_pushd
-
-# pushdから重複を削除
-setopt pushd_ignore_dups
+# # 自動でpushdを実行
+# setopt auto_pushd
+#
+# # pushdから重複を削除
+# setopt pushd_ignore_dups
 
 # コマンドミスを修正
 setopt correct
@@ -52,6 +52,12 @@ alias vi='vim'
 
 # alias l='ls -ltr'
 # alias ll='ls -l'
+
+# cd
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias .....='cd ../../../..'
 
 alias ei="eza --icons --git"
 alias ea="eza -a --icons --git"
@@ -76,7 +82,6 @@ alias h='fc -lt '%F %T' 1'
 alias cp='cp -i'
 alias rm='rm -i'
 #alias ..='c ../'
-alias p='pushd'
 alias diff='diff -U1'
 alias exsh='exec $SHELL -l'
 
