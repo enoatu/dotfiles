@@ -257,7 +257,10 @@ _install_mise() {
   else
     echo 'mise is already installed'
   fi
-  eval "$(mise activate zsh)"
+
+  # mise にパスを通す等
+  eval "$(${HOME}/.local/bin/mise activate zsh)"
+  # 一時的に追加
   export PATH="${HOME}/.local/share/mise/shims:$PATH"
   # 補完のために必要
   mise use -g usage
