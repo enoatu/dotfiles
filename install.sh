@@ -75,6 +75,7 @@ setup_zsh() {
     curl -sS https://starship.rs/install.sh | BIN_DIR=${ZSH_INSTALLS} FORCE=true sh
     _test_exists_files ${ZSH_INSTALLS}/starship
   fi
+  mkdir -p ${HOME}/.config
   ln -sf ${DOTFILES}/zsh/starship.toml ${HOME}/.config/starship.toml
   _test_exists_files ${HOME}/.config/starship.toml
 
