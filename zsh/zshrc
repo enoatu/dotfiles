@@ -59,17 +59,13 @@ alias ...='cd ../..'
 alias ....='cd ../../..'
 alias .....='cd ../../../..'
 
-alias ei="eza --icons --git"
-alias ea="eza -a --icons --git"
-alias ee="eza -aahl --icons --git"
-alias et="eza -T -L 3 -a -I 'node_modules|.git|.cache' --icons"
-alias eta="eza -T -a -I 'node_modules|.git|.cache' --color=always --icons | less -r"
-alias ls=ei
-alias la=ea
-alias ll=ee
-# alias tree=et
-alias lta=eta
-alias l="clear && ls"
+# cat
+alias cat='bat'
+
+alias tree="eza -T -L 3 -a -I 'node_modules|.git|.cache' --icons"
+alias ls="eza --icons --git"
+alias la="eza -a --icons --git"
+alias ll="eza -aahl --icons --git"
 
 alias gba='git branch --sort=-authordate'
 alias gu='git push'
@@ -328,5 +324,3 @@ dw() {
     echo "$arg\t`pwd`" >> $dirs
   fi
 }
-
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
