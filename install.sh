@@ -1,31 +1,58 @@
 #!/usr/bin/env zsh
 
-set -ue
-
 DOTFILES="${HOME}/dotfiles"
+ZSH_INSTALLS=${DOTFILES}/zsh/installs
 ADDITIONAL_DOTFILES=${ADDITIONAL_DOTFILES:-"${DOTFILES}/private-dotfiles"}
 ADDITIONAL_REPO_BRANCH=${ADDITIONAL_REPO_BRANCH:-"main"}
 ADDITIONAL_REPO_GITHUB_TOKEN=${ADDITIONAL_REPO_GITHUB_TOKEN:-""}
 ADDITIONAL_REPO_URL=${ADDITIONAL_REPO_URL:-"https://${ADDITIONAL_REPO_GITHUB_TOKEN}@github.com/enoatu/private-dotfiles.git"}
 
-# asdf
-export BASH_VERSION="3.2.57" # for asdf
-
 # tool
-BAT_VERSION="0.18.3"
-DELTA_VERSION="0.16.5"
+BAT_VERSION="0.24.0"
+DELTA_VERSION="0.18.2"
 FD_VERSION="8.7.0"
 NEOVIM_VERSION="0.9.5"
 NODE_VERSION="18.16.0"
 RIPGREP_VERSION="13.0.0"
 RYE_VERSION="0.38.0"
 TMUX_VERSION="3.2"
+EZA_VERSION="0.20.10"
 
 # runtime
 PYTHON_VERSION="3.9.7"
 RUBY_VERSION="3.2.1"
 PERL_VERSION="5.30.0"
 RUST_VERSION="1.55.0"
+
+# 引数でsetupを個別に指定できるようにする
+if [ $# -ne 0 ]; then
+  for arg in "$@"; do
+    case $arg in
+      zsh)
+        setup_zsh
+        ;;
+      git)
+        setup_git
+        ;;
+      tmux)
+        setup_tmux
+        ;;
+      neovim)
+        setup_neovim
+        ;;
+      tools)
+        setup_tools
+        ;;
+      additional)
+        setup_additional_dotfiles
+        ;;
+      *)
+        echo "invalid argument: $arg"
+        ;;
+    esac
+  done
+  exit 0
+fi
 
 main() {
   setup_zsh
@@ -40,26 +67,40 @@ main() {
 setup_zsh() {
   _print_start
 
+  _install_mise
+
   ln -sf ${DOTFILES}/zsh/zshrc ${HOME}/.zshrc
   _test_exists_files ${HOME}/.zshrc
-  if [ ! -e ${DOTFILES}/zsh/fzf.zsh ]; then
+  if [ ! -e $ZSH_INSTALLS/fzf.zsh ]; then
     (
-      cd ${DOTFILES}/zsh
+      cd $ZSH_INSTALLS
       git clone https://github.com/junegunn/fzf.git ./fzf
       ./fzf/install --no-fish --no-bash --all
-      mv ${HOME}/.fzf.zsh ${DOTFILES}/zsh/fzf.zsh
-      _test_exists_files ${DOTFILES}/zsh/fzf.zsh
+      mv ${HOME}/.fzf.zsh $ZSH_INSTALLS/fzf.zsh
+      _test_exists_files $ZSH_INSTALLS/fzf.zsh
     )
   fi
-  if [ ! -e ${DOTFILES}/zsh/zsh-autosuggestions.zsh ]; then
+  if [ ! -e $ZSH_INSTALLS/zsh-autosuggestions.zsh ]; then
     (
-      cd ${DOTFILES}/zsh
+      cd $ZSH_INSTALLS
       git clone https://github.com/zsh-users/zsh-autosuggestions ./zsh-autosuggestions
-      mv ./zsh-autosuggestions/zsh-autosuggestions.zsh ${DOTFILES}/zsh/zsh-autosuggestions.zsh
-      _test_exists_files ${DOTFILES}/zsh/zsh-autosuggestions.zsh
+      mv ./zsh-autosuggestions/zsh-autosuggestions.zsh $ZSH_INSTALLS/zsh-autosuggestions.zsh
+      _test_exists_files $ZSH_INSTALLS/zsh-autosuggestions.zsh
     )
   fi
-  echo 'Please exec "source ~${HOME}/.zshrc"'
+  if [ ! -e $ZSH_INSTALLS/fzf-tab ]; then
+    (
+      cd $ZSH_INSTALLS
+      git clone https://github.com/Aloxaf/fzf-tab
+      _test_exists_files $ZSH_INSTALLS/fzf-tab/fzf-tab.plugin.zsh
+    )
+  fi
+
+  if [ ! -e $ZSH_INSTALLS/mise.sh ]; then
+    mise completion zsh > $ZSH_INSTALLS/mise.zsh
+  fi
+
+  echo 'Please exec "source ${HOME}/.zshrc"'
 
   _print_complete
 }
@@ -89,7 +130,7 @@ setup_tmux() {
 setup_neovim() {
   _print_start
 
-  _install_asdf
+  _install_mise
 
   installs=(
     "neovim@${NEOVIM_VERSION}@CMD:nvim"
@@ -99,11 +140,10 @@ setup_neovim() {
   # "perl ${PERL_VERSION}" # cpan Neovim::Ext
   # "ruby ${RUBY_VERSION}" # gem install neovim
   # "python ${PYTHON_VERSION}"
-  # "rust ${RUST_VERSION}" #source "/Users/enotiru/.asdf/installs/rust/1.76.0/env" && rustup component add rust-src rust-analyzer
-  _asdf_install $installs || fail 'asdf install failed'
+  # "rust ${RUST_VERSION}" #source "/Users/enotiru/.local/share/shims/rust/1.76.0/env" && rustup component add rust-src rust-analyzer
+  _mise_install $installs || fail 'mise install failed'
 
-  # ~/.asdf/.tool_versions (ローカルでないことに注意) に golang 1.21 など記載することでプラグインエラーを回避できる
-  asdf local nodejs ${NODE_VERSION} # coc.nvim で使う
+  mise use nodejs@${NODE_VERSION} # coc.nvim で使う
   npm install -g neovim zx yarn@1 # yarn = cocで使用
 
   _install_pip
@@ -130,18 +170,19 @@ setup_neovim() {
 setup_tools() {
   _print_start
   (
-    _install_asdf
+    _install_mise
 
     installs=(
+      "eza@${EZA_VERSION}@CMD:eza"
       "bat@${BAT_VERSION}@CMD:bat"
-      "delta@${DELTA_VERSION}@CMD:delta,REPO_URL:https://github.com/pedropombeiro/asdf-delta.git"
+      "delta@${DELTA_VERSION}@CMD:delta"
       "fd@${FD_VERSION}@CMD:fd"
       "nodejs@${NODE_VERSION}@CMD:node"
       "ripgrep@${RIPGREP_VERSION}@CMD:rg"
       "rye@${RYE_VERSION}@CMD:rye"
       # "tmux@${TMUX_VERSION}@CMD:tmux,IF_NOT_EXISTS_COMMAND:tmux" alcolなどでtmuxが使われているので、tmuxはインストールしない
     )
-    _asdf_install $installs || fail 'install failed'
+    _mise_install $installs || fail 'install failed'
 
     _install_pip
     pip install trash-cli
@@ -165,7 +206,7 @@ setup_additional_dotfiles() {
   _print_complete
 }
 
-_asdf_install() {
+_mise_install() {
   # 引数を配列に変換
   for item in "$@"; do
     IFS='@' read -r name version opts<<<"$item"
@@ -188,7 +229,7 @@ _asdf_install() {
           CMD)
             cmd=$option_value
             ;;
-          REPO_URL)
+          REPO_URL) # 使っていない @REPO_URLで指定できる
             repo_url=$option_value
             ;;
           IF_NOT_EXISTS_COMMAND)
@@ -204,25 +245,24 @@ _asdf_install() {
       IFS='@'
       [[ $should_continue == true ]] && continue
     fi
-    asdf plugin add $name $repo_url
-    asdf install $name $version
-    asdf global $name $version
+    mise use --global $name@$version --yes
     _test_exists_commands $cmd
     echo "installed $name $version\n"
   done
 }
 
-_install_asdf() {
-  if [ ! -e ${HOME}/.asdf ]; then
-    git clone https://github.com/asdf-vm/asdf.git ${HOME}/.asdf
+_install_mise() {
+  if [ ! -e ${HOME}/.local/bin/mise ]; then
+    curl https://mise.run | sh
   else
-    echo 'asdf is already installed'
+    echo 'mise is already installed'
   fi
-  . ${HOME}/.asdf/asdf.sh
+  eval "$(mise activate zsh)"
+  export PATH="${HOME}/.local/share/mise/shims:$PATH"
+  # 補完のために必要
+  mise use -g usage
   # 一時的に追加
-  export PATH="$HOME/.asdf/bin:$HOME/.asdf/shims:$PATH"
-  rehash
-  _test_exists_files ${HOME}/.asdf/asdf.sh
+  _test_exists_files ${HOME}/.local/bin/mise
 }
 
 _install_pip() {
@@ -231,11 +271,11 @@ _install_pip() {
     return
   fi
 
-  _install_asdf
+  _install_mise
   installs=(
     "rye@${RYE_VERSION}@CMD:rye"
   )
-  _asdf_install $installs || fail 'install failed'
+  _mise_install $installs || fail 'install failed'
   # pip
   rye config --set-bool behavior.global-python=true && rye config --set-bool behavior.use-uv=true
   rye install pip || true

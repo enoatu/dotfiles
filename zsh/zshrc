@@ -108,6 +108,9 @@ gitstashpopreset() {
 
 alias v='(){vim $(gitdiffls $1)}'
 
+# mise
+eval "$(/Users/enotiru/.local/bin/mise activate zsh)"
+
 # backspace,deleteキーを使えるように
 stty erase '^H'
 stty erase '^?'
@@ -126,17 +129,19 @@ setopt hist_ignore_dups      # 直前と同じコマンドラインはヒスト�
 setopt inc_append_history    # 実行するたびにファイルに書き込む
 setopt hist_no_store         # historyコマンドは登録しない
 setopt hist_reduce_blanks    # 余分な空白は詰めて記録する
-[ -f $HOME/dotfiles/zsh/fzf.zsh ] && source $HOME/dotfiles/zsh/fzf.zsh
-#[ -f $HOME/dotfiles/zsh/fzf-tab/fzf-tab.plugin.zsh ] && source $HOME/dotfiles/zsh/fzf-tab/fzf-tab.plugin.zsh
 
+### ZSHプラグイン
+[ -f $HOME/dotfiles/zsh/installs/fzf.zsh ] && source $HOME/dotfiles/zsh/installs/fzf.zsh
+[ -f $HOME/dotfiles/zsh/installs/fzf-tab/fzf-tab.plugin.zsh ] && source $HOME/dotfiles/zsh/installs/fzf-tab/fzf-tab.plugin.zsh
+[ -f $HOME/dotfiles/zsh/installs/mise.zsh ] && source $HOME/dotfiles/zsh/installs/mise.zsh
 # コマンドを途中まで入力後、historyから絞り込み
 # 例 ls まで打ってCtrl+pでlsコマンドをさかのぼる、Ctrl+bで逆順
 autoload -Uz history-search-end
-
 # zsh-autosuggestions 灰色の補完
-[ -f $HOME/dotfiles/zsh/zsh-autosuggestions.zsh ] && source $HOME/dotfiles/zsh/zsh-autosuggestions.zsh
+[ -f $HOME/dotfiles/zsh/installs/zsh-autosuggestions.zsh ] && source $HOME/dotfiles/zsh/installs/zsh-autosuggestions.zsh
 bindkey '^l' autosuggest-accept
 bindkey '^]' autosuggest-execute
+### ZSHプラグイン
 
 # cdrコマンドを有効 ログアウトしても有効なディレクトリ履歴
 # cdr タブでリストを表示
@@ -185,17 +190,6 @@ GIT='${vcs_info_msg_0_}$(get_git_branch_description)'
 #black red green yellow blue magenta cyan white
 PROMPT="%(?.%{${fg[green]}%}.%{${fg[red]}%})(%D %*%)%n${reset_color}@${hostcolor}${host}${reset_color}${fg[green]}(%j)${reset_color}${GIT}%~
 %# "
-
-# asdf
-ASDF_DIR=$HOME/.asdf
-. $HOME/.asdf/asdf.sh
-# 補完
-fpath=(${ASDF_DIR}/completions $fpath)
-autoload -Uz compinit && compinit
-# asdf でインストールしたプログラムのパスを通す
-for d in $(find ${ASDF_DIR}/installs -maxdepth 1 -mindepth 1 -type d); do
-  PATH="${d}/bin:${PATH}"
-done
 
 # gitリポジトリにいる場合、set-messageフックでgit-config-user関数が呼び出されるように登録
 # "+vi-<フック名>"関数で、hook_com[misc]にgit config user.emailの結果を代入する
@@ -327,4 +321,4 @@ dw() {
   fi
 }
 
-eval "$(/Users/enotiru/.local/bin/mise activate zsh)"
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

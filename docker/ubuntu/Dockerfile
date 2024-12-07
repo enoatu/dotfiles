@@ -12,7 +12,7 @@ WORKDIR /root
 # コピペできるようにENVなど定義しない
 
 # 1. default
-# 2. asdf curl git
+# 2. mise curl git
 # 3. locales (for nvim), language-pack-jaがないとnvimが動かない
 # 4. unzip, wget(masonで必要)
 # 5. tmux あったら嬉しい

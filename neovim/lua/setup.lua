@@ -1,5 +1,5 @@
 local vim = vim
-local node_path = "~/.asdf/installs/nodejs/18.16.0/bin/node"
+local node_path = "~/.local/share/mise/installs/node/18.16.0/bin/node"
 
 local has_words_before = function()
     if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then

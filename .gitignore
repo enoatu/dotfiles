@@ -1,8 +1,7 @@
 /zsh/zshrc.local*
 .project_root
 .current_dir
-/zsh/fzf*
-/zsh/zsh-autosuggestions*
+/zsh/installs/*
 .dirs
 bin/setlocalgit
 /installs/*
