@@ -72,7 +72,8 @@ alias lta=eta
 alias l="clear && ls"
 
 alias gba='git branch --sort=-authordate'
-alias gu='git push -u origin $(git branch --show-current)'
+alias gu='git push'
+alias guu='git push -u origin $(git branch --show-current)'
 alias gp='git pull'
 alias gf="git for-each-ref --sort=committerdate refs/heads/ --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(contents:subject) - %(authorname) (%(color:green)%(committerdate:relative)%(color:reset))'"
 
