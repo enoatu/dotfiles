@@ -67,10 +67,17 @@ main() {
 setup_zsh() {
   _print_start
 
-  _install_mise
-
   ln -sf ${DOTFILES}/zsh/zshrc ${HOME}/.zshrc
   _test_exists_files ${HOME}/.zshrc
+
+  # starship
+  if [ ! -e ${ZSH_INSTALLS}/starship ]; then
+    curl -sS https://starship.rs/install.sh | BIN_DIR=${ZSH_INSTALLS} FORCE=true sh
+    _test_exists_files ${ZSH_INSTALLS}/starship
+  fi
+  ln -sf ${DOTFILES}/zsh/starship.toml ${HOME}/.config/starship.toml
+  _test_exists_files ${HOME}/.config/starship.toml
+
   if [ ! -e $ZSH_INSTALLS/fzf.zsh ]; then
     (
       cd $ZSH_INSTALLS
@@ -95,6 +102,8 @@ setup_zsh() {
       _test_exists_files $ZSH_INSTALLS/fzf-tab/fzf-tab.plugin.zsh
     )
   fi
+
+  _install_mise
 
   if [ ! -e $ZSH_INSTALLS/mise.sh ]; then
     mise completion zsh > $ZSH_INSTALLS/mise.zsh

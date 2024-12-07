@@ -15,6 +15,10 @@ export PATH="$HOME/bin:$PATH"
 # 環境によっては$SHELLがない時があるので設定
 export SHELL=`which zsh`
 
+
+# tmux 上で色がおかしい時に必須
+export TERM=screen-256color-bce
+
 # 色を使用
 autoload -Uz colors
 colors
@@ -145,6 +149,9 @@ autoload -Uz history-search-end
 [ -f $HOME/dotfiles/zsh/installs/zsh-autosuggestions.zsh ] && source $HOME/dotfiles/zsh/installs/zsh-autosuggestions.zsh
 bindkey '^l' autosuggest-accept
 bindkey '^]' autosuggest-execute
+
+[ -f $HOME/dotfiles/zsh/installs/starship ] && eval "$($HOME/dotfiles/zsh/installs/starship init zsh)"
+
 ### ZSHプラグイン
 
 # cdrコマンドを有効 ログアウトしても有効なディレクトリ履歴
@@ -168,45 +175,47 @@ export PATH="$HOME/dotfiles/neovim/install/nvim/bin:$PATH"
 # [ -f ../node/node_modules/zx/zx.mjs ] && export PATH="
 export PATH="/usr/local/bin:$PATH"
 
-get_git_branch_description() {
-  # git-branch-descriptions がない場合return
-  GIT_BRANCH_DESCRIPTIONS_PATH=enotiru-my-box/git-branch-descriptions
-  [ ! -f $GIT_BRANCH_DESCRIPTIONS_PATH ] && return
-  # git-branch-descriptions にbranchname,descriptionの形式で保存されている
-  local branchname=$(git rev-parse --abbrev-ref HEAD)
-  local description=$(grep -E "^$branchname," $GIT_BRANCH_DESCRIPTIONS_PATH | cut -d ',' -f 2)
-  [ -n "$description" ] && echo "($description)"
-}
-
-autoload -Uz vcs_info
-setopt prompt_subst
-zstyle ':vcs_info:git:*' check-for-changes true
-zstyle ':vcs_info:git:*' stagedstr "%F{yellow}!"
-zstyle ':vcs_info:git:*' unstagedstr "%F{red}+"
-zstyle ':vcs_info:*' formats "%F{cyan}[%m]%f%F{green}%c%u[%b]%f"
-zstyle ':vcs_info:*' actionformats '[%b|%a] %m'
-zstyle ':vcs_info:git+set-message:*' hooks git-config-user git-stash-count
-precmd () { vcs_info }
-GIT='${vcs_info_msg_0_}$(get_git_branch_description)'
+# get_git_branch_description() {
+#   # git-branch-descriptions がない場合return
+#   GIT_BRANCH_DESCRIPTIONS_PATH=enotiru-my-box/git-branch-descriptions
+#   [ ! -f $GIT_BRANCH_DESCRIPTIONS_PATH ] && return
+#   # git-branch-descriptions にbranchname,descriptionの形式で保存されている
+#   local branchname=$(git rev-parse --abbrev-ref HEAD)
+#   local description=$(grep -E "^$branchname," $GIT_BRANCH_DESCRIPTIONS_PATH | cut -d ',' -f 2)
+#   [ -n "$description" ] && echo "($description)"
+# }
+#
+#
+# # gitリポジトリにいる場合、set-messageフックでgit-config-user関数が呼び出されるように登録
+# # "+vi-<フック名>"関数で、hook_com[misc]にgit config user.emailの結果を代入する
+# function +vi-git-config-user(){
+#   hook_com[misc]+=$(git config user.name)
+# }
+#
+# function +vi-git-stash-count {
+#   local COUNT=$(git stash list 2>/dev/null | wc -l | tr -d ' ')
+#   if [ "$COUNT" -gt 0 ]; then
+#     hook_com[misc]+=" st=$COUNT"
+#   fi
+# }
+#
+# autoload -Uz vcs_info
+# setopt prompt_subst
+# zstyle ':vcs_info:git:*' check-for-changes true
+# zstyle ':vcs_info:git:*' stagedstr "%F{yellow}!"
+# zstyle ':vcs_info:git:*' unstagedstr "%F{red}+"
+# zstyle ':vcs_info:*' formats "%F{cyan}[%m]%f%F{green}%c%u[%b]%f"
+# zstyle ':vcs_info:*' actionformats '[%b|%a] %m'
+# zstyle ':vcs_info:git+set-message:*' hooks git-config-user git-stash-count
+# precmd () { vcs_info }
+# GIT='${vcs_info_msg_0_}$(get_git_branch_description)'
+#
+#
+# #black red green yellow blue magenta cyan white
+# PROMPT="%(?.%{${fg[green]}%}.%{${fg[red]}%})(%D %*%)%n${reset_color}@${hostcolor}${host}${reset_color}${fg[green]}(%j)${reset_color}${GIT}%~
+# %# "
 
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
-
-#black red green yellow blue magenta cyan white
-PROMPT="%(?.%{${fg[green]}%}.%{${fg[red]}%})(%D %*%)%n${reset_color}@${hostcolor}${host}${reset_color}${fg[green]}(%j)${reset_color}${GIT}%~
-%# "
-
-# gitリポジトリにいる場合、set-messageフックでgit-config-user関数が呼び出されるように登録
-# "+vi-<フック名>"関数で、hook_com[misc]にgit config user.emailの結果を代入する
-function +vi-git-config-user(){
-  hook_com[misc]+=$(git config user.name)
-}
-
-function +vi-git-stash-count {
-  local COUNT=$(git stash list 2>/dev/null | wc -l | tr -d ' ')
-  if [ "$COUNT" -gt 0 ]; then
-    hook_com[misc]+=" st=$COUNT"
-  fi
-}
 
 ## tmux ログイン時起動
 #[[ $- != *i* ]] && return
@@ -324,3 +333,4 @@ dw() {
     echo "$arg\t`pwd`" >> $dirs
   fi
 }
+
