@@ -140,7 +140,7 @@ setup_neovim() {
   # "perl ${PERL_VERSION}" # cpan Neovim::Ext
   # "ruby ${RUBY_VERSION}" # gem install neovim
   # "python ${PYTHON_VERSION}"
-  # "rust ${RUST_VERSION}" #source "/Users/enotiru/.local/share/shims/rust/1.76.0/env" && rustup component add rust-src rust-analyzer
+  # "rust ${RUST_VERSION}" #source "$HOME/.local/share/shims/rust/1.76.0/env" && rustup component add rust-src rust-analyzer
   _mise_install $installs || fail 'mise install failed'
 
   mise use nodejs@${NODE_VERSION} # coc.nvim で使う

@@ -109,7 +109,7 @@ gitstashpopreset() {
 alias v='(){vim $(gitdiffls $1)}'
 
 # mise
-eval "$(/Users/enotiru/.local/bin/mise activate zsh)"
+eval "$(${HOME}/.local/bin/mise activate zsh)"
 
 # backspace,deleteキーを使えるように
 stty erase '^H'
