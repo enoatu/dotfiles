@@ -78,6 +78,9 @@ require("lazy").setup({
                 vim.g.any_jump_window_width_ratio = 0.9
                 vim.g.any_jump_window_height_ratio = 0.9
                 vim.g.any_jump_max_search_results = 20
+                vim.g.any_jump_ignored_files = {
+                    'admin/',
+                }
                 -- Normal mode: Jump to definition under cursor
                 -- vim.keymap.set("n", "<C-j>", ":AnyJump<CR>", { noremap = true })
                 -- Visual mode: jump to selected text in visual mode
@@ -849,6 +852,10 @@ require("lazy").setup({
         },
         { -- fzf
             "nvim-telescope/telescope.nvim",
+            dependencies = {
+                "nvim-telescope/telescope-live-grep-args.nvim",
+                version = "^1.0.0",
+            },
             keys = {
                 {
                     "<leader>.",
@@ -857,7 +864,8 @@ require("lazy").setup({
                 },
             },
             config = function()
-                require("telescope").setup({
+                local telescope = require("telescope")
+                telescope.setup({
                     pickers = {
                         buffers = {
                             mappings = {
@@ -868,6 +876,10 @@ require("lazy").setup({
                         },
                     },
                 })
+                telescope.load_extension("live_grep_args")
+                local live_grep_args_shortcuts = require("telescope-live-grep-args.shortcuts")
+                vim.keymap.set("n", "<C-j>", live_grep_args_shortcuts.grep_word_under_cursor, { noremap = true, silent = true })
+                vim.keymap.set("v", "<C-j>", live_grep_args_shortcuts.grep_visual_selection, { noremap = true, silent = true })
             end,
         },
         {
