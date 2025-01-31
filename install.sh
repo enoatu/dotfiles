@@ -22,7 +22,7 @@ EZA_VERSION="0.20.10"
 PYTHON_VERSION="3.9.7"
 RUBY_VERSION="3.2.1"
 PERL_VERSION="5.30.0"
-RUST_VERSION="1.55.0"
+RUST_VERSION="1.84.0"
 
 # 引数でsetupを個別に指定できるようにする
 if [ $# -ne 0 ]; then
@@ -146,11 +146,16 @@ setup_neovim() {
     "neovim@${NEOVIM_VERSION}@CMD:nvim"
     "nodejs@${NODE_VERSION}@CMD:node"
     "ripgrep@${RIPGREP_VERSION}@CMD:rg"
+    "rust@${RUST_VERSION}@CMD:rustup"
   )
   # "perl ${PERL_VERSION}" # cpan Neovim::Ext
   # "ruby ${RUBY_VERSION}" # gem install neovim
   # "python ${PYTHON_VERSION}"
   # "rust ${RUST_VERSION}" #source "$HOME/.local/share/shims/rust/1.76.0/env" && rustup component add rust-src rust-analyzer
+  # cargo install \
+  # erdtree \ # eza よりもはやい erd --level 1 --suppress-size --long --icons
+  # dua-cli \ # dua -i . でディスク使用量を表示
+
   _mise_install $installs || fail 'mise install failed'
 
   mise use nodejs@${NODE_VERSION} # coc.nvim で使う

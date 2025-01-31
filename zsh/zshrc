@@ -69,8 +69,8 @@ alias cat='bat'
 alias tree="eza -T -L 3 -a -I 'node_modules|.git|.cache' --icons"
 alias ls="eza --icons --git"
 alias la="eza -a --icons --git"
-alias ll="eza -aahl --icons --git"
-
+alias ll="eza -ahl --icons --git"
+#alias ll="erd --level 1 --suppress-size --long --icons --sort rname --group --hidden --time-format iso-strict"
 alias gba='git branch --sort=-authordate'
 alias gu='git push'
 alias guu='git push -u origin $(git branch --show-current)'
@@ -140,7 +140,7 @@ setopt hist_reduce_blanks    # 余分な空白は詰めて記録する
 
 ### ZSHプラグイン
 [ -f $HOME/dotfiles/zsh/installs/fzf.zsh ] && source $HOME/dotfiles/zsh/installs/fzf.zsh
-[ -f $HOME/dotfiles/zsh/installs/fzf-tab/fzf-tab.plugin.zsh ] && source $HOME/dotfiles/zsh/installs/fzf-tab/fzf-tab.plugin.zsh
+#[ -f $HOME/dotfiles/zsh/installs/fzf-tab/fzf-tab.plugin.zsh ] && source $HOME/dotfiles/zsh/installs/fzf-tab/fzf-tab.plugin.zsh
 [ -f $HOME/dotfiles/zsh/installs/mise.zsh ] && source $HOME/dotfiles/zsh/installs/mise.zsh
 # コマンドを途中まで入力後、historyから絞り込み
 # 例 ls まで打ってCtrl+pでlsコマンドをさかのぼる、Ctrl+bで逆順
