@@ -1243,7 +1243,7 @@ require("lazy").setup({
             },
         },
         {
-            "snacks.nvim",
+            "folke/snacks.nvim",
             opts = {
                 scroll = { enabled = false },
             },
