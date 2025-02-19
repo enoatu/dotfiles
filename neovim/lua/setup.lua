@@ -22,7 +22,7 @@ require("lazy").setup({
             disabled_plugins = {
                 "gzip",
                 "matchit",
-                -- "matchparen", 対応するカッコハイライト
+                "matchparen", -- 対応するカッコハイライト
                 "netrwPlugin",
                 "tarPlugin",
                 "tohtml",
@@ -96,6 +96,10 @@ require("lazy").setup({
             lazy = false,
             -- :help ibl.config.scope とすると | などの一覧が表示される
             config = function()
+                vim.api.nvim_set_hl(0, "GitSignsAddInline", { bg = "#033386" })
+                vim.api.nvim_set_hl(0, "GitSignsChangeInline", { bg = "#013369" })
+                vim.api.nvim_set_hl(0, "GitSignsDeleteInline", { bg = "#802B26" })
+
                 require("gitsigns").setup({
                     signs = {
                         add = { text = "▌+" },
@@ -199,11 +203,17 @@ require("lazy").setup({
                 })
             end,
         },
-        {
+        {   -- quickfix を見やすくする
             'kevinhwang91/nvim-bqf',
-            ft = 'qf'
+            ft = 'qf',
+            init = function()
+                vim.api.nvim_create_user_command('Qf', function(opts)
+                    vim.cmd('silent!rg --vimgrep ' .. opts.args)
+                    vim.cmd('copen')
+                end, { nargs = '*' })
+            end,
         },
-        {
+        {   -- kevinhwang91/nvim-bqf に依存
             'junegunn/fzf',
             run = function()
                 vim.fn['fzf#install']()
@@ -292,7 +302,7 @@ require("lazy").setup({
         --         )
         --     end,
         -- },
-        {
+        { -- python 用(いらないかも)
             "linux-cultist/venv-selector.nvim",
             dependencies = { "neovim/nvim-lspconfig", "nvim-telescope/telescope.nvim", "mfussenegger/nvim-dap-python" },
             opts = {
@@ -328,12 +338,22 @@ require("lazy").setup({
             end,
         },
         {
+            'leafOfTree/vim-matchtag',
+            enabled = true,
+            lazy = true,
+            config = function()
+                -- matchtagをsearchの背景色にする
+                -- vim.api.nvim_set_hl(0, "matchTag", { link = "Search" })
+                -- vim.api.nvim_set_hl(0, "matchTag", { link = "MatchParen" })
+            end
+        },
+        {
             "tpope/vim-fugitive", -- vimscript
             config = function()
                 vim.keymap.set("n", "<Leader>d", ":Gdiff<CR>:windo set wrap<CR>")
             end,
         },
-        {
+        { -- バッファ管理
             "enoatu/vim-bufferlist", -- vimscript
             -- dir = "~/MyDevelopment/vim-bufferlist",
             lazy = false,
@@ -589,6 +609,7 @@ require("lazy").setup({
             -- 最新版だとcoc-tsserverが動かない
             commit = "fab97c7db68f24e5cc3c1cf753d3bd1819beef8f",
             build = "yarn install --frozen-lockfile",
+            lazy = false,
             init = function()
                 -- vim.g.coc_node_path = node_path
                 -- インストール時実行
@@ -835,6 +856,7 @@ require("lazy").setup({
             enabled = false,
         },
         { -- 囲む
+
             "echasnovski/mini.surround",
             enabled = false,
         },
@@ -932,16 +954,34 @@ require("lazy").setup({
             "folke/flash.nvim",
             enabled = false,
         },
+        { -- 検索f の強化版2
+            'unblevable/quick-scope',
+            enabled = false,
+        },
         { -- ファイルエクスプローラー
             "stevearc/oil.nvim",
             config = function()
-                require("oil").setup()
+                require("oil").setup({
+                  view_options = {
+                    show_hidden = true,
+                  },
+                })
                 -- n で親ディレクトリを開く
                 vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
+                -- oil fix relative path
+                vim.api.nvim_create_augroup('OilRelPathFix', {})
+                vim.api.nvim_create_autocmd("BufLeave", {
+                    group = 'OilRelPathFix',
+                    pattern  = "oil:///*",
+                    callback = function ()
+                        vim.cmd("cd .")
+                    end
+                })
             end,
         },
         { -- カーソルの他の単語もハイライト
             "RRethy/vim-illuminate",
+            enabled = false,
         },
         { -- buffer 削除
             "echasnovski/mini.bufremove",
@@ -1068,18 +1108,44 @@ require("lazy").setup({
         -- Need A C compiler in your path and libstdc++ installed
         {
             "nvim-treesitter/nvim-treesitter",
+            config = function()
+                vim.g.matchup_matchparen_enabled = 1
+                vim.g.matchup_matchparen_offscreen = { method = 'popup' } -- カーソル外のタグも表示
+                vim.api.nvim_create_autocmd("BufReadPost", {
+                    callback = function()
+                        vim.defer_fn(function()
+                            print("Enable treesitter highlight")
+                            vim.cmd("TSEnable highlight")
+                        end, 1000)
+                    end,
+                })
+            end,
+            dependencies = {
+                'andymass/vim-matchup'
+            },
+            -- lazy = true, -- filetype が後から設定される時があるため場合は遅延読み込み
+            lazy = false, -- lazyはfalseでないと動作しない
             opts = {
                 highlight = {
                     enable = true,
                     disable = function(lang, buf)
                         if lang == "htmldjango" then
-                            return true
+                            -- return true
                         end
                         -- 1000 KB 超えのファイルでは tree-sitter によるシンタックスハイライトを行わない
                         local max_filesize = 1000 * 1024
                         local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
                         if ok and stats and stats.size > max_filesize then
                             print("File too large, disabling treesitter highlight for " .. lang)
+                            return true
+                        end
+                    end,
+                    -- additional_vim_regex_highlighting = false,
+                },
+                matchup = {
+                    enable = true, -- matchup を有効化
+                    disable = function(lang, buf)
+                        if lang == "perl" then
                             return true
                         end
                     end,
@@ -1097,6 +1163,7 @@ require("lazy").setup({
                     "markdown",
                     "markdown_inline",
                     "php",
+                    "htmldjango",
                     "python",
                     "query",
                     "regex",
@@ -1122,7 +1189,7 @@ require("lazy").setup({
         },
         { -- 画面上部に現在のインデントを表示
             "nvim-treesitter/nvim-treesitter-context",
-            enabled = false, -- 移動しているとneovimが落ちるので
+            enabled = true, -- 移動しているとneovimが落ちる?
             config = function()
                 require("treesitter-context").setup({
                     enable = true, -- 有効化
@@ -1173,7 +1240,7 @@ require("lazy").setup({
             "akinsho/bufferline.nvim",
             enabled = true,
         },
-        {
+        { -- ステータスライン
             "nvim-lualine/lualine.nvim",
             event = "VeryLazy",
             opts = function()
