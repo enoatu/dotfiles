@@ -1046,11 +1046,6 @@ require("lazy").setup({
             enabled = vim.g.enable_plugin_lsp_json or false,
         },
         {
-            import = "lazyvim.plugins.extras.lang.python-semshi",
-            --- enabled = vim.g.enable_plugin_lsp_python_semshi or false,
-            enabled = false,
-        },
-        {
             import = "lazyvim.plugins.extras.lang.python",
             enabled = vim.g.enable_plugin_lsp_python or false,
         },
@@ -1109,20 +1104,17 @@ require("lazy").setup({
         {
             "nvim-treesitter/nvim-treesitter",
             config = function()
-                vim.g.matchup_matchparen_enabled = 1
-                vim.g.matchup_matchparen_offscreen = { method = 'popup' } -- カーソル外のタグも表示
-                vim.api.nvim_create_autocmd("BufReadPost", {
-                    callback = function()
-                        vim.defer_fn(function()
-                            print("Enable treesitter highlight")
-                            vim.cmd("TSEnable highlight")
-                        end, 1000)
-                    end,
-                })
+                -- vim.g.matchup_matchparen_enabled = 1
+                -- vim.g.matchup_matchparen_offscreen = { method = 'popup' } -- カーソル外のタグも表示
+                -- vim.api.nvim_create_autocmd("BufReadPost", {
+                --     callback = function()
+                --         vim.defer_fn(function()
+                --             print("Enable treesitter highlight")
+                --             vim.cmd("TSEnable highlight")
+                --         end, 1000)
+                --     end,
+                -- })
             end,
-            dependencies = {
-                'andymass/vim-matchup'
-            },
             -- lazy = true, -- filetype が後から設定される時があるため場合は遅延読み込み
             lazy = false, -- lazyはfalseでないと動作しない
             opts = {
@@ -1141,14 +1133,6 @@ require("lazy").setup({
                         end
                     end,
                     -- additional_vim_regex_highlighting = false,
-                },
-                matchup = {
-                    enable = true, -- matchup を有効化
-                    disable = function(lang, buf)
-                        if lang == "perl" then
-                            return true
-                        end
-                    end,
                 },
                 indent = { enable = true },
                 ensure_installed = {
@@ -1279,25 +1263,25 @@ require("lazy").setup({
                             {
                                 function() return require("noice").api.status.command.get() end,
                                 cond = function() return package.loaded["noice"] and require("noice").api.status.command.has() end,
-                                color = Util.ui.fg("Statement"),
+                                color = { fg = Snacks.util.color("Statement") },
                             },
                             -- stylua: ignore
                             {
                                 function() return require("noice").api.status.mode.get() end,
                                 cond = function() return package.loaded["noice"] and require("noice").api.status.mode.has() end,
-                                color = Util.ui.fg("Constant"),
+                                color = { fg = Snacks.util.color("Constant") },
                             },
                             -- stylua: ignore
                             {
                                 function() return "  " .. require("dap").status() end,
                                 cond = function () return package.loaded["dap"] and require("dap").status() ~= "" end,
-                                color = Util.ui.fg("Debug"),
+                                color = { fg = Snacks.util.color("Debug") },
                             },
                             "copilot",
                             {
                                 require("lazy.status").updates,
                                 cond = require("lazy.status").has_updates,
-                                color = Util.ui.fg("Special"),
+                                color = { fg = Snacks.util.color("Special") },
                             },
                             {
                                 "diff",
@@ -1406,7 +1390,7 @@ require("lazy").setup({
         },
         { -- メッセージやcmdlineなどおしゃれに
             "folke/noice.nvim",
-            enabled = false,
+            enabled = true,
         },
         { -- 最初の画面
             "nvimdev/dashboard-nvim",

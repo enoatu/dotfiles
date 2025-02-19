@@ -75,7 +75,7 @@ vim.o.matchtime = 1
 vim.o.hidden = true
 vim.o.whichwrap = "b,s,<,>,[,]"
 -- vnoremap <silent> <C-p> "0p<CR>
-vim.o.t_Co = 256
+-- vim.o.t_Co = 256
 
 vim.keymap.set("c", "w!!", "w !sudo tee > /dev/null %<CR>", { noremap = true })
 -- "visualモードで選択してからのインデント調整で調整後に選択範囲を開放しない
