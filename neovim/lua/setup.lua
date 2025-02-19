@@ -79,7 +79,7 @@ require("lazy").setup({
                 vim.g.any_jump_window_height_ratio = 0.9
                 vim.g.any_jump_max_search_results = 20
                 vim.g.any_jump_ignored_files = {
-                    'admin/',
+                    "admin/",
                 }
                 -- Normal mode: Jump to definition under cursor
                 -- vim.keymap.set("n", "<C-j>", ":AnyJump<CR>", { noremap = true })
@@ -203,21 +203,21 @@ require("lazy").setup({
                 })
             end,
         },
-        {   -- quickfix を見やすくする
-            'kevinhwang91/nvim-bqf',
-            ft = 'qf',
+        { -- quickfix を見やすくする
+            "kevinhwang91/nvim-bqf",
+            ft = "qf",
             init = function()
-                vim.api.nvim_create_user_command('Qf', function(opts)
-                    vim.cmd('silent!rg --vimgrep ' .. opts.args)
-                    vim.cmd('copen')
-                end, { nargs = '*' })
+                vim.api.nvim_create_user_command("Qf", function(opts)
+                    vim.cmd("silent!rg --vimgrep " .. opts.args)
+                    vim.cmd("copen")
+                end, { nargs = "*" })
             end,
         },
-        {   -- kevinhwang91/nvim-bqf に依存
-            'junegunn/fzf',
+        { -- kevinhwang91/nvim-bqf に依存
+            "junegunn/fzf",
             run = function()
-                vim.fn['fzf#install']()
-            end
+                vim.fn["fzf#install"]()
+            end,
         },
         {
             -- スネークケースとか変える
@@ -318,6 +318,18 @@ require("lazy").setup({
                 { "<leader>vc", "<cmd>VenvSelectCached<cr>" },
             },
         },
+        {
+            "sphamba/smear-cursor.nvim",
+            enabled = false,
+            opts = {
+                cursor_color = "#C678DD",
+                stiffness = 0.3,
+                trailing_stiffness = 0.1,
+                trailing_exponent = 5,
+                hide_target_hack = true,
+                gamma = 1,
+            },
+        },
         { -- 囲む
             "kylechui/nvim-surround",
             config = function()
@@ -338,14 +350,14 @@ require("lazy").setup({
             end,
         },
         {
-            'leafOfTree/vim-matchtag',
+            "leafOfTree/vim-matchtag",
             enabled = true,
             lazy = true,
             config = function()
                 -- matchtagをsearchの背景色にする
                 -- vim.api.nvim_set_hl(0, "matchTag", { link = "Search" })
                 -- vim.api.nvim_set_hl(0, "matchTag", { link = "MatchParen" })
-            end
+            end,
         },
         {
             "tpope/vim-fugitive", -- vimscript
@@ -935,8 +947,18 @@ require("lazy").setup({
                 })
                 telescope.load_extension("live_grep_args")
                 local live_grep_args_shortcuts = require("telescope-live-grep-args.shortcuts")
-                vim.keymap.set("n", "<C-j>", live_grep_args_shortcuts.grep_word_under_cursor, { noremap = true, silent = true })
-                vim.keymap.set("v", "<C-j>", live_grep_args_shortcuts.grep_visual_selection, { noremap = true, silent = true })
+                vim.keymap.set(
+                    "n",
+                    "<C-j>",
+                    live_grep_args_shortcuts.grep_word_under_cursor,
+                    { noremap = true, silent = true }
+                )
+                vim.keymap.set(
+                    "v",
+                    "<C-j>",
+                    live_grep_args_shortcuts.grep_visual_selection,
+                    { noremap = true, silent = true }
+                )
             end,
         },
         {
@@ -955,27 +977,27 @@ require("lazy").setup({
             enabled = false,
         },
         { -- 検索f の強化版2
-            'unblevable/quick-scope',
+            "unblevable/quick-scope",
             enabled = false,
         },
         { -- ファイルエクスプローラー
             "stevearc/oil.nvim",
             config = function()
                 require("oil").setup({
-                  view_options = {
-                    show_hidden = true,
-                  },
+                    view_options = {
+                        show_hidden = true,
+                    },
                 })
                 -- n で親ディレクトリを開く
                 vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
                 -- oil fix relative path
-                vim.api.nvim_create_augroup('OilRelPathFix', {})
+                vim.api.nvim_create_augroup("OilRelPathFix", {})
                 vim.api.nvim_create_autocmd("BufLeave", {
-                    group = 'OilRelPathFix',
-                    pattern  = "oil:///*",
-                    callback = function ()
+                    group = "OilRelPathFix",
+                    pattern = "oil:///*",
+                    callback = function()
                         vim.cmd("cd .")
-                    end
+                    end,
                 })
             end,
         },
