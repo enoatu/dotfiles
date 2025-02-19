@@ -6,6 +6,17 @@ vim.o.hidden = true
 -- 入力中のコマンドをステータスに表示する
 vim.o.showcmd = true
 
+-- yank後にクリップボードにもコピー
+-- vim.keymap.set("n", "+", "<Cmd>let @+ = @@<CR>", { noremap = true, silent = true }
+-- https://zenn.dev/anyakichi/articles/40d7464fdf0e31
+vim.api.nvim_create_autocmd("TextYankPost", {
+    group = vim.api.nvim_create_augroup("YankSync", { clear = true }),
+    pattern = "*",
+    callback = function()
+        vim.fn.setreg("+", vim.fn.getreg("@@"))
+    end,
+})
+
 ----  見た目系
 -- 行番号を表示
 vim.wo.number = true
