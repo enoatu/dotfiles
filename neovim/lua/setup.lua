@@ -1220,6 +1220,12 @@ require("lazy").setup({
                 },
             },
         },
+        {
+            "snacks.nvim",
+            opts = {
+                scroll = { enabled = false },
+            },
+        },
         { -- 上部のbufferタブ
             "akinsho/bufferline.nvim",
             enabled = true,
