@@ -13,3 +13,4 @@ nerd-fonts
 /neovim/install/*
 /neovim/lua/env.lua
 *.tool-versions
+.DS_Store

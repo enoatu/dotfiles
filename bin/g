@@ -33,6 +33,12 @@ main() {
       echo "${@:2}"
       gbc "${@:2}"
       ;;
+    "git-new-branch-via-stash")
+      git-new-branch-via-stash "${@:2}"
+      ;;
+    "n")
+      git-new-branch-via-stash "${@:2}"
+      ;;
     "help")
       show_help
       ;;
@@ -147,6 +153,29 @@ gbc() { ## create|c git ブランチを作成
   fi
   # git-branch-descriptions にbranchname,descriptionの形式で保存する
   echo "$branch_name,$description" >> $GIT_BRANCH_DESCRIPTIONS_PATH
+}
+
+git-new-branch-via-stash() { ## n|git-new-branch-via-stash 現在のブランチを stash して新しいブランチを作成する
+  local branch_name
+  branch_name=$1
+  if [ -z "$branch_name" ]; then
+    echo "branch name is required"
+    return 1
+  fi
+  local base_branch_name=$2
+  if [ -z "$base_branch_name" ]; then
+    base_branch_name="main"
+  fi
+  local flg_stash=false
+  if [ ! $(git diff --quiet) ]; then
+    git stash
+  fi
+  git checkout $base_branch_name
+  git pull
+  git checkout -b $branch_name
+  if [ $flg_stash ]; then
+    git stash pop
+  fi
 }
 
 show_help() { ## help|h ヘルプを表示する
