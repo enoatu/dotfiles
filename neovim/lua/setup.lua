@@ -93,7 +93,7 @@ require("lazy").setup({
         },
         {
             "lewis6991/gitsigns.nvim",
-            lazy = false,
+            lazy = true,
             -- :help ibl.config.scope とすると | などの一覧が表示される
             config = function()
                 vim.api.nvim_set_hl(0, "GitSignsAddInline", { bg = "#033386" })
@@ -111,7 +111,7 @@ require("lazy").setup({
                     signcolumn = true, -- Toggle with `:Gitsigns toggle_signs`
                     numhl = true, -- Toggle with `:Gitsigns toggle_numhl`
                     linehl = false, -- Toggle with `:Gitsigns toggle_linehl` coc-spell-checker とハイライトがぶつかる
-                    word_diff = true, -- Toggle with `:Gitsigns toggle_word_diff`
+                    --  word_diff = true, -- Toggle with `:Gitsigns toggle_word_diff`
                     -- current_line_blame = true,
                     attach_to_untracked = false,
                     on_attach = function(bufnr)
@@ -971,6 +971,9 @@ require("lazy").setup({
                     { noremap = true, silent = true }
                 )
             end,
+        },
+        {
+            "lambdalisue/vim-suda",
         },
         { -- 検索f の強化版 shogehogeで検索
             "folke/flash.nvim",
