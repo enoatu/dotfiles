@@ -5,6 +5,7 @@ vim.g.mapleader = " "
 vim.o.hidden = true
 -- 入力中のコマンドをステータスに表示する
 vim.o.showcmd = true
+vim.opt.undofile = true
 
 -- yank後にクリップボードにもコピー
 -- vim.keymap.set("n", "+", "<Cmd>let @+ = @@<CR>", { noremap = true, silent = true }
