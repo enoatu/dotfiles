@@ -2,8 +2,8 @@
   excludesfile = ~/.gitignore_global
   editor=nvim
   quotepath = false
-  fsmonitor = true # for use scalar
-  untrackedcache = true # for use scalar
+  fsmonitor = true
+  untrackedcache = true
 
 [color]
   ui = true
