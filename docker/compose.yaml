@@ -5,12 +5,23 @@ services:
       context: .
       dockerfile: ./ubuntu/Dockerfile
     tty: true
+    volumes:
+      - ./enotiru-my-box:/mnt
     # command: '/bin/bash -c "git clone https://github.com/enoatu/dotfiles --depth 1&& cd dotfiles && ADDITIONAL_REPO_GITHUB_TOKEN= ./install.sh"'
   debian:
     build:
       context: .
       dockerfile: ./debian/Dockerfile
     tty: true
+    volumes:
+      - ./enotiru-my-box:/mnt
+  bookworm:
+    build:
+      context: .
+      dockerfile: ./debian/bookworm/Dockerfile
+    tty: true
+    volumes:
+      - ./enotiru-my-box:/mnt
     # command: '/bin/bash -c "git clone https://github.com/enoatu/dotfiles --depth 1&& cd dotfiles && ADDITIONAL_REPO_GITHUB_TOKEN= ./install.sh"'
   #centos:
   #  build:
