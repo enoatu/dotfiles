@@ -230,6 +230,10 @@ require("lazy").setup({
                         height = 0.8,
                         row = 1,
                     },
+                    completeopt = {
+                        "noinsert",
+                        "noselect",
+                    },
                     prompts = {
                         Explain = {
                             prompt = "/COPILOT_EXPLAIN 上記のコードをわかりやすく日本語で説明してください",
