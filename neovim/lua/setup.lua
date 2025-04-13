@@ -76,7 +76,6 @@ require("lazy").setup({
         },
         {
             "lewis6991/gitsigns.nvim",
-            lazy = true,
             -- :help ibl.config.scope とすると | などの一覧が表示される
             config = function()
                 vim.api.nvim_set_hl(0, "GitSignsAddInline", { bg = "#033386" })
@@ -907,6 +906,7 @@ require("lazy").setup({
             dependencies = {
                 "nvim-telescope/telescope-live-grep-args.nvim",
                 version = "^1.0.0",
+                "nvim-lua/plenary.nvim",
             },
             keys = {
                 {
@@ -1325,6 +1325,7 @@ require("lazy").setup({
             "lukas-reineke/indent-blankline.nvim",
             main = "ibl",
             lazy = false,
+            enabled = false,
             config = function()
                 local highlight = {
                     "RainbowRed",
@@ -1354,7 +1355,6 @@ require("lazy").setup({
         { -- インデント可視化、チャンク表示
             "shellRaining/hlchunk.nvim",
             event = { "BufReadPre", "BufNewFile" },
-            enabled = false,
             config = function()
                 require("hlchunk").setup({
                     chunk = {
@@ -1373,22 +1373,24 @@ require("lazy").setup({
                         textobject = "",
                         max_file_size = 1024 * 1024,
                         error_sign = true,
+						duration = 0,
+						delay = 0,
                     },
                     -- 初回読み込み時にレンダリングされない問題が解決されたらindent-blanklineから置き換える
-                    -- indent = {
-                    --     enable = true,
-                    --     chars = {
-                    --         "│",
-                    --     },
-                    --     style = {
-                    --         "#A32B26",
-                    --         "#F0B01E",
-                    --         "#016669",
-                    --         "#936419",
-                    --         "#14CDE6",
-                    --         "#C678DD",
-                    --     },
-                    -- }
+                    indent = {
+                        enable = true,
+                        chars = {
+                            "│",
+                        },
+                        style = {
+                            "#A32B26",
+                            "#F0B01E",
+                            "#016669",
+                            "#936419",
+                            "#14CDE6",
+                            "#C678DD",
+                        },
+                    }
                 })
             end,
         },
@@ -1402,9 +1404,37 @@ require("lazy").setup({
         { -- キーマップを表示 (leader + sk)
             "folke/which-key.nvim",
         },
-        { -- メッセージやcmdlineなどおしゃれに
+        { -- メッセージやcmdlineなどおしゃれに、lualine でも使用
             "folke/noice.nvim",
-            enabled = true,
+            event = "VeryLazy",
+            dependencies = {
+                -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
+                "MunifTanjim/nui.nvim",
+                -- OPTIONAL:
+                --   `nvim-notify` is only needed, if you want to use the notification view.
+                --   If not available, we use `mini` as the fallback
+                "rcarriga/nvim-notify",
+            },
+            config = function()
+                require("noice").setup({
+                  lsp = {
+                    -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
+                    override = {
+                      ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+                      ["vim.lsp.util.stylize_markdown"] = true,
+                      ["cmp.entry.get_documentation"] = true, -- requires hrsh7th/nvim-cmp
+                    },
+                  },
+                  -- you can enable a preset for easier configuration
+                  presets = {
+                    bottom_search = true, -- use a classic bottom cmdline for search
+                    command_palette = true, -- position the cmdline and popupmenu together
+                    long_message_to_split = true, -- long messages will be sent to a split
+                    inc_rename = false, -- enables an input dialog for inc-rename.nvim
+                    lsp_doc_border = false, -- add a border to hover docs and signature help
+                  },
+                })
+            end
         },
         { -- 最初の画面
             "nvimdev/dashboard-nvim",
@@ -1416,22 +1446,6 @@ require("lazy").setup({
                     },
                 }
             end,
-        },
-        { -- アイコン
-            "nvim-tree/nvim-web-devicons",
-        },
-        { -- UI ライブラリ
-            "MunifTanjim/nui.nvim",
-        },
-        -- lazy: Util --
-        { -- 読み込み時間を測る
-            "dstein64/vim-startuptime",
-        },
-        { -- セッション管理
-            "folke/persistence.nvim",
-        },
-        { -- asyncなど 他のライブラリで使う
-            "nvim-lua/plenary.nvim",
         },
     },
 })
