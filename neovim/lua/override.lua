@@ -108,8 +108,6 @@ vim.opt.wrap = true
 
 -- Disable
 vim.keymap.set({ "i", "n" }, "<esc>", "<esc>", { desc = "Escape and clear hlsearch" })
-vim.keymap.set({ "n" }, "L", "", { desc = "" })
-vim.keymap.set({ "n" }, "H", "", { desc = "" })
 
 vim.api.nvim_create_autocmd("FileType", {
     pattern = "php",

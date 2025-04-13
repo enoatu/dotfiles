@@ -216,7 +216,6 @@ require("lazy").setup({
             lazy = false,
             init = function()
                 vim.g.BufferListMaxWidth = 100
-                -- require("bufferlist")
             end,
         },
         {
@@ -569,6 +568,7 @@ require("lazy").setup({
                 --         end, 1000)
                 --     end,
                 -- })
+                --
             end,
             -- lazy = true, -- filetype が後から設定される時があるため場合は遅延読み込み
             lazy = false, -- lazyはfalseでないと動作しない
@@ -618,10 +618,10 @@ require("lazy").setup({
                 incremental_selection = {
                     enable = true,
                     keymaps = {
-                        init_selection = "@",
-                        node_incremental = "<C-@>",
-                        scope_incremental = "<C-p>",
-                        node_decremental = "<bs>",
+                        init_selection = '<CR>',
+                        scope_incremental = '<CR>',
+                        node_incremental = '<TAB>',
+                        node_decremental = '<S-TAB>',
                     },
                 },
             },
@@ -683,8 +683,29 @@ require("lazy").setup({
         },
         { -- 上部のbufferタブ
             "akinsho/bufferline.nvim",
-            lazy = false,
-            enabled = true,
+            config = function()
+                local bufferline = require('bufferline')
+                bufferline.setup({
+                    options = {
+                        style_preset = bufferline.style_preset.no_italic,
+                        -- or you can combine these e.g.
+                        style_preset = {
+                            bufferline.style_preset.no_italic,
+                            bufferline.style_preset.no_bold
+                        },
+                        groups = {
+                            items = {
+                                require('bufferline.groups').builtin.pinned:with({ icon = "󰐃 " })
+                            }
+                        },
+                        separator_style = "padded_slant"
+
+
+                    }
+                })
+                vim.keymap.set("n", "L", ":BufferLineCycleNext<CR>", { silent = true, noremap = true, desc = "次のバッファ" })
+                vim.keymap.set("n", "H", ":BufferLineCyclePrev<CR>", { silent = true, noremap = true, desc = "前のバッファ" })
+            end,
         },
         { -- ステータスライン
             "nvim-lualine/lualine.nvim",
@@ -772,6 +793,7 @@ require("lazy").setup({
         { -- インデント可視化、チャンク表示
             "shellRaining/hlchunk.nvim",
             event = { "BufReadPre", "BufNewFile" },
+            enabled = false,
             config = function()
                 require("hlchunk").setup({
                     chunk = {
@@ -790,8 +812,8 @@ require("lazy").setup({
                         textobject = "",
                         max_file_size = 1024 * 1024,
                         error_sign = true,
-						duration = 0,
-						delay = 0,
+                        duration = 0,
+                        delay = 0,
                     },
                     indent = {
                         enable = true,
@@ -807,6 +829,35 @@ require("lazy").setup({
                             "#C678DD",
                         },
                     }
+                })
+            end,
+        },
+        { -- インデント可視化
+            "lukas-reineke/indent-blankline.nvim",
+            main = "ibl",
+            config = function()
+                local highlight = {
+                    "RainbowRed",
+                    "RainbowYellow",
+                    "RainbowBlue",
+                    "RainbowOrange",
+                    "RainbowGreen",
+                    "RainbowViolet",
+                }
+                local hooks = require("ibl.hooks")
+                hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
+                    vim.api.nvim_set_hl(0, "RainbowRed", { fg = "#A32B26" })
+                    vim.api.nvim_set_hl(0, "RainbowYellow", { fg = "#F0B01E" })
+                    vim.api.nvim_set_hl(0, "RainbowBlue", { fg = "#016669" })
+                    vim.api.nvim_set_hl(0, "RainbowOrange", { fg = "#936419" })
+                    vim.api.nvim_set_hl(0, "RainbowGreen", { fg = "#14CDE6" })
+                    vim.api.nvim_set_hl(0, "RainbowViolet", { fg = "#C678DD" })
+                end)
+                require("ibl").setup({
+                    indent = { highlight = highlight },
+                    scope = {
+                        enabled = false, -- 逆L字のインデントを非表示
+                    },
                 })
             end,
         },
