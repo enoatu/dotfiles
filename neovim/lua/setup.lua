@@ -290,7 +290,7 @@ require("lazy").setup({
                 chat = require("CopilotChat")
                 vim.api.nvim_create_user_command("CopilotCommit", function()
                     chat.ask(
-                        "コメントのメッセージルールに従い、変更に対するコミットメッセージを本文含めて日本語で記述してください。形式は体現止めでお願いします。出力は結果だけでお願いします",
+                        "コメントのメッセージルールに従い、変更に対するコミットメッセージを本文含めて日本語で記述してください。1ファイルだけの変更なら「xxxx.php に対して~」のような形式で。形式は体現止めでお願いします。出力は結果だけでお願いします",
                         {
                             selection = require("CopilotChat.select").buffer,
                             window = {
