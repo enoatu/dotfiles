@@ -309,14 +309,12 @@ require("lazy").setup({
                                     -- 前後の改行を削除する
                                     response = response.gsub(response, "^\n*", "")
                                     response = response.gsub(response, "\n*$", "")
-                                    -- クリップボードにコミットメッセージをコピー
-                                    vim.fn.setreg("+", response)
+                                    -- レジスタに格納する
+                                    vim.fn.setreg('"', response)
                                     -- windowを閉じる
-                                    vim.cmd('execute "normal q"')
-                                    -- 改行する
-                                    vim.cmd('execute "normal o"')
-                                    -- コミットメッセージをペースト
-                                    vim.cmd('execute "normal p"')
+                                    vim.cmd('normal q')
+                                    vim.cmd('normal o')
+                                    vim.cmd('normal! ""p')
                                 end)
                             end,
                         }
