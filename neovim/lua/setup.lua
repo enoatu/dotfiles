@@ -186,7 +186,7 @@ require("lazy").setup({
                 })
             end,
         },
-        { -- quickfix を見やすくする
+        { -- quickfix を見やすくする :grep hogehoge . | copen
             "kevinhwang91/nvim-bqf",
             ft = "qf",
             init = function()
