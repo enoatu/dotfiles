@@ -40,7 +40,7 @@ require("lazy").setup({
             priority = 1000,
             opts = {},
             config = function()
-                vim.cmd('colorscheme tokyonight-storm')
+                vim.cmd('colorscheme tokyonight-moon')
             end
         },
         { -- #A32B26 等の文字列に色をつける
@@ -414,28 +414,6 @@ require("lazy").setup({
                 vim.api.nvim_set_hl(0, "CocInlayHintParameter", { fg = "lightgray", bg = "darkcyan" })
             end,
         },
-        { -- コメント gc (行ごと)
-            "echasnovski/mini.comment",
-            config = function()
-                require("mini.comment").setup({
-                    mappings = {
-                        -- Toggle comment (like `gcip` - comment inner paragraph) for both
-                        -- Normal and Visual modes
-                        comment = "gc",
-                        -- Toggle comment on current line
-                        comment_line = "gcc",
-                        -- Toggle comment on visual selection
-                        comment_visual = "/",
-                        -- Define 'comment' textobject (like `dgc` - delete whole comment block)
-                        -- Works also in Visual mode if mapping differs from `comment_visual`
-                        textobject = "gc",
-                    },
-                    pre_hook = function()
-                        return require("ts_context_commentstring.internal").calculate_commentstring()
-                    end,
-                })
-            end,
-        },
         { -- fzf
             "nvim-telescope/telescope.nvim",
             dependencies = {
@@ -767,9 +745,9 @@ require("lazy").setup({
                             {
                                 "diff",
                                 symbols = {
-                                    added = "➕",
-                                    modified = "✏",
-                                    removed = "✗",
+                                    added = "➕ ",
+                                    modified = "✏ ",
+                                    removed = "✗ ",
                                 },
                             },
                         },
@@ -827,9 +805,6 @@ require("lazy").setup({
                     }
                 })
             end,
-        },
-        { -- マークダウンを表示(コマンド:MarkdownPreview)
-            "iamcco/markdown-preview.nvim",
         },
         { -- キーマップを表示 (leader + sk)
             "folke/which-key.nvim",
