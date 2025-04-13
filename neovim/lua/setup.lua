@@ -1,5 +1,6 @@
 local vim = vim
 local node_path = "~/.local/share/mise/installs/node/18.16.0/bin/node"
+vim.opt.termguicolors = true
 
 local has_words_before = function()
     if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then
@@ -14,7 +15,6 @@ require("lazy").setup({
         lazy = false,
         version = "*", -- try installing the latest stable version for plugins that support semver
     },
-    install = { colorscheme = { "tokyonight" } },
     -- checker = { enabled = true }, -- automatically check for plugin updates
     performance = {
         rtp = {
@@ -34,37 +34,20 @@ require("lazy").setup({
     spec = {
         {
             "LazyVim/LazyVim",
+            enabled = false,
             import = "lazyvim.plugins",
             keys = {
                 -- lazyvim バージョンによっては必要 2023/12/10
-                { -- かぶるので上書きする silent じゃないとPress ENTER or type command to continueが出る
-                    "<C-K>",
-                    ":call BufferList()<CR>",
-                    desc = "BufferList",
-                    { noremap = true, silent = true },
-                },
-                {
-                    "<C-j>",
-                    ":AnyJump<CR>",
-                    desc = "AnyJump",
-                    { noremap = true, silent = true },
-                },
-                {
-                    "<C-h>",
-                    "0",
-                    { noremap = true, silent = true, desc = "行頭に移動" },
-                },
-                {
-                    "<C-l>",
-                    "$",
-                    { noremap = true, silent = true, desc = "行末に移動" },
-                },
-                {
-                    "<C-q>",
-                    ":b #<CR>",
-                    { noremap = true, silent = true, desc = "前回のバッファに移動" },
-                },
             },
+        },
+        {
+            "folke/tokyonight.nvim",
+            lazy = false,
+            priority = 1000,
+            opts = {},
+            config = function()
+                vim.cmd('colorscheme tokyonight')
+            end
         },
         { -- #A32B26 等の文字列に色をつける
             "norcalli/nvim-colorizer.lua",
@@ -1258,9 +1241,10 @@ require("lazy").setup({
         { -- ステータスライン
             "nvim-lualine/lualine.nvim",
             event = "VeryLazy",
+            options = {
+                theme = 'tokyonight'
+            },
             opts = function()
-                local icons = require("lazyvim.config").icons
-                local Util = require("lazyvim.util")
                 return {
                     options = {
                         theme = "auto",
@@ -1274,10 +1258,10 @@ require("lazy").setup({
                             {
                                 "diagnostics",
                                 symbols = {
-                                    error = icons.diagnostics.Error,
-                                    warn = icons.diagnostics.Warn,
-                                    info = icons.diagnostics.Info,
-                                    hint = icons.diagnostics.Hint,
+                                    error = "✗",
+                                    warn = "⚠",
+                                    info = "ℹ",
+                                    hint = "➤",
                                 },
                             },
                             { "filetype", icon_only = true, separator = "", padding = { left = 1, right = 0 } },
@@ -1317,9 +1301,9 @@ require("lazy").setup({
                             {
                                 "diff",
                                 symbols = {
-                                    added = icons.git.added,
-                                    modified = icons.git.modified,
-                                    removed = icons.git.removed,
+                                    added = "➕",
+                                    modified = "✏",
+                                    removed = "✗",
                                 },
                             },
                         },
@@ -1342,7 +1326,6 @@ require("lazy").setup({
             main = "ibl",
             lazy = false,
             config = function()
-                vim.opt.termguicolors = true
                 local highlight = {
                     "RainbowRed",
                     "RainbowYellow",
@@ -1433,10 +1416,6 @@ require("lazy").setup({
                     },
                 }
             end,
-        },
-        { -- lsp 関数のどこにいるかを表示:動作していなさそう
-            "SmiteshP/nvim-navic",
-            enabled = false,
         },
         { -- アイコン
             "nvim-tree/nvim-web-devicons",
