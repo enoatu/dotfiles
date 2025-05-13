@@ -167,14 +167,15 @@ require("lazy").setup({
         {
             -- スネークケースとか変える
             "johmsalas/text-case.nvim",
+            enabled = false,
             dependencies = { "nvim-telescope/telescope.nvim" },
             config = function()
                 require("textcase").setup({})
                 require("telescope").load_extension("textcase")
             end,
             keys = {
-                "ga", -- Default invocation prefix
-                { "ga.", "<cmd>TextCaseOpenTelescope<CR>", mode = { "n", "x" }, desc = "Telescope" },
+                "gr", -- Default invocation prefix
+                { "gr.", "<cmd>TextCaseOpenTelescope<CR>", mode = { "n", "x" }, desc = "Telescope" },
             },
             cmd = {
                 -- NOTE: The Subs command name can be customized via the option "substitude_command_name"
@@ -210,6 +211,7 @@ require("lazy").setup({
         },
         {
             "enoatu/buffer-scope.nvim",
+            enabled = false,
             dir = "~/MyDevelopment/buffer-scope.nvim",
             dependencies = { "nvim-telescope/telescope.nvim" },
             config = function()
@@ -255,7 +257,19 @@ require("lazy").setup({
                 vim.g.BufferListMaxWidth = 100
             end,
         },
-        {
+        { -- align
+            "Vonr/align.nvim",
+            init = function()
+                vim.keymap.set({ "n", "v", }, 'ga',
+                    function()
+                        local a = require('align')
+                        a.operator(a.align_to_char)
+                    end,
+                    { noremap = true, desc = "Align to char" }
+                )
+            end,
+        },
+        { -- コメント の補完
             "CopilotC-Nvim/CopilotChat.nvim",
             config = function()
                 require("CopilotChat").setup({
