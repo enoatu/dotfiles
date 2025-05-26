@@ -277,7 +277,31 @@ require("lazy").setup({
             opts = {
                 -- add any opts here
                 -- for example
-                provider = "copilot",
+                -- provider = "copilot",
+                provider="claude",
+            },
+            claude = {
+                endpoint = "https://api.anthropic.com",
+                model = "claude-sonnet-4-20250514",
+                disable_tools = true,
+                temperature = 0,
+                max_tokens = 8192,
+            },
+            dual_boost = {
+                enabled = true,
+                first_provider = "copilot",
+                second_provider = "claude",
+                prompt = "Based on the two reference outputs below, generate a response that incorporates elements from both but reflects your own judgment and unique perspective. Do not provide any explanation, just give the response directly. Reference Output 1: [{{provider1_output}}], Reference Output 2: [{{provider2_output}}]",
+                timeout = 60000, -- Timeout in milliseconds
+            },
+            behaviour = {
+                auto_suggestions = true, -- Experimental stage
+                auto_set_highlight_group = true,
+                auto_set_keymaps = true,
+                auto_apply_diff_after_generation = true,
+                support_paste_from_clipboard = false,
+                minimize_diff = true, -- Whether to remove unchanged lines when applying a code block
+                enable_token_counting = true, -- Whether to enable token counting. Default to true.
             },
             init = function()
                 vim.opt.laststatus = 3
