@@ -17,6 +17,7 @@ RIPGREP_VERSION="13.0.0"
 RYE_VERSION="0.38.0"
 TMUX_VERSION="3.2"
 EZA_VERSION="0.20.10"
+BUN_VERSION="1.1.8"
 
 # runtime
 PYTHON_VERSION="3.9.7"
@@ -59,6 +60,7 @@ main() {
   setup_git
   setup_tmux
   setup_neovim
+  setup_claude
   setup_tools
   setup_additional_dotfiles
   echo "done"
@@ -182,6 +184,19 @@ setup_neovim() {
   _print_complete
 }
 
+setup_claude() {
+  _print_start
+
+  if [ ! -e ${ZSH_INSTALLS}/claude ]; then
+  fi
+
+  if [ ! -e ${ZSH_INSTALLS}/claude.zsh ]; then
+    mise completion zsh claude > ${ZSH_INSTALLS}/claude.zsh
+  fi
+
+  _print_complete
+}
+
 setup_tools() {
   _print_start
   (
@@ -195,6 +210,7 @@ setup_tools() {
       "nodejs@${NODE_VERSION}@CMD:node"
       "ripgrep@${RIPGREP_VERSION}@CMD:rg"
       "rye@${RYE_VERSION}@CMD:rye"
+      "bun@${BUN_VERSION}@CMD:bun"
       # "tmux@${TMUX_VERSION}@CMD:tmux,IF_NOT_EXISTS_COMMAND:tmux" alcolなどでtmuxが使われているので、tmuxはインストールしない
     )
     _mise_install $installs || fail 'install failed'
@@ -202,6 +218,12 @@ setup_tools() {
     _install_pip
     pip install trash-cli
     _test_exists_commands trash-put trash-empty trash-list trash-put trash-restore trash-rm
+
+    bun install -g claude ccusage
+    export PATH="${HOME}/.bun/bin:$PATH" # 一時的に追加
+    _test_exists_commands claude ccusage
+
+    ln -sf ${DOTFILES}/tools/claude/settings.json ${HOME}/.claude/settings.json
   )
   _print_complete
 }
