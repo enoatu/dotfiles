@@ -217,6 +217,9 @@ export PATH="/usr/local/bin:$PATH"
 
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
 
+# tmuxウィンドウ名の自動更新
+source ~/dotfiles/bin/tmux_rename_window.sh
+
 ## tmux ログイン時起動
 #[[ $- != *i* ]] && return
 #[[ -z "$TMUX" ]] && exec tmux
@@ -333,6 +336,9 @@ dw() {
     echo "$arg\t`pwd`" >> $dirs
   fi
 }
+
+# tmux SSH wrapper
+source $HOME/dotfiles/bin/tmux_ssh.sh
 
 # The following lines have been added by Docker Desktop to enable Docker CLI completions.
 fpath=(/Users/enotiru/.docker/completions $fpath)
