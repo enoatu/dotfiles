@@ -271,6 +271,7 @@ require("lazy").setup({
         },
         {
             "yetone/avante.nvim",
+	    enabled = false,
             event = "VeryLazy",
             lazy = false,
             version = false, -- Never set this value to "*"! Never!
@@ -554,9 +555,25 @@ require("lazy").setup({
             },
             keys = {
                 {
-                    "<leader>.",
+                    "<leader><leader>",
                     "<cmd>Telescope find_files hidden=true no_ignore=true<cr>",
                     desc = "Find files noignore",
+                },
+                {
+                    "<C-j>",
+                    function()
+                        require("telescope-live-grep-args.shortcuts").grep_word_under_cursor()
+                    end,
+                    mode = "n",
+                    desc = "Grep word under cursor",
+                },
+                {
+                    "<C-j>",
+                    function()
+                        require("telescope-live-grep-args.shortcuts").grep_visual_selection()
+                    end,
+                    mode = "v",
+                    desc = "Grep visual selection",
                 },
             },
             config = function()
