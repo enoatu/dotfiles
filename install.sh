@@ -299,6 +299,10 @@ _install_mise() {
   eval "$(${HOME}/.local/bin/mise activate zsh)"
   # 一時的に追加
   export PATH="${HOME}/.local/share/mise/shims:$PATH"
+  
+  # mise.tomlを信頼する
+  mise trust 2>/dev/null || true
+  
   # 補完のために必要
   mise use -g usage
   # 一時的に追加
