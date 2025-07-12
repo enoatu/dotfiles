@@ -20,6 +20,8 @@ EZA_VERSION="0.20.10"
 BUN_VERSION="1.1.8"
 
 # runtime
+GCLOUD_VERSION="latest"
+GO_VERSION="latest"
 PYTHON_VERSION="3.9.7"
 RUBY_VERSION="3.2.1"
 PERL_VERSION="5.30.0"
@@ -60,8 +62,9 @@ main() {
   setup_git
   setup_tmux
   setup_neovim
-  setup_claude
   setup_tools
+  setup_claude
+  setup_gemini
   setup_additional_dotfiles
   echo "done"
 }
@@ -187,12 +190,31 @@ setup_neovim() {
 setup_claude() {
   _print_start
 
-  if [ ! -e ${ZSH_INSTALLS}/claude ]; then
-  fi
+  _install_mise
 
-  if [ ! -e ${ZSH_INSTALLS}/claude.zsh ]; then
-    mise completion zsh claude > ${ZSH_INSTALLS}/claude.zsh
-  fi
+  npm install -g @anthropic-ai/claude-code
+
+  _print_complete
+}
+
+setup_gemini() {
+  _print_start
+
+  _install_mise
+
+  npm install -g @anthropic-ai/claude-code
+
+  # image-gen-install
+  (
+    cd /tmp
+    git clone https://github.com/GoogleCloudPlatform/vertex-ai-creative-studio.git
+    cd vertex-ai-creative-studio/experiments/mcp-genmedia/mcp-genmedia-go
+    ./install.sh
+
+    gcloud auth application-default login --no-launch-browser
+
+    echo "export PROJECT_ID=secure-sorter-464123-b6" >> ~/.zshrc.local
+  )
 
   _print_complete
 }
@@ -203,6 +225,8 @@ setup_tools() {
     _install_mise
 
     installs=(
+      "go@${GO_VERSION}@CMD:go"
+      "gcloud@${GCLOUD_VERSION}@CMD:go"
       "eza@${EZA_VERSION}@CMD:eza"
       "bat@${BAT_VERSION}@CMD:bat"
       "delta@${DELTA_VERSION}@CMD:delta"
@@ -218,10 +242,6 @@ setup_tools() {
     _install_pip
     pip install trash-cli
     _test_exists_commands trash-put trash-empty trash-list trash-put trash-restore trash-rm
-
-    bun install -g claude ccusage
-    export PATH="${HOME}/.bun/bin:$PATH" # 一時的に追加
-    _test_exists_commands claude ccusage
 
     ln -sf ${DOTFILES}/tools/claude/settings.json ${HOME}/.claude/settings.json
   )
@@ -299,12 +319,12 @@ _install_mise() {
   eval "$(${HOME}/.local/bin/mise activate zsh)"
   # 一時的に追加
   export PATH="${HOME}/.local/share/mise/shims:$PATH"
-  
+
   # mise.tomlを信頼する
   mise trust 2>/dev/null || true
-  
+
   # 補完のために必要
-  mise use -g usage
+  mise use -g usage@latest
   # 一時的に追加
   _test_exists_files ${HOME}/.local/bin/mise
 }
