@@ -211,16 +211,30 @@ require("lazy").setup({
         },
         {
             "enoatu/buffer-scope.nvim",
-            enabled = false,
+            enabled = true,
             dir = "~/MyDevelopment/buffer-scope.nvim",
             dependencies = { "nvim-telescope/telescope.nvim" },
             config = function()
+                require("buffer-scope").setup({
+                    telescope = {
+                        buffers = {
+                            mappings = {
+                                i = {
+                                    ["<C-k>"] = "close",  -- インサートモードでC-kで閉じる
+                                },
+                                n = {
+                                    ["<C-k>"] = "close",  -- ノーマルモードでC-kで閉じる
+                                },
+                            },
+                        },
+                    },
+                })
                 require("telescope").load_extension("buffer_scope")
                 vim.api.nvim_set_keymap(
                     "n",
-                    "<leader>bs",
+                    "<C-k>",
                     "<cmd>Telescope buffer_scope buffers<cr>",
-                    { noremap = true }
+                    { noremap = true, silent = true, desc = "Buffer Scope" }
                 )
             end,
         },
@@ -578,12 +592,17 @@ require("lazy").setup({
             },
             config = function()
                 local telescope = require("telescope")
+                local actions = require("telescope.actions")
                 telescope.setup({
                     pickers = {
                         buffers = {
                             mappings = {
                                 n = {
                                     ["<C-d>"] = "delete_buffer",
+                                    ["<C-K>"] = actions.close,
+                                },
+                                i = {
+                                    ["<C-K>"] = actions.close,
                                 },
                             },
                         },
@@ -601,17 +620,6 @@ require("lazy").setup({
                     "v",
                     "<C-j>",
                     live_grep_args_shortcuts.grep_visual_selection,
-                    { noremap = true, silent = true }
-                )
-            end,
-        },
-        {
-            "smartpde/telescope-recent-files",
-            config = function()
-                vim.api.nvim_set_keymap(
-                    "n",
-                    "<Leader>i",
-                    [[<cmd>lua require('telescope').extensions.recent_files.pick()<CR>]],
                     { noremap = true, silent = true }
                 )
             end,
