@@ -477,6 +477,19 @@ require("lazy").setup({
                         },
                     })
                 end, { nargs = "*", range = true })
+                -- shortcut Explain
+                vim.api.nvim_set_keymap(
+                    "n",
+                    "ee",
+                    ":CopilotChatExplain<CR>",
+                    { noremap = true, silent = true, desc = "AIにコードの説明をお願いする" }
+                )
+                vim.api.nvim_set_keymap(
+                    "v",
+                    "ee",
+                    ":CopilotChatExplain<CR>",
+                    { noremap = true, silent = true, desc = "AIにコードの説明をお願いする" }
+                )
             end,
         },
         {
@@ -711,6 +724,9 @@ require("lazy").setup({
         {
             "nvim-treesitter/nvim-treesitter",
             config = function()
+                -- @キーでTreesitterの賢い選択
+                vim.keymap.set('n', '@', '<cmd>lua require("nvim-treesitter.incremental_selection").init_selection()<cr>')
+                vim.keymap.set('x', '@', '<cmd>lua require("nvim-treesitter.incremental_selection").scope_incremental()<cr>')
                 -- vim.g.matchup_matchparen_enabled = 1
                 -- vim.g.matchup_matchparen_offscreen = { method = 'popup' } -- カーソル外のタグも表示
                 -- vim.api.nvim_create_autocmd("BufReadPost", {
@@ -725,7 +741,7 @@ require("lazy").setup({
             end,
             -- lazy = true, -- filetype が後から設定される時があるため場合は遅延読み込み
             -- lazy = false, -- lazyはfalseでないと動作しないけど...
-            lazy = true,
+            lazy = false,
             opts = {
                 highlight = {
                     enable = true,
@@ -772,8 +788,8 @@ require("lazy").setup({
                 incremental_selection = {
                     enable = true,
                     keymaps = {
-                        init_selection = '<CR>',
-                        scope_incremental = '<CR>',
+                        init_selection = '@',
+                        scope_incremental = '@',
                         node_incremental = '<TAB>',
                         node_decremental = '<S-TAB>',
                     },

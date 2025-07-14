@@ -341,7 +341,9 @@ dw() {
 source $HOME/dotfiles/bin/tmux_ssh.sh
 
 # The following lines have been added by Docker Desktop to enable Docker CLI completions.
-fpath=(/Users/enotiru/.docker/completions $fpath)
+fpath=(${HOME}/.docker/completions $fpath)
 autoload -Uz compinit
 compinit
 # End of Docker CLI completions
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

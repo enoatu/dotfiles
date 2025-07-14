@@ -83,10 +83,10 @@
   //"python.linting.enabled": true,
   "jedi": {
     "workspace": {
-      "environmentPath": "/Users/enotiru/.rye/shims/python"
+      "environmentPath": "${HOME}/.rye/shims/python"
     },
     "executable": {
-      "command": "/Users/enotiru/.rye/tools/pip/bin/jedi-language-server",
+      "command": "${HOME}/.rye/tools/pip/bin/jedi-language-server",
     }
   },
   //"python.analysis.indexing": true,
