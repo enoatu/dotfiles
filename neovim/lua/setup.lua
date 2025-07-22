@@ -261,6 +261,7 @@ require("lazy").setup({
             "tpope/vim-fugitive", -- vimscript
             config = function()
                 vim.keymap.set("n", "<Leader>d", ":Gdiff<CR>:windo set wrap<CR>")
+                vim.keymap.set("n", "dp", ":diffput<CR>")
             end,
         },
         { -- バッファ管理
