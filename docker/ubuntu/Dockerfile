@@ -33,9 +33,7 @@ RUN \
   locale-gen ja_JP.UTF-8 && \
   localedef -f UTF-8 -i ja_JP ja_JP.UTF-8
 
-RUN \
-echo <<EOF
-  git clone https://github.com/enoatu/dotfiles.git && \
-  cd dotfiles && \
-  ./install.sh
-EOF
+# dotfilesをクローンしてインストール
+RUN git clone https://github.com/enoatu/dotfiles.git && \
+    cd dotfiles && \
+    ADDITIONAL_REPO_GITHUB_TOKEN="" ./install.sh

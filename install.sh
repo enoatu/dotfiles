@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 
-DOTFILES="${HOME}/dotfiles"
+DOTFILES="${DOTFILES:-${HOME}/dotfiles}"
 ZSH_INSTALLS=${DOTFILES}/zsh/installs
 ADDITIONAL_DOTFILES=${ADDITIONAL_DOTFILES:-"${DOTFILES}/private-dotfiles"}
 ADDITIONAL_REPO_BRANCH=${ADDITIONAL_REPO_BRANCH:-"main"}
@@ -27,48 +27,107 @@ RUBY_VERSION="3.2.1"
 PERL_VERSION="5.30.0"
 RUST_VERSION="1.84.0"
 
-# 引数でsetupを個別に指定できるようにする
-if [ $# -ne 0 ]; then
-  for arg in "$@"; do
-    case $arg in
-      zsh)
-        setup_zsh
-        ;;
-      git)
-        setup_git
-        ;;
-      tmux)
-        setup_tmux
-        ;;
-      neovim)
-        setup_neovim
-        ;;
-      tools)
-        setup_tools
-        ;;
-      additional)
-        setup_additional_dotfiles
-        ;;
-      *)
-        echo "invalid argument: $arg"
-        ;;
-    esac
-  done
-  exit 0
-fi
-
-main() {
-  setup_zsh
-  setup_git
-  setup_tmux
-  setup_neovim
-  setup_tools
-  setup_claude
-  setup_gemini
-  setup_additional_dotfiles
-  echo "done"
+_print_start() {
+  printf "\e[30;44;1mstart\e[m ${funcstack[2]}\n"
 }
 
+_print_complete() {
+  printf "\e[30;42;1mcompleted\e[m ${funcstack[2]} \n\n"
+}
+
+fail() {
+  printf "\e[30;41;1mfailed\e[m $* \n\n"
+  exit 1
+}
+
+_test_exists_files() {
+  for file in "$@"; do
+    # -e でファイルの存在を確認（シンボリックリンクも含む）
+    [[ -e $file ]] || fail "$file file is not found"
+  done
+}
+
+_test_exists_commands() {
+  for command in "$@"; do
+    type $command >/dev/null 2>&1 || fail "$command command is not found"
+  done
+}
+
+_install_mise() {
+  if [ ! -e ${HOME}/.local/bin/mise ]; then
+    curl https://mise.run | sh
+  else
+    echo 'mise is already installed'
+  fi
+}
+
+_install_pip() {
+  (
+    _install_mise
+
+    installs=(
+      "python@${PYTHON_VERSION}@CMD:python"
+      "rye@${RYE_VERSION}@CMD:rye"
+    )
+    _mise_install $installs || fail 'install failed'
+    # pip
+    rye config --set-bool behavior.global-python=true && rye config --set-bool behavior.use-uv=true
+    rye install pip || true
+    # 一時的に追加
+    export PATH="$HOME/.rye/tools/pip/bin:$PATH"
+    _test_exists_commands pip
+  )
+}
+
+_mise_install() {
+  # 引数を配列に変換
+  for item in "$@"; do
+    IFS='@' read -r name version opts<<<"$item"
+    echo "installing $name $version >>>>>>"
+    repo_url=''
+    cmd=''
+    if_not_exists_command=''
+    if [[ -n $opts ]]; then
+      option_list=()
+      while [[ $opts ]]; do
+        IFS=',' read -r opt rest <<< "$opts"
+        option_list+=("$opt")
+        opts=$rest
+      done
+      should_continue=false
+      for opt in "${option_list[@]}"; do
+        IFS=':'
+        read -r option_key option_value <<<"$opt"
+        case $option_key in
+          CMD)
+            cmd=$option_value
+            ;;
+          REPO_URL) # 使っていない @REPO_URLで指定できる
+            repo_url=$option_value
+            ;;
+          IF_NOT_EXISTS_COMMAND)
+            if type $option_value >/dev/null 2>&1; then
+              echo "$option_value is already installed"
+              should_continue=true
+              break
+            fi
+            ;;
+        esac
+      done
+      if [[ $should_continue == true ]]; then
+        continue
+      fi
+    fi
+    mise install ${name}@${version} || fail "install ${name}@${version} failed"
+    mise use ${name}@${version}
+    # 実行ファイルの確認
+    if [[ -n $cmd ]]; then
+      _test_exists_commands $cmd
+    fi
+  done
+}
+
+# セットアップ関数の定義
 setup_zsh() {
   _print_start
 
@@ -226,7 +285,7 @@ setup_tools() {
 
     installs=(
       "go@${GO_VERSION}@CMD:go"
-      "gcloud@${GCLOUD_VERSION}@CMD:go"
+      "gcloud@${GCLOUD_VERSION}@CMD:gcloud"
       "eza@${EZA_VERSION}@CMD:eza"
       "bat@${BAT_VERSION}@CMD:bat"
       "delta@${DELTA_VERSION}@CMD:delta"
@@ -243,7 +302,11 @@ setup_tools() {
     pip install trash-cli
     _test_exists_commands trash-put trash-empty trash-list trash-put trash-restore trash-rm
 
-    ln -sf ${DOTFILES}/tools/claude/settings.json ${HOME}/.claude/settings.json
+    # claude設定ファイルのリンク作成
+    if [ -f ${DOTFILES}/tools/claude/settings.json ]; then
+      mkdir -p ${HOME}/.claude
+      ln -sf ${DOTFILES}/tools/claude/settings.json ${HOME}/.claude/settings.json
+    fi
   )
   _print_complete
 }
@@ -263,210 +326,47 @@ setup_additional_dotfiles() {
   _print_complete
 }
 
-_mise_install() {
-  # 引数を配列に変換
-  for item in "$@"; do
-    IFS='@' read -r name version opts<<<"$item"
-    echo "installing $name $version >>>>>>"
-    repo_url=''
-    cmd=''
-    if_not_exists_command=''
-    if [[ -n $opts ]]; then
-      option_list=()
-      while [[ $opts ]]; do
-        IFS=',' read -r opt rest <<< "$opts"
-        option_list+=("$opt")
-        opts=$rest
-      done
-      should_continue=false
-      for opt in "${option_list[@]}"; do
-        IFS=':'
-        read -r option_key option_value <<<"$opt"
-        case $option_key in
-          CMD)
-            cmd=$option_value
-            ;;
-          REPO_URL) # 使っていない @REPO_URLで指定できる
-            repo_url=$option_value
-            ;;
-          IF_NOT_EXISTS_COMMAND)
-            if type $option_value >/dev/null 2>&1; then
-              echo "$option_value is already installed"
-              should_continue=true
-              break
-            fi
-            ;;
-        esac
-        IFS=','
-      done
-      IFS='@'
-      [[ $should_continue == true ]] && continue
-    fi
-    mise use --global $name@$version --yes
-    _test_exists_commands $cmd
-    echo "installed $name $version\n"
+main() {
+  setup_zsh
+  setup_git
+  setup_tmux
+  setup_neovim
+  setup_tools
+  setup_claude
+  #setup_gemini
+  setup_additional_dotfiles
+  echo "done"
+}
+
+# 引数でsetupを個別に指定できるようにする
+if [ $# -ne 0 ]; then
+  for arg in "$@"; do
+    case $arg in
+      zsh)
+        setup_zsh
+        ;;
+      git)
+        setup_git
+        ;;
+      tmux)
+        setup_tmux
+        ;;
+      neovim)
+        setup_neovim
+        ;;
+      tools)
+        setup_tools
+        ;;
+      additional)
+        setup_additional_dotfiles
+        ;;
+      *)
+        echo "invalid argument: $arg"
+        ;;
+    esac
   done
-}
+  exit 0
+fi
 
-_install_mise() {
-  if [ ! -e ${HOME}/.local/bin/mise ]; then
-    curl https://mise.run | sh
-  else
-    echo 'mise is already installed'
-  fi
-
-  # mise にパスを通す等
-  eval "$(${HOME}/.local/bin/mise activate zsh)"
-  # 一時的に追加
-  export PATH="${HOME}/.local/share/mise/shims:$PATH"
-
-  # mise.tomlを信頼する
-  mise trust 2>/dev/null || true
-
-  # 補完のために必要
-  mise use -g usage@latest
-  # 一時的に追加
-  _test_exists_files ${HOME}/.local/bin/mise
-}
-
-_install_pip() {
-  if type pip >/dev/null 2>&1; then
-    echo 'pip is already installed'
-    return
-  fi
-
-  _install_mise
-  installs=(
-    "rye@${RYE_VERSION}@CMD:rye"
-  )
-  _mise_install $installs || fail 'install failed'
-  # pip
-  rye config --set-bool behavior.global-python=true && rye config --set-bool behavior.use-uv=true
-  rye install pip || true
-  # 一時的に追加
-  export PATH="$HOME/.rye/tools/pip/bin:$PATH"
-  _test_exists_commands pip
-}
-
-_test_exists_files() {
-  for file in "$@"; do
-    # -s で中身があるかどうかも確認している
-    [[ -s $file ]] || fail "$file file is not found"
-  done
-}
-
-_test_exists_commands() {
-  for command in "$@"; do
-    type $command >/dev/null 2>&1 || fail "$command command is not found"
-  done
-}
-
-_print_start() {
-  printf "\e[30;44;1mstart\e[m ${funcstack[2]}\n"
-}
-
-_print_complete() {
-  printf "\e[30;42;1mcompleted\e[m ${funcstack[2]} \n\n"
-}
-
-fail() {
-  if [ $? -ne 0 ]; then
-    printf "\e[30;41;1mfailed\e[m $1 $* \n\n"
-    exit 1
-  fi
-}
-
-# bash -c "$(curl -fsSL https://raw.githubusercontent.com/aaamoon/copilot-gpt4-service/master/shells/get_copilot_token.sh)"
-#
-# install_github_copilot_cli() {
-#   if [ ! -e ${DOTFILES}/installs/gh ]; then
-#     (
-#       cd ${DOTFILES}/installs
-#       git clone --depth=1 https://github.com/cli/cli.git gh-cli
-#       cd gh-cli
-#       make
-#       make install prefix=${DOTFILES}/installs/gh-temp
-#       cd ..
-#       mv gh-temp/bin/gh .
-#       rm -rf gh-temp gh-cli
-#     )
-#     ${DOTFILES}/installs/gh auth login
-#     ${DOTFILES}/installs/gh extension install github/gh-copilot
-#     alias sg="gh copilot suggest -t shell"
-#   fi
-# }
-
-# install_chat() {
-#   if [ ! -e ${DOTFILES}/installs/copilot-gpt4-service ]; then
-#     (
-#       cd ${DOTFILES}/installs
-#       git clone https://github.com/aaamoon/copilot-gpt4-service
-#       cd copilot-gpt4-service
-#       docker-compose build
-#       #bash -c "$(curl -fsSL https://raw.githubusercontent.com/aaamoon/copilot-gpt4-service/master/shells/get_copilot_token.sh)"
-#       echo "write TOKEN, docker-compose up -d"
-#     )
-#   fi
-# }
-
-# install_delta() {
-#   url=''
-#   if [ "$(uname)" == 'Darwin' ]; then
-#     url='https://github.com/dandavison/delta/releases/download/0.16.5/delta-0.16.5-x86_64-apple-darwin.tar.gz'
-#   else
-#     url='https://github.com/dandavison/delta/releases/download/0.16.5/delta-0.16.5-x86_64-unknown-linux-gnu.tar.gz'
-#   fi
-#   install_binary_from_tar_gz $url delta
-# }
-#
-# install_rg() {
-#   url=''
-#   if [ "$(uname)" == 'Darwin' ]; then
-#     url='https://github.com/BurntSushi/ripgrep/releases/download/13.0.0/ripgrep-13.0.0-x86_64-apple-darwin.tar.gz'
-#     install_binary_from_tar_gz $url rg
-#   else
-#     (
-#       url='https://github.com/BurntSushi/ripgrep/releases/download/13.0.0/ripgrep-13.0.0-x86_64-unknown-linux-musl.tar.gz'
-#       TMPDIR=$(mktemp -d)
-#       cd $TMPDIR
-#       curl -L -o - $url | tar zxf - --strip-component=1
-#       mv rg ${DOTFILES}/installs/
-#     )
-#   fi
-# }
-
-# install_fd() {
-#   url=''
-#   if [ "$(uname)" == 'Darwin' ]; then
-#     url='https://github.com/sharkdp/fd/releases/download/v8.7.0/fd-v8.7.0-x86_64-apple-darwin.tar.gz'
-#   else
-#     url=https://github.com/sharkdp/fd/releases/download/v8.7.0/fd-v8.7.0-x86_64-unknown-linux-gnu.tar.gz
-#   fi
-#   install_binary_from_tar_gz $url fd
-# }
-#
-# install_binary_from_tar_gz() {
-#   url=$1
-#   name=$2
-#   # delete tmp-${name}.tar.gz ${DOTFILES}/${name}-bin
-#   if [ -e tmp-${name}.tar.gz ]; then
-#     rm -rf tmp-${name}.tar.gz ${DOTFILES}/${name}-bin
-#   fi
-#   if [ -e ${DOTFILES}/${name}-bin ]; then
-#     rm -rf ${DOTFILES}/${name}-bin
-#   fi
-#   if [ ! -e ${DOTFILES}/installs/${name} ]; then
-#     mkdir -p ${DOTFILES}/${name}-bin
-#     curl -L -o tmp-${name}.tar.gz $url
-#     tar xzf tmp-${name}.tar.gz --directory=${DOTFILES}/${name}-bin
-#     # ディレクトリ名が変わるので、ディレクトリ名を取得して移動する
-#     find ${DOTFILES}/${name}-bin -maxdepth 1 -mindepth 1 -type d | xargs -I{} mv {}/${name} ${DOTFILES}/installs
-#     rm -rf tmp-${name}.tar.gz ${DOTFILES}/${name}-bin
-#   else # すでにインストール済みの場合
-#     echo ${name} 'is already installed'
-#   fi
-# }
-
+# 引数がない場合はmain関数を実行
 main
-
-exit 0
