@@ -16,9 +16,6 @@ export PATH="$HOME/bin:$PATH"
 export SHELL=`which zsh`
 
 
-# tmux 上で色がおかしい時に必須
-export TERM=screen-256color-bce
-
 # 色を使用
 autoload -Uz colors
 colors
