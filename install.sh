@@ -23,7 +23,7 @@ BUN_VERSION="1.1.8"
 # runtime
 GCLOUD_VERSION="latest"
 GO_VERSION="latest"
-PYTHON_VERSION="3.9.7"
+PYTHON_VERSION="3.12.2"
 RUBY_VERSION="3.2.1"
 PERL_VERSION="5.30.0"
 RUST_VERSION="1.84.0"
@@ -58,7 +58,8 @@ _install_mise() {
   if [ ! -e ${HOME}/.local/bin/mise ]; then
     curl https://mise.run | sh
   else
-    echo 'mise is already installed'
+    mise self-update
+    echo 'mise is already installed and updated'
   fi
 }
 
@@ -120,7 +121,7 @@ _mise_install() {
       fi
     fi
     mise install ${name}@${version} || fail "install ${name}@${version} failed"
-    mise use ${name}@${version}
+    mise use -g ${name}@${version}
     # 実行ファイルの確認
     if [[ -n $cmd ]]; then
       _test_exists_commands $cmd
@@ -226,7 +227,7 @@ setup_neovim() {
   (
     cd $DOTFILES/neovim
     mise use nodejs@${NODE_VERSION_FOR_COC} # coc.nvim で使う
-    npm install -g neovim zx yarn@1 # yarn = cocで使用
+    npm install -g neovim yarn@1 # yarn = cocで使用
   )
 
   _install_pip
@@ -250,34 +251,28 @@ setup_neovim() {
   _print_complete
 }
 
-setup_claude() {
+setu_ai_clients() {
   _print_start
 
   _install_mise
 
   npm install -g @anthropic-ai/claude-code
+  npm install -g @musistudio/claude-code-router
 
-  _print_complete
-}
-
-setup_gemini() {
-  _print_start
-
-  _install_mise
-
-  npm install -g @anthropic-ai/claude-code
-
+  npm install -g @google/gemini-cli
   # image-gen-install
-  (
-    cd /tmp
-    git clone https://github.com/GoogleCloudPlatform/vertex-ai-creative-studio.git
-    cd vertex-ai-creative-studio/experiments/mcp-genmedia/mcp-genmedia-go
-    ./install.sh
+  # (
+  #   cd /tmp
+  #   git clone https://github.com/GoogleCloudPlatform/vertex-ai-creative-studio.git
+  #   cd vertex-ai-creative-studio/experiments/mcp-genmedia/mcp-genmedia-go
+  #   ./install.sh
 
-    gcloud auth application-default login --no-launch-browser
+  #   gcloud auth application-default login --no-launch-browser
 
-    echo "export PROJECT_ID=secure-sorter-464123-b6" >> ~/.zshrc.local
-  )
+  #   echo "export PROJECT_ID=secure-sorter-464123-b6" >> ~/.zshrc.local
+  # )
+
+  npm install -g @openai/codex
 
   _print_complete
 }
@@ -311,6 +306,9 @@ setup_tools() {
       mkdir -p ${HOME}/.claude
       ln -sf ${DOTFILES}/tools/claude/settings.json ${HOME}/.claude/settings.json
     fi
+
+    npm install -g zx
+    _test_exists_commands zx
   )
   _print_complete
 }
@@ -336,8 +334,7 @@ main() {
   setup_tmux
   setup_neovim
   setup_tools
-  setup_claude
-  #setup_gemini
+  setup_ai_clients
   setup_additional_dotfiles
   echo "done"
 }
