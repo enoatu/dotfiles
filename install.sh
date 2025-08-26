@@ -12,7 +12,8 @@ BAT_VERSION="0.24.0"
 DELTA_VERSION="0.18.2"
 FD_VERSION="8.7.0"
 NEOVIM_VERSION="0.10.3"
-NODE_VERSION="18.16.0"
+NODE_VERSION="23.10.0"
+NODE_VERSION_FOR_COC="18.16.0"
 RIPGREP_VERSION="13.0.0"
 RYE_VERSION="0.38.0"
 TMUX_VERSION="3.2"
@@ -222,8 +223,11 @@ setup_neovim() {
 
   _mise_install $installs || fail 'mise install failed'
 
-  mise use nodejs@${NODE_VERSION} # coc.nvim で使う
-  npm install -g neovim zx yarn@1 # yarn = cocで使用
+  (
+    cd $DOTFILES/neovim
+    mise use nodejs@${NODE_VERSION_FOR_COC} # coc.nvim で使う
+    npm install -g neovim zx yarn@1 # yarn = cocで使用
+  )
 
   _install_pip
   pip install pynvim # neovim パッケージは古いので、pynvimを使う
