@@ -251,32 +251,6 @@ setup_neovim() {
   _print_complete
 }
 
-setu_ai_clients() {
-  _print_start
-
-  _install_mise
-
-  npm install -g @anthropic-ai/claude-code
-  npm install -g @musistudio/claude-code-router
-
-  npm install -g @google/gemini-cli
-  # image-gen-install
-  # (
-  #   cd /tmp
-  #   git clone https://github.com/GoogleCloudPlatform/vertex-ai-creative-studio.git
-  #   cd vertex-ai-creative-studio/experiments/mcp-genmedia/mcp-genmedia-go
-  #   ./install.sh
-
-  #   gcloud auth application-default login --no-launch-browser
-
-  #   echo "export PROJECT_ID=secure-sorter-464123-b6" >> ~/.zshrc.local
-  # )
-
-  npm install -g @openai/codex
-
-  _print_complete
-}
-
 setup_tools() {
   _print_start
   (
