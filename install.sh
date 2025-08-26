@@ -317,7 +317,7 @@ setup_additional_dotfiles() {
   _print_start
   (
     if [ ! -e ${ADDITIONAL_DOTFILES} ]; then
-      git clone ${ADDITIONAL_REPO_URL} ${ADDITIONAL_DOTFILES}
+      git clone ${ADDITIONAL_REPO_URL} ${ADDITIONAL_DOTFILES} || fail "Failed to clone additional dotfiles repository"
       cd ${ADDITIONAL_DOTFILES}
       git checkout ${ADDITIONAL_REPO_BRANCH}
     fi
