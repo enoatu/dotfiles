@@ -95,7 +95,7 @@ require("lazy").setup({
                     numhl = true, -- Toggle with `:Gitsigns toggle_numhl`
                     linehl = false, -- Toggle with `:Gitsigns toggle_linehl` coc-spell-checker とハイライトがぶつかる
                     --  word_diff = true, -- Toggle with `:Gitsigns toggle_word_diff`
-                    -- current_line_blame = true,
+                    current_line_blame = true,
                     attach_to_untracked = false,
                     on_attach = function(bufnr)
                         local gitsigns = package.loaded.gitsigns
@@ -247,31 +247,31 @@ require("lazy").setup({
         },
         {
             "enoatu/buffer-scope.nvim",
-            enabled = true,
+            enabled = false,
             -- dir = "~/MyDevelopment/buffer-scope.nvim",
             dependencies = { "nvim-telescope/telescope.nvim" },
             config = function()
-                require("buffer-scope").setup({
-                    telescope = {
-                        buffers = {
-                            mappings = {
-                                i = {
-                                    ["<C-k>"] = "close",  -- インサートモードでC-kで閉じる
-                                },
-                                n = {
-                                    ["<C-k>"] = "close",  -- ノーマルモードでC-kで閉じる
-                                },
-                            },
-                        },
-                    },
-                })
-                require("telescope").load_extension("buffer_scope")
-                vim.api.nvim_set_keymap(
-                    "n",
-                    "<C-k>",
-                    "<cmd>Telescope buffer_scope buffers<cr>",
-                    { noremap = true, silent = true, desc = "Buffer Scope" }
-                )
+                -- require("buffer-scope").setup({
+                --     telescope = {
+                --         buffers = {
+                --             mappings = {
+                --                 i = {
+                --                     ["<C-k>"] = "close",  -- インサートモードでC-kで閉じる
+                --                 },
+                --                 n = {
+                --                     ["<C-k>"] = "close",  -- ノーマルモードでC-kで閉じる
+                --                 },
+                --             },
+                --         },
+                --     },
+                -- })
+                -- require("telescope").load_extension("buffer_scope")
+                -- vim.api.nvim_set_keymap(
+                --     "n",
+                --     "<C-k>",
+                --     "<cmd>Telescope buffer_scope buffers<cr>",
+                --     { noremap = true, silent = true, desc = "Buffer Scope" }
+                -- )
             end,
         },
         { -- 囲む

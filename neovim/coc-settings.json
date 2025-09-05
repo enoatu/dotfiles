@@ -19,7 +19,7 @@
       "initializationOptions": {},
       "settings": {}
     }
-  }
+  },
   "cSpell.diagnosticLevel": "Hint",
   "diagnostic.infoSign": "",
   "diagnostic.hintSign": "",
@@ -92,4 +92,5 @@
   //"python.analysis.indexing": true,
   "perl.navigator.enable": true,
   "rust-analyzer.server.path": "~/.cargo/bin/rust-analyzer",
+  "java.trace.server": "verbose",
 }
