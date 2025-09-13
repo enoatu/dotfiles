@@ -19,7 +19,7 @@
       "initializationOptions": {},
       "settings": {}
     }
-  }
+  },
   "cSpell.diagnosticLevel": "Hint",
   "diagnostic.infoSign": "",
   "diagnostic.hintSign": "",
@@ -86,10 +86,12 @@
       "environmentPath": "${HOME}/.rye/shims/python"
     },
     "executable": {
-      "command": "${HOME}/.rye/tools/pip/bin/jedi-language-server",
+      "command": "${HOME}/.rye/tools/pip/bin/jedi-language-server"
     }
   },
+  "typescript.preferGoToSourceDefinition": true,
+  "tsserver.experimental.enableProjectDiagnostics": true,
   //"python.analysis.indexing": true,
   "perl.navigator.enable": true,
-  "rust-analyzer.server.path": "~/.cargo/bin/rust-analyzer",
+  "rust-analyzer.server.path": "~/.cargo/bin/rust-analyzer"
 }

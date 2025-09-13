@@ -542,7 +542,11 @@ require("lazy").setup({
                 -- 型定義ジャンプ
                 vim.keymap.set("n", "gt", "<Plug>(coc-type-definition)", { silent = true })
                 -- grep
+                -- 実装へジャンプ
+                vim.keymap.set("n", "gi", "<Plug>(coc-implementation)", { silent = true })
                 vim.keymap.set("n", "gr", "<Plug>(coc-references)", { silent = true })
+                -- 現在の単語の名前を変更するための再マッピング
+                vim.keymap.set("n", "cr", "<Plug>(coc-rename)", { silent = true })
                 -- 情報表示
                 function CocShowDocumentation()
                     if vim.fn.index({ "vim", "help" }, vim.bo.filetype) >= 0 then
