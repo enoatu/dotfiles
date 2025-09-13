@@ -12,32 +12,6 @@ local has_words_before = function()
     return col ~= 0 and vim.api.nvim_buf_get_text(0, line - 1, 0, line - 1, col, {})[1]:match("^%s*$") == nil
 end
 
-local ssh_config = {
-    ssh_binary = "sshm",
-    scp_binary = "sshm --scp",
-    ssh_config_file_paths = { "$HOME/.ssh/config" },
-    -- ssh_prompts = {
-    --     {
-    --         match = "Enter passphrase for key",
-    --         type = "secret", -- パスフレーズはシークレットとして扱う
-    --         value_type = "static", -- 毎回新しいパスフレーズを入力するか
-    --         value = "", -- 初期値
-    --     },
-    --     {
-    --         match = "password:",
-    --         type = "secret",
-    --         value_type = "static",
-    --         value = "",
-    --     },
-    --     {
-    --         match = "continue connecting (yes/no/[fingerprint])?",
-    --         type = "plain",
-    --         value_type = "static",
-    --         value = "",
-    --     },
-    -- },
-}
-
 require("lazy").setup({
     defaults = {
         lazy = false,
@@ -309,20 +283,17 @@ require("lazy").setup({
             end,
         },
         { -- align
-            "Vonr/align.nvim",
-            init = function()
-                vim.keymap.set({ "n", "v", }, 'ga',
-                    function()
-                        local a = require('align')
-                        a.operator(a.align_to_char)
-                    end,
-                    { noremap = true, desc = "Align to char" }
-                )
-            end,
+            "echasnovski/mini.align",
+            version = "*",
+            keys = {
+                { "ga", mode = { "n", "x" }, desc = "Align" },
+                { "gA", mode = { "n", "x" }, desc = "Align with preview" },
+            },
+            opts = {},
         },
         {
             "yetone/avante.nvim",
-	    enabled = false,
+            enabled = true,
             event = "VeryLazy",
             lazy = false,
             version = false, -- Never set this value to "*"! Never!
@@ -393,6 +364,9 @@ require("lazy").setup({
                 {
                     -- Make sure to set this up properly if you have lazy=true
                     'MeanderingProgrammer/render-markdown.nvim',
+                    config = function()
+                        require('render-markdown').setup({})
+                    end,
                     opts = {
                         file_types = { "markdown", "Avante" },
                     },
