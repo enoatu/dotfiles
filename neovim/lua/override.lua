@@ -74,8 +74,12 @@ vim.keymap.set(
 -- 行末
 vim.keymap.set({ "n", "v" }, "<C-l>", "$", { noremap = true, silent = true, desc = "行末に移動" })
 
+-- buffer list
+vim.keymap.set({ "n", "v" }, "<C-K>", ":call BufferList()<CR>", { noremap = true, silent = true, desc = "BufferList" })
+
 -- バッファの移動
 vim.keymap.set({ "n", "v" }, "<C-q>", ":b #<CR>", { noremap = true, silent = true, desc = "前回のバッファに移動" })
+
 
 -- 削除
 vim.keymap.set("v", "<BS>", "<Del>", { noremap = true })

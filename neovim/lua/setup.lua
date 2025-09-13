@@ -277,7 +277,7 @@ require("lazy").setup({
         { -- バッファ管理
             "enoatu/vim-bufferlist", -- vimscript
             -- dir = "~/MyDevelopment/vim-bufferlist",
-            lazy = false,
+            lazy = true,
             init = function()
                 vim.g.BufferListMaxWidth = 100
             end,
