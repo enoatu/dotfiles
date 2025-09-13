@@ -221,7 +221,7 @@ require("lazy").setup({
         },
         {
             "enoatu/buffer-scope.nvim",
-            enabled = true,
+            enabled = false,
             -- dir = "~/MyDevelopment/buffer-scope.nvim",
             dependencies = { "nvim-telescope/telescope.nvim" },
             config = function()
