@@ -39,10 +39,10 @@ setopt inc_append_history    # 履歴をインクリメンタルに追加
 setopt hist_reduce_blanks    # 余分な空白は詰めて記録
 
 # # 自動でpushdを実行
-# setopt auto_pushd
+setopt auto_pushd
 #
-# # pushdから重複を削除
-# setopt pushd_ignore_dups
+# pushdから重複を削除
+setopt pushd_ignore_dups
 
 # コマンドミスを修正
 setopt correct
@@ -262,6 +262,12 @@ s() {
 
     rm -rf "$TMP_DIR"
   )
+}
+
+fcd() {
+  local choice
+  choice=$(dirs -v | fzf --height 40% --reverse | awk '{print $1}')
+  [[ -n $choice ]] && pushd +"$choice" > /dev/null
 }
 
 sg() {
