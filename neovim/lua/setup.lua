@@ -525,17 +525,11 @@ require("lazy").setup({
                     })
                 end, { nargs = "*", range = true })
                 -- shortcut Explain
-                vim.api.nvim_set_keymap(
-                    "n",
-                    "ee",
-                    ":CopilotChatExplain<CR>",
-                    { noremap = true, silent = true, desc = "AIにコードの説明をお願いする" }
-                )
-                vim.api.nvim_set_keymap(
-                    "v",
-                    "ee",
-                    ":CopilotChatExplain<CR>",
-                    { noremap = true, silent = true, desc = "AIにコードの説明をお願いする" }
+                vim.keymap.set(
+                  { "n", "v" },
+                  "ee",
+                  ":CopilotChatExplain<CR>",
+                  { noremap = true, silent = true, desc = "AIにコードの説明をお願いする" }
                 )
             end,
         },
