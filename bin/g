@@ -65,6 +65,8 @@ gb() { ## git branch 一覧を表示する
   # fzf の左側にはブランチ名,あればdescriptionを表示する
   # descriptionがある場合はgit-branch-descriptions のbranchname,descriptionの形式から取り出せる
   GIT_BRANCH_DESCRIPTIONS_PATH=enotiru-my-box/git-branch-descriptions
+  current_dir=$(pwd)
+  cd $(git rev-parse --show-toplevel)
   if [ ! -d .git ]; then
     echo "not a git repository"
     return 1
@@ -93,6 +95,7 @@ gb() { ## git branch 一覧を表示する
       echo $branch
     fi
   done | fzf | awk '{print $1}' | xargs git checkout
+  cd $current_dir
 }
 adddesc() { ## add-desc 現在のブランチに説明をつける
   local description="$@"
