@@ -146,6 +146,10 @@ require("lazy").setup({
                 -- })
             end,
         },
+        {
+            "vim-scripts/TT2-syntax",
+            ft = { "tt2", "tt2html" },
+        },
         { -- quickfix を見やすくする :grep hogehoge . | copen
             "kevinhwang91/nvim-bqf",
             ft = "qf",
@@ -199,6 +203,38 @@ require("lazy").setup({
                 "nvim-telescope/telescope.nvim", -- For picking b/w different remote methods
             },
             config = true,
+        },
+        {
+            "uga-rosa/translate.nvim",
+            config = function()
+                require("translate").setup({
+                    default = {
+                        command = "google",
+                    },
+                    preset = {
+                        output = {
+                            split = {
+                                append = true,
+                            },
+                        },
+                    },
+                    parse_after = {
+                        split_by_newline = {
+                            cmd = function(text, _)
+                                local lines = {}
+                                for line in text:gmatch("[^\r\n]+") do
+                                    line = vim.trim(line)
+                                    if line ~= "" then
+                                        table.insert(lines, line)
+                                    end
+                                end
+                                return lines
+                            end,
+                        },
+                    },
+                })
+                vim.api.nvim_set_keymap("v", "<space>t", ":Translate JA<CR>", { noremap = true, silent = true })
+            end,
         },
         {
             "enoatu/backseat.nvim",
@@ -740,15 +776,15 @@ require("lazy").setup({
                 vim.keymap.set('x', '@', '<cmd>lua require("nvim-treesitter.incremental_selection").scope_incremental()<cr>')
                 -- vim.g.matchup_matchparen_enabled = 1
                 -- vim.g.matchup_matchparen_offscreen = { method = 'popup' } -- カーソル外のタグも表示
-                -- vim.api.nvim_create_autocmd("BufReadPost", {
-                --     callback = function()
-                --         vim.defer_fn(function()
-                --             print("Enable treesitter highlight")
-                --             vim.cmd("TSEnable highlight")
-                --         end, 1000)
-                --     end,
-                -- })
-                --
+                vim.api.nvim_create_autocmd("BufReadPost", {
+                    callback = function()
+                        vim.defer_fn(function()
+                           --  print("Enable treesitter highlight")
+                            vim.cmd("TSEnable highlight")
+                        end, 200)
+                    end,
+                })
+
             end,
             -- lazy = true, -- filetype が後から設定される時があるため場合は遅延読み込み
             -- lazy = false, -- lazyはfalseでないと動作しないけど...

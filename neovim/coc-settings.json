@@ -86,7 +86,7 @@
       "environmentPath": "/home/enotiru/.rye/shims/python"
     },
     "executable": {
-      "command": "/home/enotiru/.rye/tools/pip/bin/jedi-language-server",
+      "command": "jedi-language-server"
     }
   },
   //"python.analysis.indexing": true,
