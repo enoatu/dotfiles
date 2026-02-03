@@ -150,7 +150,7 @@ require("lazy").setup({
             "vim-scripts/TT2-syntax",
             ft = { "tt2", "tt2html" },
         },
-        { -- quickfix を見やすくする :grep hogehoge . | copen
+        { -- quickfix を見やすくする。Telescope 開いて q を押す :grep hogehoge . | copen
             "kevinhwang91/nvim-bqf",
             ft = "qf",
             dependencies = {
@@ -161,12 +161,6 @@ require("lazy").setup({
                     end,
                 }
             },
-            init = function()
-                vim.api.nvim_create_user_command("Qf", function(opts)
-                    vim.cmd("silent!rg --vimgrep " .. opts.args)
-                    vim.cmd("copen")
-                end, { nargs = "*" })
-            end,
         },
         {
             -- スネークケースとか変える
@@ -289,8 +283,8 @@ require("lazy").setup({
             config = function()
                 require("nvim-surround").setup({
                     keymaps = {
-                        insert = "<C-g>s",
-                        insert_line = "<C-g>S",
+                        insert = "<C-s>s",
+                        insert_line = "<C-s>S",
                         normal = "e", -- ee" で囲む
                         normal_cur = "es",
                         normal_line = "yS",
