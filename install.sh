@@ -190,6 +190,15 @@ setup_git() {
   _print_complete
 }
 
+setup_zellij() {
+  _print_start
+
+  ln -sf ${DOTFILES}/zellij ${HOME}/.config/zellij
+  _test_exists_files ${HOME}/.config/zellij
+
+  _print_complete
+}
+
 setup_tmux() {
   _print_start
 
@@ -306,6 +315,7 @@ setup_additional_dotfiles() {
 main() {
   setup_zsh
   setup_git
+  setup_zellij
   setup_tmux
   setup_neovim
   setup_tools

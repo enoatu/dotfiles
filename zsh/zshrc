@@ -320,3 +320,9 @@ compinit
 # End of Docker CLI completions
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+if [[ -n "$SSH_CONNECTION" ]]; then
+  export ZELLIJ_CONFIG_FILE="$HOME/.config/zellij/remote.kdl"
+else
+  export ZELLIJ_CONFIG_FILE="$HOME/.config/zellij/local.kdl"
+fi
