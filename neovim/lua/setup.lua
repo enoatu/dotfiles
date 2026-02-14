@@ -1,3 +1,8 @@
+-- よく使うショートカット
+-- C-o で前のカーソル位置に戻る
+-- C-i で次のカーソル位置に進む
+
+
 local vim = vim
 local node_path = "~/.local/share/mise/installs/node/18.16.0/bin/node"
 vim.opt.termguicolors = true
@@ -768,6 +773,7 @@ require("lazy").setup({
         },
         { -- オブジェクトなど整形ツール C-o でトグル
             "Wansmer/treesj",
+            enabled = false,
             keys = {
                 { "<C-o>", "<CMD>TSJToggle<CR>", desc = "Toggle Inline/Block" },
             },
