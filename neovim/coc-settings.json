@@ -6,7 +6,7 @@
   "intelephense.diagnostics.undefinedFunctions": false,
   "intelephense.diagnostics.undefinedMethods": false,
   "intelephense.diagnostics.undefinedProperties": false,
-  "intelephense.diagnostics.undefinedTypes":false,
+  "intelephense.diagnostics.undefinedTypes": false,
   // "snippets.loadVSCodeProjectSnippets": false, // workspaceFolder/.vscodeからロードしない
   "languageserver": {
     "terraform": {
@@ -26,7 +26,7 @@
   "diagnostic.warningSign": "⚠️",
   "diagnostic.errorSign": "❌",
   "suggest.floatConfig": {
-    "border": true,
+    "border": true
   },
   "bashIde.shfmt.path": "", // フォーマット無効化
   "cSpell.enabledLanguageIds": [
@@ -83,10 +83,10 @@
   //"python.linting.enabled": true,
   "jedi": {
     "workspace": {
-      "environmentPath": "${HOME}/.rye/shims/python"
+      "environmentPath": "/home/enotiru/.rye/shims/python"
     },
     "executable": {
-      "command": "${HOME}/.rye/tools/pip/bin/jedi-language-server"
+      "command": "jedi-language-server"
     }
   },
   "typescript.preferGoToSourceDefinition": true,

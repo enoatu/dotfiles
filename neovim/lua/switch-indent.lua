@@ -11,7 +11,7 @@ local switchTabMessage = "4スペ"
 vim.o.shiftwidth = 4
 vim.o.tabstop = 4
 
-vim.keymap.set("n", "<C-i>", ":lua SwitchIndent()<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<leader>i", ":lua SwitchIndent()<CR>", { noremap = true, silent = true })
 function SwitchIndent()
     if switchTab == 1 then
         switchTab = 2

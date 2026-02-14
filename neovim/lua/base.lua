@@ -1,8 +1,8 @@
-vim.scriptencoding = "utf-8"
-vim.o.fileencodings = "utf-8,iso-2022-jp,euc-jp,sjis"
-vim.o.fileformats = "unix,dos,mac"
+-- vim.scriptencoding = "utf-8"
+-- vim.o.fileencodings = "utf-8,iso-2022-jp,euc-jp,sjis"
+-- vim.o.fileformats = "unix,dos,mac"
 --  "文字コードをUFT-8に設定
-vim.o.fenc = "utf-8"
+-- vim.o.fenc = "utf-8"
 --  " バックアップファイルを作らない
 vim.o.backup = false
 --  " スワップファイルを作らない

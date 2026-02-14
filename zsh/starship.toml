@@ -17,6 +17,7 @@ ${custom.git_user_name}\
 ${custom.git_stash_count}\
 $git_metrics\
 $git_status\
+$env_var\
 $directory
 ${custom.git_branch_description}
 $character"""
@@ -38,6 +39,7 @@ scan_timeout = 10
 
 # Set 'foo' as custom color palette
 palette = 'foo'
+continuation_prompt = ""
 
 # Define custom colors
 [palettes.foo]
@@ -128,3 +130,9 @@ staged = '[++\($count\)](green)'
 renamed = '👅'
 deleted = '🗑'
 
+[env_var.AWS_PROFILE]
+variable = "AWS_PROFILE"
+format = " [$symbol$env_value]($style) "
+symbol = "☁️ "
+style = "bold red"
+disabled = false

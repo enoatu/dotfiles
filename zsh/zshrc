@@ -15,6 +15,8 @@ export PATH="$HOME/bin:$PATH"
 # 環境によっては$SHELLがない時があるので設定
 export SHELL=`which zsh`
 
+# 隠しファイルも表示
+setopt globdots
 
 # 色を使用
 autoload -Uz colors
@@ -29,8 +31,8 @@ bindkey -e
 
 # ヒストリの設定
 HISTFILE=~/.zsh_history
-HISTSIZE=1000000
-SAVEHIST=1000000
+HISTSIZE=10000000
+SAVEHIST=10000000
 setopt hist_ignore_all_dups  # 重複するコマンド行は古い方を削除
 setopt hist_ignore_dups      # 直前と同じコマンドラインはヒストリに追加しない
 setopt share_history         # コマンド履歴ファイルを共有する
@@ -39,10 +41,10 @@ setopt inc_append_history    # 履歴をインクリメンタルに追加
 setopt hist_reduce_blanks    # 余分な空白は詰めて記録
 
 # # 自動でpushdを実行
-# setopt auto_pushd
+setopt auto_pushd
 #
-# # pushdから重複を削除
-# setopt pushd_ignore_dups
+# pushdから重複を削除
+setopt pushd_ignore_dups
 
 # コマンドミスを修正
 setopt correct
@@ -62,6 +64,7 @@ alias .....='cd ../../../..'
 
 # cat
 alias cat='bat'
+alias rg='rg -i --color=always --line-number --smart-case -.'
 
 alias tree="eza -T -L 3 -a -I 'node_modules|.git|.cache' --icons"
 alias ls="eza --icons --git"
@@ -72,6 +75,7 @@ alias gba='git branch --sort=-authordate'
 alias gu='git push'
 alias guu='git push -u origin $(git branch --show-current)'
 alias gp='git pull'
+alias p='git pull'
 alias gf="git for-each-ref --sort=committerdate refs/heads/ --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(contents:subject) - %(authorname) (%(color:green)%(committerdate:relative)%(color:reset))'"
 
 #alias c='cdr'
@@ -108,6 +112,7 @@ alias xtmux='TERM=xterm-256color tmux'
 alias ta='tmux attach'
 
 gitstashpopreset() {
+### gitstashpopreset: git stash pop して、コンフリクトした場合は自動で解消する
   git checkout --ours . && git reset && git checkout .
 }
 
@@ -135,7 +140,7 @@ setopt inc_append_history    # 実行するたびにファイルに書き込む
 setopt hist_no_store         # historyコマンドは登録しない
 setopt hist_reduce_blanks    # 余分な空白は詰めて記録する
 
-### ZSHプラグイン
+## ZSHプラグイン
 [ -f $HOME/dotfiles/zsh/installs/fzf.zsh ] && source $HOME/dotfiles/zsh/installs/fzf.zsh
 #[ -f $HOME/dotfiles/zsh/installs/fzf-tab/fzf-tab.plugin.zsh ] && source $HOME/dotfiles/zsh/installs/fzf-tab/fzf-tab.plugin.zsh
 [ -f $HOME/dotfiles/zsh/installs/mise.zsh ] && source $HOME/dotfiles/zsh/installs/mise.zsh
@@ -149,7 +154,7 @@ bindkey '^]' autosuggest-execute
 
 [ -f $HOME/dotfiles/zsh/installs/starship ] && eval "$($HOME/dotfiles/zsh/installs/starship init zsh)"
 
-### ZSHプラグイン
+## ZSHプラグイン
 
 # cdrコマンドを有効 ログアウトしても有効なディレクトリ履歴
 # cdr タブでリストを表示
@@ -219,52 +224,22 @@ export PATH="/usr/local/bin:$PATH"
 #[[ -z "$TMUX" ]] && exec tmux
 
 # python rye
-[ -s "$HOME/.rye/env" ] && source "$HOME/.rye/env"
-export PYTHONPATH=$HOME/.rye/tools/pip/lib/python3.12/site-packages:$PYTHONPATH
-export PATH="$HOME/.rye/tools/pip/bin:$PATH"
+# [ -s "$HOME/.rye/env" ] && source "$HOME/.rye/env"
+# export PYTHONPATH=$HOME/.rye/tools/pip/lib/python3.12/site-packages:$PYTHONPATH
+# export PATH="$HOME/.rye/tools/pip/bin:$PATH"
 
 # bun completions
 [ -s "~/.bun/_bun" ] && source "~/.bun/_bun"
 
-
-#サブモジュールごとに実行する
-s() {
-  (
-    CURRENT_DIR=$(pwd)
-    function catch {
-      # 失敗したらカレントディレクトリへ
-      cd $CURRENT_DIR
-    }
-    trap catch ERR
-
-    if [ -z "$1" ]; then
-        echo "Missing Command" >&2
-        return
-    fi
-
-    IFS=$'\n'
-    TMP_DIR=$(mktemp -d)
-    for DIR in $(git submodule foreach -q sh -c pwd); do
-      (
-        cd "$DIR"
-        OUTPUT=$("$@" 2>&1)
-        BASENAME=$(basename "$DIR")
-        echo "$OUTPUT" > "$TMP_DIR/$BASENAME.log"
-      ) &
-    done
-    wait
-
-    for LOG in "$TMP_DIR"/*.log; do
-      BASENAME=$(basename "$LOG" .log)
-      echo "[[$BASENAME]]>>"
-      cat "$LOG"
-    done
-
-    rm -rf "$TMP_DIR"
-  )
+fcd() {
+### fcd: fzf 使ってディレクトリ履歴から移動
+  local choice
+  choice=$(dirs -v | fzf --height 40% --reverse | awk '{print $1}')
+  [[ -n $choice ]] && pushd +"$choice" > /dev/null
 }
 
 sg() {
+### sg: tmux でサブモジュールごとにコマンドを並列実行
   COMMANDS=()
   for DIR in $(git submodule foreach -q sh -c pwd); do
     COMMANDS+=("cd $DIR && $@")
@@ -272,8 +247,8 @@ sg() {
   ~/dotfiles/bin/parallel_tmux_exec.sh $COMMANDS
 }
 
-# 選択したファイルを git stash する
 gss() {
+### gss: 選択したファイルを git stash する
   # fzfでファイルを選択
   selected_files=$(git ls-files -m | fzf -m)
 
@@ -291,9 +266,9 @@ gss() {
   fi
 }
 
-# 選択したファイルを git reset する
 gr() {
-  # `fzf` を使ってステージングファイルを選択
+### gr: 選択したファイルを git reset する
+  # fzf を使ってステージングファイルを選択
   files=$(git diff --name-only --cached | fzf -m)
   if [ -n "$files" ]; then
     echo "$files" | xargs git reset
@@ -303,6 +278,7 @@ gr() {
 }
 
 dr() {
+### dr: dotfilesのディレクトリ履歴から移動 dw と組み合わせて使う
   local dirs=$HOME/dotfiles/.dirs
   arg=$1
   if [ -z "$arg" ]; then
@@ -320,6 +296,7 @@ dr() {
 }
 
 dw() {
+### dw: 現在のディレクトリをdotfilesのディレクトリ履歴に追加 dr と組み合わせて使う
   local dirs=$HOME/dotfiles/.dirs
   arg=$1
   if [ -z "$arg" ]; then
@@ -329,6 +306,11 @@ dw() {
   else
     echo "$arg\t`pwd`" >> $dirs
   fi
+}
+
+help() {
+  # ### で始まる~/.zshrcの文字をリストアップ fzf で実行
+  grep '^### ' ~/.zshrc | sed 's/^### //g' | fzf --height 40% --reverse --border --preview="grep -A5 -w {} ~/.zshrc"
 }
 
 # The following lines have been added by Docker Desktop to enable Docker CLI completions.

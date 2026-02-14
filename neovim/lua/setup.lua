@@ -1,3 +1,8 @@
+-- よく使うショートカット
+-- C-o で前のカーソル位置に戻る
+-- C-i で次のカーソル位置に進む
+
+
 local vim = vim
 local node_path = "~/.local/share/mise/installs/node/18.16.0/bin/node"
 vim.opt.termguicolors = true
@@ -69,7 +74,7 @@ require("lazy").setup({
                     numhl = true, -- Toggle with `:Gitsigns toggle_numhl`
                     linehl = false, -- Toggle with `:Gitsigns toggle_linehl` coc-spell-checker とハイライトがぶつかる
                     --  word_diff = true, -- Toggle with `:Gitsigns toggle_word_diff`
-                    -- current_line_blame = true,
+                    current_line_blame = true,
                     attach_to_untracked = false,
                     on_attach = function(bufnr)
                         local gitsigns = package.loaded.gitsigns
@@ -146,7 +151,11 @@ require("lazy").setup({
                 -- })
             end,
         },
-        { -- quickfix を見やすくする :grep hogehoge . | copen
+        {
+            "vim-scripts/TT2-syntax",
+            ft = { "tt2", "tt2html" },
+        },
+        { -- quickfix を見やすくする。Telescope 開いて q を押す :grep hogehoge . | copen
             "kevinhwang91/nvim-bqf",
             ft = "qf",
             dependencies = {
@@ -157,12 +166,6 @@ require("lazy").setup({
                     end,
                 }
             },
-            init = function()
-                vim.api.nvim_create_user_command("Qf", function(opts)
-                    vim.cmd("silent!rg --vimgrep " .. opts.args)
-                    vim.cmd("copen")
-                end, { nargs = "*" })
-            end,
         },
         {
             -- スネークケースとか変える
@@ -201,6 +204,38 @@ require("lazy").setup({
             config = true,
         },
         {
+            "uga-rosa/translate.nvim",
+            config = function()
+                require("translate").setup({
+                    default = {
+                        command = "google",
+                    },
+                    preset = {
+                        output = {
+                            split = {
+                                append = true,
+                            },
+                        },
+                    },
+                    parse_after = {
+                        split_by_newline = {
+                            cmd = function(text, _)
+                                local lines = {}
+                                for line in text:gmatch("[^\r\n]+") do
+                                    line = vim.trim(line)
+                                    if line ~= "" then
+                                        table.insert(lines, line)
+                                    end
+                                end
+                                return lines
+                            end,
+                        },
+                    },
+                })
+                vim.api.nvim_set_keymap("v", "<space>t", ":Translate JA<CR>", { noremap = true, silent = true })
+            end,
+        },
+        {
             "enoatu/backseat.nvim",
             config = function()
                 require("backseat").setup({
@@ -225,27 +260,27 @@ require("lazy").setup({
             -- dir = "~/MyDevelopment/buffer-scope.nvim",
             dependencies = { "nvim-telescope/telescope.nvim" },
             config = function()
-                require("buffer-scope").setup({
-                    telescope = {
-                        buffers = {
-                            mappings = {
-                                i = {
-                                    ["<C-k>"] = "close",  -- インサートモードでC-kで閉じる
-                                },
-                                n = {
-                                    ["<C-k>"] = "close",  -- ノーマルモードでC-kで閉じる
-                                },
-                            },
-                        },
-                    },
-                })
-                require("telescope").load_extension("buffer_scope")
-                vim.api.nvim_set_keymap(
-                    "n",
-                    "<C-k>",
-                    "<cmd>Telescope buffer_scope buffers<cr>",
-                    { noremap = true, silent = true, desc = "Buffer Scope" }
-                )
+                -- require("buffer-scope").setup({
+                --     telescope = {
+                --         buffers = {
+                --             mappings = {
+                --                 i = {
+                --                     ["<C-k>"] = "close",  -- インサートモードでC-kで閉じる
+                --                 },
+                --                 n = {
+                --                     ["<C-k>"] = "close",  -- ノーマルモードでC-kで閉じる
+                --                 },
+                --             },
+                --         },
+                --     },
+                -- })
+                -- require("telescope").load_extension("buffer_scope")
+                -- vim.api.nvim_set_keymap(
+                --     "n",
+                --     "<C-k>",
+                --     "<cmd>Telescope buffer_scope buffers<cr>",
+                --     { noremap = true, silent = true, desc = "Buffer Scope" }
+                -- )
             end,
         },
         { -- 囲む
@@ -253,8 +288,8 @@ require("lazy").setup({
             config = function()
                 require("nvim-surround").setup({
                     keymaps = {
-                        insert = "<C-g>s",
-                        insert_line = "<C-g>S",
+                        insert = "<C-s>s",
+                        insert_line = "<C-s>S",
                         normal = "e", -- ee" で囲む
                         normal_cur = "es",
                         normal_line = "yS",
@@ -290,89 +325,6 @@ require("lazy").setup({
                 { "gA", mode = { "n", "x" }, desc = "Align with preview" },
             },
             opts = {},
-        },
-        {
-            "yetone/avante.nvim",
-            enabled = true,
-            event = "VeryLazy",
-            lazy = false,
-            version = false, -- Never set this value to "*"! Never!
-            opts = {
-                -- add any opts here
-                -- for example
-                -- provider = "copilot",
-                provider="claude",
-            },
-            claude = {
-                endpoint = "https://api.anthropic.com",
-                model = "claude-sonnet-4-20250514",
-                disable_tools = true,
-                temperature = 0,
-                max_tokens = 8192,
-            },
-            dual_boost = {
-                enabled = true,
-                first_provider = "copilot",
-                second_provider = "claude",
-                prompt = "Based on the two reference outputs below, generate a response that incorporates elements from both but reflects your own judgment and unique perspective. Do not provide any explanation, just give the response directly. Reference Output 1: [{{provider1_output}}], Reference Output 2: [{{provider2_output}}]",
-                timeout = 60000, -- Timeout in milliseconds
-            },
-            behaviour = {
-                auto_suggestions = true, -- Experimental stage
-                auto_set_highlight_group = true,
-                auto_set_keymaps = true,
-                auto_apply_diff_after_generation = true,
-                support_paste_from_clipboard = false,
-                minimize_diff = true, -- Whether to remove unchanged lines when applying a code block
-                enable_token_counting = true, -- Whether to enable token counting. Default to true.
-            },
-            init = function()
-                vim.opt.laststatus = 3
-            end,
-            -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
-            build = "make",
-            -- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
-            dependencies = {
-                "nvim-treesitter/nvim-treesitter",
-                "stevearc/dressing.nvim",
-                "nvim-lua/plenary.nvim",
-                "MunifTanjim/nui.nvim",
-                --- The below dependencies are optional,
-                "echasnovski/mini.pick", -- for file_selector provider mini.pick
-                "nvim-telescope/telescope.nvim", -- for file_selector provider telescope
-                "hrsh7th/nvim-cmp", -- autocompletion for avante commands and mentions
-                "ibhagwan/fzf-lua", -- for file_selector provider fzf
-                "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
-                "zbirenbaum/copilot.lua", -- for providers='copilot'
-                {
-                    -- support for image pasting
-                    "HakonHarnes/img-clip.nvim",
-                    event = "VeryLazy",
-                    opts = {
-                        -- recommended settings
-                        default = {
-                            embed_image_as_base64 = false,
-                            prompt_for_file_name = false,
-                            drag_and_drop = {
-                                insert_mode = true,
-                            },
-                            -- required for Windows users
-                            use_absolute_path = true,
-                        },
-                    },
-                },
-                {
-                    -- Make sure to set this up properly if you have lazy=true
-                    'MeanderingProgrammer/render-markdown.nvim',
-                    config = function()
-                        require('render-markdown').setup({})
-                    end,
-                    opts = {
-                        file_types = { "markdown", "Avante" },
-                    },
-                    ft = { "markdown", "Avante" },
-                },
-            },
         },
         { -- コメント の補完
             "CopilotC-Nvim/CopilotChat.nvim",
@@ -489,17 +441,11 @@ require("lazy").setup({
                     })
                 end, { nargs = "*", range = true })
                 -- shortcut Explain
-                vim.api.nvim_set_keymap(
-                    "n",
-                    "ee",
-                    ":CopilotChatExplain<CR>",
-                    { noremap = true, silent = true, desc = "AIにコードの説明をお願いする" }
-                )
-                vim.api.nvim_set_keymap(
-                    "v",
-                    "ee",
-                    ":CopilotChatExplain<CR>",
-                    { noremap = true, silent = true, desc = "AIにコードの説明をお願いする" }
+                vim.keymap.set(
+                  { "n", "v" },
+                  "ee",
+                  ":CopilotChatExplain<CR>",
+                  { noremap = true, silent = true, desc = "AIにコードの説明をお願いする" }
                 )
             end,
         },
@@ -744,15 +690,15 @@ require("lazy").setup({
                 vim.keymap.set('x', '@', '<cmd>lua require("nvim-treesitter.incremental_selection").scope_incremental()<cr>')
                 -- vim.g.matchup_matchparen_enabled = 1
                 -- vim.g.matchup_matchparen_offscreen = { method = 'popup' } -- カーソル外のタグも表示
-                -- vim.api.nvim_create_autocmd("BufReadPost", {
-                --     callback = function()
-                --         vim.defer_fn(function()
-                --             print("Enable treesitter highlight")
-                --             vim.cmd("TSEnable highlight")
-                --         end, 1000)
-                --     end,
-                -- })
-                --
+                vim.api.nvim_create_autocmd("BufReadPost", {
+                    callback = function()
+                        vim.defer_fn(function()
+                           --  print("Enable treesitter highlight")
+                            vim.cmd("TSEnable highlight")
+                        end, 200)
+                    end,
+                })
+
             end,
             -- lazy = true, -- filetype が後から設定される時があるため場合は遅延読み込み
             -- lazy = false, -- lazyはfalseでないと動作しないけど...
@@ -831,6 +777,7 @@ require("lazy").setup({
         },
         { -- オブジェクトなど整形ツール C-o でトグル
             "Wansmer/treesj",
+            enabled = false,
             keys = {
                 { "<C-o>", "<CMD>TSJToggle<CR>", desc = "Toggle Inline/Block" },
             },
