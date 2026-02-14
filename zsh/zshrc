@@ -320,4 +320,3 @@ compinit
 # End of Docker CLI completions
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-export PATH="$PATH:/Users/enotiru/Development/billys"

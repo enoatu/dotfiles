@@ -1,0 +1,85 @@
+show_startup_tips false
+default_shell "zsh"
+default_layout "remote_layout"
+web_server_port 14951
+
+// 青+オレンジ
+// theme "ao"
+
+// ちょいパステル
+// theme "catppuccin-frappe"
+
+// パステルしゃれおつ緑
+// theme "catppuccin-macchiato"
+
+// パステル青+オレンジ
+// theme "iceberg-dark"
+
+ theme "tokyo-night"
+
+// 矢印消える
+// simplified_ui true
+// ペイン周りの装飾
+// pane_frames true
+
+
+// tmux からの移行メリット
+// インストールが簡単(ビルド不要)
+// 設定がファイル書き換え時にリアルタイムで反映される
+
+
+keybinds {
+
+    unbind "Ctrl q"
+    locked {
+        bind "Ctrl g" { SwitchToMode "normal"; }
+    }
+
+    normal {
+        // ペイン移動
+        bind "h" { MoveFocus "Left"; SwitchToMode "locked"; }
+        bind "j" { MoveFocus "Down"; SwitchToMode "locked"; }
+        bind "k" { MoveFocus "Up"; SwitchToMode "locked"; }
+        bind "l" { MoveFocus "Right"; SwitchToMode "locked"; }
+
+        // 分割
+        bind "-" { NewPane "Down"; SwitchToMode "locked"; }
+        bind "|" { NewPane "Right"; SwitchToMode "locked"; }
+
+        // ペイン閉じる
+        bind "x" { CloseFocus; SwitchToMode "locked"; }
+
+        // タブ（= window）
+        bind "c" { NewTab; SwitchToMode "locked"; }
+        bind "1" { GoToTab 1; SwitchToMode "locked"; }
+        bind "2" { GoToTab 2; SwitchToMode "locked"; }
+        bind "3" { GoToTab 3; SwitchToMode "locked"; }
+        bind "4" { GoToTab 4; SwitchToMode "locked"; }
+        bind "5" { GoToTab 5; SwitchToMode "locked"; }
+        bind "6" { GoToTab 6; SwitchToMode "locked"; }
+        bind "7" { GoToTab 7; SwitchToMode "locked"; }
+        bind "8" { GoToTab 8; SwitchToMode "locked"; }
+        bind "9" { GoToTab 9; SwitchToMode "locked"; }
+
+        // セッション
+        bind "d" { Detach; }
+
+        // ペイン内容をエディタで開く
+        bind "e" { EditScrollback; SwitchToMode "locked"; }
+
+        // quit
+        bind "q" { Quit; }
+    }
+}
+
+plugins {
+    zjstatus location="https://github.com/dj95/zjstatus/releases/download/v0.20.2/zjstatus.wasm"
+    zjstatus-hints location="https://github.com/b0o/zjstatus-hints/releases/latest/download/zjstatus-hints.wasm" {
+        max_length "0"
+        overflow_str ""
+        pipe_name "zjstatus_hints"
+    }
+}
+load_plugins {
+    zjstatus-hints
+}

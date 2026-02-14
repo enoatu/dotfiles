@@ -16,7 +16,7 @@ NODE_VERSION="23.10.0"
 NODE_VERSION_FOR_COC="18.16.0"
 RIPGREP_VERSION="13.0.0"
 RYE_VERSION="0.38.0"
-TMUX_VERSION="3.2"
+ZELLIJ="0.43.1"
 EZA_VERSION="0.20.10"
 BUN_VERSION="1.1.8"
 
@@ -267,6 +267,7 @@ setup_tools() {
       "ripgrep@${RIPGREP_VERSION}@CMD:rg"
       "rye@${RYE_VERSION}@CMD:rye"
       "bun@${BUN_VERSION}@CMD:bun"
+      "zellij@${ZELLIJ}@CMD:zellij"
       # "tmux@${TMUX_VERSION}@CMD:tmux,IF_NOT_EXISTS_COMMAND:tmux" alcolなどでtmuxが使われているので、tmuxはインストールしない
     )
     _mise_install $installs || fail 'install failed'
