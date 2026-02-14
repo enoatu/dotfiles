@@ -1,6 +1,6 @@
 show_startup_tips false
 default_shell "zsh"
-default_layout "remote_layout"
+default_layout "layout_remote"
 web_server_port 14951
 
 // 青+オレンジ

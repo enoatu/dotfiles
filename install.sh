@@ -193,6 +193,7 @@ setup_git() {
 setup_zellij() {
   _print_start
 
+  rm -rf ${HOME}/.config/zellij
   ln -sf ${DOTFILES}/zellij ${HOME}/.config/zellij
   _test_exists_files ${HOME}/.config/zellij
 
