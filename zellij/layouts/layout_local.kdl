@@ -13,7 +13,7 @@ layout {
                 border_format   "#[fg=#4C435C]{char}"
                 border_position "top"
 
-                hide_frame_for_single_pane "false"
+                hide_frame_for_single_pane "true"
 
                 tab_active              "#[bg=#9c73fe,fg=#f2ecff,bold] {index} {name} "
                 tab_active_fullscreen   "#[bg=#9c73fe,fg=#f2ecff,bold] {fullscreen_indicator} {index} {name} "
@@ -48,7 +48,7 @@ layout {
         }
         pane size=1 borderless=true {
             plugin location="zjstatus" {
-                format_left   "{mode} {pipe_zjstatus_hints}"
+                format_left   "#[bg=#0051a8,fg=#ffffff,bold] 【local 】{mode} {pipe_zjstatus_hints}"
                 format_center ""
                 format_right  "#[bg=#6e5fb7,fg=#ffffff,bold] {session}"
                 format_space  ""
