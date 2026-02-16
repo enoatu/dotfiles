@@ -32,7 +32,7 @@ keybinds {
 
     unbind "Ctrl q"
     locked {
-        bind "Ctrl g" { SwitchToMode "normal"; }
+        bind "Ctrl f" { SwitchToMode "normal"; }
     }
 
     normal {

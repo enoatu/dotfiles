@@ -48,7 +48,7 @@ layout {
         }
         pane size=1 borderless=true {
             plugin location="zjstatus" {
-                format_left   "{mode} {pipe_zjstatus_hints}"
+                format_left   "#[bg=#642322,fg=#ffffff,bold]【remote】{mode} {pipe_zjstatus_hints}"
                 format_center ""
                 format_right  "#[bg=#6e5fb7,fg=#ffffff,bold] {session}"
                 format_space  ""
