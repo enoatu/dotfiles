@@ -8,7 +8,6 @@ support_kitty_keyboard_protocol false
 // macos-option-as-alt = true
 // ZellijデフォルトのAlt系キーバインドが、後述するtab/pane操作やリネームのキーバインドと競合するため無効化します。
 // unbind "Alt n" "Alt Left" "Alt Right" "Alt Up" "Alt Down" "Alt h" "Alt j" "Alt k" "Alt l"
-// support_kitty_keyboard_protocol false
 
 // 青+オレンジ
 // theme "ao"
