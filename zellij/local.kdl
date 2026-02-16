@@ -69,7 +69,7 @@ keybinds {
         bind "e" { EditScrollback; SwitchToMode "locked"; }
 
         // quit
-        bind "q" { Quit; }
+        bind "Q" { Quit; }
     }
 }
 
