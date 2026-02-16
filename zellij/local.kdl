@@ -37,6 +37,8 @@ keybinds {
     }
 
     normal {
+        bind "Ctrl g" { SwitchToMode "locked"; }
+
         // ペイン移動
         bind "h" { MoveFocus "Left"; SwitchToMode "locked"; }
         bind "j" { MoveFocus "Down"; SwitchToMode "locked"; }
