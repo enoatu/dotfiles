@@ -22,12 +22,6 @@ theme "catppuccin-frappe"
 // ペイン周りの装飾
 // pane_frames true
 
-
-// tmux からの移行メリット
-// インストールが簡単(ビルド不要)
-// 設定がファイル書き換え時にリアルタイムで反映される
-
-
 keybinds {
 
     unbind "Ctrl q"
@@ -50,7 +44,7 @@ keybinds {
         bind "x" { CloseFocus; SwitchToMode "locked"; }
 
         // タブ（= window）
-        bind "c" { NewTab; SwitchToMode "locked"; }
+        bind "c" { NewTab; GoToTab -1; SwitchToMode "locked"; }
         bind "1" { GoToTab 1; SwitchToMode "locked"; }
         bind "2" { GoToTab 2; SwitchToMode "locked"; }
         bind "3" { GoToTab 3; SwitchToMode "locked"; }
