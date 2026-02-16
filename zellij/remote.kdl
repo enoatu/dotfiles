@@ -2,6 +2,13 @@ show_startup_tips false
 default_shell "zsh"
 default_layout "layout_remote"
 web_server_port 14951
+// ssh 先で使用時、Kitty Keyboard Protocol (KKP) を有効化機能により Ctrl+なにか長押し時に ;5u 形式の拡張キーコードが出力されてしまうのを防ぐ
+support_kitty_keyboard_protocol false
+
+// macos-option-as-alt = true
+// ZellijデフォルトのAlt系キーバインドが、後述するtab/pane操作やリネームのキーバインドと競合するため無効化します。
+// unbind "Alt n" "Alt Left" "Alt Right" "Alt Up" "Alt Down" "Alt h" "Alt j" "Alt k" "Alt l"
+// support_kitty_keyboard_protocol false
 
 // 青+オレンジ
 // theme "ao"

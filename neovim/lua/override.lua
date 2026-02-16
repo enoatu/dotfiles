@@ -10,13 +10,28 @@ vim.opt.undofile = true
 -- yank後にクリップボードにもコピー
 -- vim.keymap.set("n", "+", "<Cmd>let @+ = @@<CR>", { noremap = true, silent = true }
 -- https://zenn.dev/anyakichi/articles/40d7464fdf0e31
-vim.api.nvim_create_autocmd("TextYankPost", {
-    group = vim.api.nvim_create_augroup("YankSync", { clear = true }),
-    pattern = "*",
-    callback = function()
-        vim.fn.setreg("+", vim.fn.getreg("@@"))
-    end,
-})
+-- vim.api.nvim_create_autocmd("TextYankPost", {
+--     group = vim.api.nvim_create_augroup("YankSync", { clear = true }),
+--     pattern = "*",
+--     callback = function()
+--         vim.fn.setreg("+", vim.fn.getreg("@@"))
+--     end,
+-- })
+--
+-- この値を指定すると、"+ レジスタ（システムクリップボード）がデフォルトで使われます。
+-- つまり、Neovim内でコピーした内容を他のアプリ（ブラウザやメールなど）に貼り付けたり、その逆も簡単にできます。
+vim.opt.clipboard = "unnamedplus"
+vim.g.clipboard = {
+  name = "osc52",
+  copy = {
+    ["+"] = require("vim.ui.clipboard.osc52").copy("+"),
+    ["*"] = require("vim.ui.clipboard.osc52").copy("*"),
+  },
+  paste = {
+    ["+"] = require("vim.ui.clipboard.osc52").paste("+"),
+    ["*"] = require("vim.ui.clipboard.osc52").paste("*"),
+  },
+}
 
 ----  見た目系
 -- 行番号を表示
