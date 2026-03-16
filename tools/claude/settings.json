@@ -18,8 +18,18 @@
       "Read(~/.zshrc)"
     ],
     "deny": [
-      "Bash(curl:*)",
-      "Read(~/.*)"
+      "Read(~/.*)",
+      "Bash(terraform destroy)",
+      "Bash(terraform apply)"
     ]
-  }
+  },
+  "extraKnownMarketplaces": {
+    "claude-code-plugins": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/claude-code"
+      }
+    }
+  },
+  "effortLevel": "high"
 }
