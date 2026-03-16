@@ -108,6 +108,10 @@ vim.opt.wrap = true
 -- Disable
 vim.keymap.set({ "i", "n" }, "<esc>", "<esc>", { desc = "Escape and clear hlsearch" })
 
+-- abc順で並び替え
+vim.keymap.set("v", "<leader>sa", ":sort<CR>", { noremap = true, silent = true, desc = "選択範囲をabc順で並び替え" })
+vim.keymap.set("n", "<leader>sa", ":%sort<CR>", { noremap = true, silent = true, desc = "全体をabc順で並び替え" })
+
 vim.api.nvim_create_autocmd("FileType", {
     pattern = "php",
     callback = function()
