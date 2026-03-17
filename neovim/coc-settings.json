@@ -18,6 +18,18 @@
       ],
       "initializationOptions": {},
       "settings": {}
+    },
+    "perlnavigator": {
+      "command": "npx",
+      "args": ["-y", "perlnavigator-server", "--stdio"],
+      "filetypes": ["perl"],
+      "rootPatterns": [".git", "lib", "cpanfile"],
+      "settings": {
+        "perlnavigator": {
+          "perlPath": "perl",
+          "includePaths": ["lib"]
+        }
+      }
     }
   },
   "cSpell.diagnosticLevel": "Hint",
