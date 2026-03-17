@@ -12,12 +12,12 @@ BAT_VERSION="0.24.0"
 DELTA_VERSION="0.18.2"
 FD_VERSION="8.7.0"
 NEOVIM_VERSION="0.11.6"
-NODE_VERSION="23.10.0"
+NODE_VERSION="20.20.1"
 NODE_VERSION_FOR_COC="18.16.0"
 RIPGREP_VERSION="13.0.0"
 RYE_VERSION="0.38.0"
 ZELLIJ="0.43.1"
-EZA_VERSION="0.20.10"
+EZA_VERSION="0.23.4"
 BUN_VERSION="1.1.8"
 
 # runtime
@@ -61,6 +61,7 @@ _install_mise() {
     mise self-update
     echo 'mise is already installed and updated'
   fi
+  eval "$($HOME/.local/bin/mise activate)"
 }
 
 _install_pip() {
@@ -83,6 +84,7 @@ _install_pip() {
 
 _mise_install() {
   # 引数を配列に変換
+  eval "$($HOME/.local/bin/mise activate)"
   for item in "$@"; do
     IFS='@' read -r name version opts<<<"$item"
     echo "installing $name $version >>>>>>"
@@ -122,6 +124,8 @@ _mise_install() {
     fi
     mise install ${name}@${version} || fail "install ${name}@${version} failed"
     mise use -g ${name}@${version}
+
+    eval "$($HOME/.local/bin/mise activate)"
     # 実行ファイルの確認
     if [[ -n $cmd ]]; then
       _test_exists_commands $cmd

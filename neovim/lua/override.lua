@@ -36,7 +36,7 @@ vim.o.laststatus = 2
 vim.o.wildmode = "list:longest"
 -- タブ、空白、改行の可視化
 vim.o.list = true
-vim.o.listchars = "tab:▸▸,trail:◀,extends:>,precedes:<,nbsp:%"
+vim.o.listchars = "tab:»·,trail:◀,extends:>,precedes:<,nbsp:%"
 -- 全角スペースをハイライト表示
 vim.api.nvim_create_augroup("extra-whitespace", {})
 vim.api.nvim_create_autocmd({ "VimEnter", "WinEnter" }, {
