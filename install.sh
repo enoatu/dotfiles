@@ -9,6 +9,7 @@ ADDITIONAL_REPO_URL=${ADDITIONAL_REPO_URL:-"https://${ADDITIONAL_REPO_GITHUB_TOK
 
 # tool
 BAT_VERSION="0.24.0"
+YARN_VERSION="1.22.22"
 DELTA_VERSION="0.18.2"
 FD_VERSION="8.7.0"
 NEOVIM_VERSION="0.11.6"
@@ -225,6 +226,7 @@ setup_neovim() {
   installs=(
     "neovim@${NEOVIM_VERSION}@CMD:nvim"
     "nodejs@${NODE_VERSION}@CMD:node"
+    "yarn@${YARN_VERSION}@CMD:yarn"
     "ripgrep@${RIPGREP_VERSION}@CMD:rg"
     "rust@${RUST_VERSION}@CMD:rustup"
   )
