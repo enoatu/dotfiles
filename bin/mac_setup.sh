@@ -5,6 +5,7 @@
 # ~/.aws
 # ~/.zshrc.local
 # ~/.zsh_history
+# /etc/hosts
 # ~/Development/**/enotiru-my-box
 
 # install homebrew
