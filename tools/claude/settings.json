@@ -15,10 +15,11 @@
       "MultiEdit",
       "Bash(npm run lint)",
       "Bash(npm run test:*)",
-      "Read(~/.zshrc)"
+      "Read(~/.zshrc)",
+      "Read(~/.claude/*)"
     ],
     "deny": [
-      "Read(~/.*)",
+      "Read(~/.claude/.*)",
       "Bash(terraform destroy)",
       "Bash(terraform apply)"
     ]
