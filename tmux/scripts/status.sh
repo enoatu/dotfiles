@@ -7,7 +7,7 @@ RUNNING=0
 for PANE in $PANES; do
     LAST=$(tmux capture-pane -t "$PANE" -p 2>/dev/null | grep -v '^$' | tail -1)
     case "$LAST" in
-        *"esc to interrupt"*|*"background tasks still running"*) RUNNING=1 ;;
+        *"esc to interrupt"*|*"background tasks still running"*|*"· ↓ to manage"*) RUNNING=1 ;;
     esac
 done
 
