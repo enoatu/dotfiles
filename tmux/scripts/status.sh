@@ -1,14 +1,12 @@
 #!/usr/bin/env bash
 # windowにclaudeがあれば状態を表示
-PANES=$(tmux list-panes -t "$1" -F "#{pane_current_command} #{pane_id}" | awk '/^claude /{print $2}')
+# npx経由だとpane_current_commandがnpmeになる
+PANES=$(tmux list-panes -t "$1" -F "#{pane_current_command} #{pane_id}" 2>/dev/null | awk '/^(claude|npm) /{print $2}')
 [ -z "$PANES" ] && exit 0
 
 RUNNING=0
 for PANE in $PANES; do
-    LAST=$(tmux capture-pane -t "$PANE" -p 2>/dev/null | grep -v '^$' | tail -1)
-    case "$LAST" in
-        *"esc to interrupt"*|*"background tasks still running"*|*"· ↓ to manage"*) RUNNING=1 ;;
-    esac
+    tmux capture-pane -t "$PANE" -p 2>/dev/null | tail -n20 | grep -qE "esc to interrupt|background tasks still running|· ↓ to manage| · thought for| · thinking|· ↓ [0-9]" && RUNNING=1
 done
 
 if [ "$RUNNING" -eq 1 ]; then
