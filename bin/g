@@ -53,7 +53,7 @@ gitstashpopreset() { ## gsp|gitstashpopreset 一度 git stash したものを po
 
 ga() { ## add|a git add する
   local selected
-  selected=$(\git status -s | fzf -m --ansi --preview="echo {} | awk '{print \$2}' | xargs \git diff" | awk '{print $2}')
+  selected=$(\git status -s | awk '$0 ~ /^.[^ ]/ || $0 ~ /^\?\?/' | fzf -m --ansi --preview="echo {} | awk '{print \$2}' | xargs \git diff 2>/dev/null || echo {} | awk '{print \$2}' | xargs cat" | awk '{print $2}')
   if [[ -n "$selected" ]]; then
     git add `paste -s - <<< $selected`
   fi
