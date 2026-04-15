@@ -139,7 +139,8 @@ setup_zsh() {
   _print_start
 
   ln -sf ${DOTFILES}/zsh/zshrc ${HOME}/.zshrc
-  _test_exists_files ${HOME}/.zshrc
+  ln -sf ${DOTFILES}/zsh/zshenv ${HOME}/.zshenv
+  _test_exists_files ${HOME}/.zshrc ${HOME}/.zshenv
 
   # starship
   if [ ! -e ${ZSH_INSTALLS}/starship ]; then
@@ -248,6 +249,12 @@ setup_neovim() {
 
   _install_pip
   pip install pynvim # neovim パッケージは古いので、pynvimを使う
+
+  # Perl::Critic (PerlNavigator の perlcritic で使用)
+  type cpanm >/dev/null 2>&1 || curl -L https://cpanmin.us | perl - --local-lib=~/perl5 App::cpanminus
+  export PATH="$HOME/perl5/bin:$PATH"
+  cpanm --notest --local-lib=~/perl5 local::lib Perl::Critic
+  ln -sf ${DOTFILES}/.perlcriticrc ${HOME}/.perlcriticrc
 
   cp ${DOTFILES}/neovim/lua/env.lua.sample ${DOTFILES}/neovim/lua/env.lua
 

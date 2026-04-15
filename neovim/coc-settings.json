@@ -1,48 +1,67 @@
 {
+  // --- 全般 ---
   "coc.preferences.extensionUpdateCheck": "daily",
+  "suggest.floatConfig": {
+    "border": true
+  },
+
+  // --- 診断 ---
   "diagnostic.checkCurrentLine": true,
+  "diagnostic.infoSign": "",
+  "diagnostic.hintSign": "",
+  "diagnostic.warningSign": "⚠️",
+  "diagnostic.errorSign": "❌",
+
+  // --- Language Server ---
+  "languageserver": {
+    "terraform": {
+      "command": "terraform-ls",
+      "args": ["serve"],
+      "filetypes": ["terraform", "tf"],
+      "initializationOptions": {},
+      "settings": {}
+    }
+  },
+
+  // --- Perl ---
+  "perlnavigator.enable": true,
+  "perlnavigator.logging": true,
+  "perlnavigator.enableWarnings": true,
+  "perlnavigator.perlcriticEnabled": true,
+  "perlnavigator.perlParams": ["-I/home/enotiru/perl5/lib/perl5"],
+  "perlnavigator.includePaths": ["lib"],
+
+  // --- TypeScript ---
+  "typescript.preferGoToSourceDefinition": true,
+  "tsserver.experimental.enableProjectDiagnostics": true,
+
+  // --- PHP (intelephense) ---
   "intelephense.diagnostics.undefinedClassConstants": false,
   "intelephense.diagnostics.undefinedConstants": false,
   "intelephense.diagnostics.undefinedFunctions": false,
   "intelephense.diagnostics.undefinedMethods": false,
   "intelephense.diagnostics.undefinedProperties": false,
   "intelephense.diagnostics.undefinedTypes": false,
-  // "snippets.loadVSCodeProjectSnippets": false, // workspaceFolder/.vscodeからロードしない
-  "languageserver": {
-    "terraform": {
-      "command": "terraform-ls",
-      "args": ["serve"],
-      "filetypes": [
-        "terraform",
-        "tf"
-      ],
-      "initializationOptions": {},
-      "settings": {}
+
+  // --- Python (jedi) ---
+  "jedi": {
+    "workspace": {
+      "environmentPath": "/home/enotiru/.rye/shims/python"
     },
-    "perlnavigator": {
-      "command": "npx",
-      "args": ["-y", "perlnavigator-server", "--stdio"],
-      "filetypes": ["perl"],
-      "rootPatterns": [".git", "lib", "cpanfile"],
-      "settings": {
-        "perlnavigator": {
-          "perlPath": "perl",
-          "includePaths": ["lib"]
-        }
-      }
+    "executable": {
+      "command": "jedi-language-server"
     }
   },
+
+  // --- Rust ---
+  "rust-analyzer.server.path": "~/.cargo/bin/rust-analyzer",
+
+  // --- Bash ---
+  "bashIde.shfmt.path": "",
+
+  // --- cSpell ---
   "cSpell.diagnosticLevel": "Hint",
-  "diagnostic.infoSign": "",
-  "diagnostic.hintSign": "",
-  "diagnostic.warningSign": "⚠️",
-  "diagnostic.errorSign": "❌",
-  "suggest.floatConfig": {
-    "border": true
-  },
-  "bashIde.shfmt.path": "", // フォーマット無効化
   "cSpell.enabledLanguageIds": [
-    "vim",
     "asciidoc",
     "c",
     "cpp",
@@ -64,8 +83,8 @@
     "markdown",
     "php",
     "plaintext",
-    "python",
     "pug",
+    "python",
     "restructuredtext",
     "rust",
     "scala",
@@ -73,7 +92,8 @@
     "text",
     "typescript",
     "typescriptreact",
-    "vue", // add
+    "vim",
+    "vue",
     "yaml",
     "yml"
   ],
@@ -82,28 +102,11 @@
       "languageId": "vue",
       "locale": "*",
       "ignoreRegExpList": [],
-      "dictionaries": ["html","typescript", "css"],
+      "dictionaries": ["html", "typescript", "css"],
       "dictionaryDefinitions": []
     }
   ],
   "cSpell.userWords": [
     "eyecatch"
-  ],
-  //"snippets.ultisnips.pythonPrompt": false,
-  //"python.linting.pylintEnabled": false,
-  //"python.linting.mypyEnabled": true,
-  //"python.linting.enabled": true,
-  "jedi": {
-    "workspace": {
-      "environmentPath": "/home/enotiru/.rye/shims/python"
-    },
-    "executable": {
-      "command": "jedi-language-server"
-    }
-  },
-  "typescript.preferGoToSourceDefinition": true,
-  "tsserver.experimental.enableProjectDiagnostics": true,
-  //"python.analysis.indexing": true,
-  "perl.navigator.enable": true,
-  "rust-analyzer.server.path": "~/.cargo/bin/rust-analyzer"
+  ]
 }

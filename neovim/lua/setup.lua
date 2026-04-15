@@ -54,6 +54,27 @@ require("lazy").setup({
                 require("colorizer").setup()
             end,
         },
+        { -- カーソル下の単語を他の出現箇所でもハイライト
+            "RRethy/vim-illuminate",
+            event = { "BufReadPost", "BufNewFile" },
+            config = function()
+                require("illuminate").configure({
+                    providers = { "lsp", "treesitter", "regex" },
+                    delay = 100,
+                    filetypes_denylist = { "dashboard", "alpha", "oil" },
+                })
+                vim.keymap.set("n", "]r", function() require("illuminate").goto_next_reference(false) end, { desc = "次の同一単語へ" })
+                vim.keymap.set("n", "[r", function() require("illuminate").goto_prev_reference(false) end, { desc = "前の同一単語へ" })
+                -- カーソル単語を検索レジスタに入れて n/N で飛べるように（カーソルは移動しない）
+                vim.keymap.set("n", "<leader>*", function()
+                    local word = vim.fn.expand("<cword>")
+                    if word == "" then return end
+                    vim.fn.setreg("/", [[\<]] .. vim.fn.escape(word, [[\]]) .. [[\>]])
+                    vim.opt.hlsearch = true
+                    vim.fn.histadd("/", vim.fn.getreg("/"))
+                end, { desc = "カーソル単語で検索（n/Nで移動）" })
+            end,
+        },
         {
             "lewis6991/gitsigns.nvim",
             -- :help ibl.config.scope とすると | などの一覧が表示される
@@ -285,21 +306,23 @@ require("lazy").setup({
         },
         { -- 囲む
             "kylechui/nvim-surround",
+            init = function()
+                -- v4でデフォルトキーマップを無効化（プラグインロード前に設定が必要）
+                vim.g.nvim_surround_no_mappings = true
+            end,
             config = function()
-                require("nvim-surround").setup({
-                    keymaps = {
-                        insert = "<C-s>s",
-                        insert_line = "<C-s>S",
-                        normal = "e", -- ee" で囲む
-                        normal_cur = "es",
-                        normal_line = "yS",
-                        normal_cur_line = "ySS",
-                        visual = "S",
-                        visual_line = "gS",
-                        delete = "ds",
-                        change = "cs",
-                    },
-                })
+                require("nvim-surround").setup({})
+                -- v4からは <Plug> マッピングを直接設定する
+                vim.keymap.set("i", "<C-s>s", "<Plug>(nvim-surround-insert)", { desc = "カーソル位置を囲む" })
+                vim.keymap.set("i", "<C-s>S", "<Plug>(nvim-surround-insert-line)", { desc = "カーソル位置を改行ありで囲む" })
+                vim.keymap.set("n", "e", "<Plug>(nvim-surround-normal)", { desc = "モーション範囲を囲む（ee\" で囲む）" })
+                vim.keymap.set("n", "es", "<Plug>(nvim-surround-normal-cur)", { desc = "現在行を囲む" })
+                vim.keymap.set("n", "yS", "<Plug>(nvim-surround-normal-line)", { desc = "モーション範囲を改行ありで囲む" })
+                vim.keymap.set("n", "ySS", "<Plug>(nvim-surround-normal-cur-line)", { desc = "現在行を改行ありで囲む" })
+                vim.keymap.set("x", "S", "<Plug>(nvim-surround-visual)", { desc = "選択範囲を囲む" })
+                vim.keymap.set("x", "gS", "<Plug>(nvim-surround-visual-line)", { desc = "選択範囲を改行ありで囲む" })
+                vim.keymap.set("n", "ds", "<Plug>(nvim-surround-delete)", { desc = "囲みを削除" })
+                vim.keymap.set("n", "cs", "<Plug>(nvim-surround-change)", { desc = "囲みを変更" })
             end,
         },
         {
@@ -1036,6 +1059,6 @@ require("lazy").setup({
                     },
                 }
             end,
-        },
+        }
     },
 })

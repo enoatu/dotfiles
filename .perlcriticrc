@@ -1,0 +1,34 @@
+severity=4
+
+program-extensions = .pl .t .pm
+
+[TestingAndDebugging::RequireUseStrict]
+equivalent_modules = Modern::Perl Moo Moose Object::Pad Test::Class::Moose Test2::V0 Test::Most common::sense
+
+[TestingAndDebugging::RequireUseWarnings]
+equivalent_modules = Modern::Perl Moo Moose Object::Pad Test::Class::Moose Test2::V0 Test::Most common::sense
+
+[-Subroutines::ProhibitSubroutinePrototypes]
+
+[TestingAndDebugging::ProhibitNoStrict]
+allow = vars subs refs
+
+[-TestingAndDebugging::ProhibitNoWarnings]
+[-Subroutines::ProhibitExplicitReturnUndef]
+[-ValuesAndExpressions::ProhibitMixedBooleanOperators]
+[-ValuesAndExpressions::ProhibitConstantPragma]
+[-Modules::ProhibitMultiplePackages]
+[-Subroutines::RequireFinalReturn]
+
+[Modules::RequireExplicitPackage]
+allow_import_of = Object::Pad feature Feature::Compat::Class experimental
+
+[Subroutines::ProhibitBuiltinHomonyms]
+allow = ADJUST
+
+[Subroutines::ProhibitCallsToUndeclaredSubs]
+exempt_subs = Moo::has Moose::has Object::Pad::class Object::Pad::field Object::Pad::role Object::Pad::has Object::Pad::param Object::Pad::reader Object::Pad::writer Object::Pad::mutator Object::Pad::accessor experimental::field experimental::class experimental::param feature::field feature::class feature::param Future::AsyncAwait::await Future::AsyncAwait::async feature::try feature::catch Feature::Compat::Try::try Feature::Compat::Try::catch
+
+# 未使用変数の検出（severity を 4 に上げて有効化）
+[Variables::ProhibitUnusedVariables]
+severity = 4

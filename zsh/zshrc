@@ -52,6 +52,7 @@ setopt correct
 # エイリアス
 alias sudo='sudo ' # sudo ll など、sudo してもaliasを引き継げる
 alias vi='vim'
+alias d='devbox'
 
 # alias l='ls -ltr'
 # alias ll='ls -l'
@@ -115,6 +116,8 @@ alias vim='nvim'
 # tmux でvimの色おかしい時はこちらを使う
 alias xtmux='TERM=xterm-256color tmux'
 alias ta='tmux attach'
+# AI
+alias claude='claude --verbose'
 
 gitstashpopreset() {
 ### gitstashpopreset: git stash pop して、コンフリクトした場合は自動で解消する
@@ -331,3 +334,5 @@ if [[ -n "$SSH_CONNECTION" ]]; then
 else
   export ZELLIJ_CONFIG_FILE="$HOME/.config/zellij/local.kdl"
 fi
+
+alias personal-claude='CLAUDE_CONFIG_DIR=~/.claude-personal claude'
