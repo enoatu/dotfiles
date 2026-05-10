@@ -224,6 +224,8 @@ setup_neovim() {
 
   _install_mise
 
+  mise plugins add neovim https://github.com/richin13/asdf-neovim.git
+
   installs=(
     "neovim@${NEOVIM_VERSION}@CMD:nvim"
     "nodejs@${NODE_VERSION}@CMD:node"
