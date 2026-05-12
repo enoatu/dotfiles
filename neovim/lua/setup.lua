@@ -124,9 +124,8 @@ require("lazy").setup({
                             return "<Ignore>"
                         end, { expr = true, desc = "前のhunkへ移動" })
                         -- 設定によっては行単位でstage することもできる
-                        -- Actions
-                        map('n', '<leader>hs', gitsigns.stage_hunk, { desc = "Stage hunk" })
-                        map('n', '<leader>hr', gitsigns.reset_hunk, { desc = "Reset hunk" })
+                        map('n', '<leader>hs', gitsigns.stage_hunk, { desc = "Hunk Stage" })
+                        map('n', '<leader>hr', gitsigns.reset_hunk, { desc = "Hunk Reset" })
 
                         map('v', '<leader>hs', function()
                           gitsigns.stage_hunk({ vim.fn.line('.'), vim.fn.line('v') })
