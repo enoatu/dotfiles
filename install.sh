@@ -15,7 +15,7 @@ FD_VERSION="8.7.0"
 NEOVIM_VERSION="0.11.6"
 NODE_VERSION="20.20.1"
 NODE_VERSION_FOR_COC="18.16.0"
-RIPGREP_VERSION="13.0.0"
+RIPGREP_VERSION="15.1.0"
 RYE_VERSION="0.38.0"
 ZELLIJ="0.43.1"
 EZA_VERSION="0.23.4"
@@ -250,11 +250,12 @@ setup_neovim() {
   _install_pip
   pip install pynvim # neovim パッケージは古いので、pynvimを使う
 
-  # Perl::Critic (PerlNavigator の perlcritic で使用)
+  # Perl::Critic / Perl::Tidy (PerlNavigator の perlcritic, エディタ整形で使用)
   type cpanm >/dev/null 2>&1 || curl -L https://cpanmin.us | perl - --local-lib=~/perl5 App::cpanminus
   export PATH="$HOME/perl5/bin:$PATH"
-  cpanm --notest --local-lib=~/perl5 local::lib Perl::Critic
+  cpanm --notest --local-lib=~/perl5 local::lib Perl::Critic Perl::Critic::StricterSubs Perl::Tidy
   ln -sf ${DOTFILES}/.perlcriticrc ${HOME}/.perlcriticrc
+  ln -sf ${DOTFILES}/.perltidyrc ${HOME}/.perltidyrc
 
   cp ${DOTFILES}/neovim/lua/env.lua.sample ${DOTFILES}/neovim/lua/env.lua
 
