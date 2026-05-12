@@ -25,7 +25,6 @@ require("lazy").setup({
     -- checker = { enabled = true }, -- automatically check for plugin updates
     performance = {
         rtp = {
-            -- disable some rtp plugins
             disabled_plugins = {
                 "gzip",
                 "matchit",
@@ -39,7 +38,7 @@ require("lazy").setup({
         },
     },
     spec = {
-        {
+        { -- カラースキーム
             "folke/tokyonight.nvim",
             lazy = false,
             priority = 1000,
@@ -63,9 +62,10 @@ require("lazy").setup({
                     delay = 100,
                     filetypes_denylist = { "dashboard", "alpha", "oil" },
                 })
+                -- ]r [rで同一単語へのジャンプ
                 vim.keymap.set("n", "]r", function() require("illuminate").goto_next_reference(false) end, { desc = "次の同一単語へ" })
                 vim.keymap.set("n", "[r", function() require("illuminate").goto_prev_reference(false) end, { desc = "前の同一単語へ" })
-                -- カーソル単語を検索レジスタに入れて n/N で飛べるように（カーソルは移動しない）
+                -- leader* でカーソル単語に飛べるように
                 vim.keymap.set("n", "<leader>*", function()
                     local word = vim.fn.expand("<cword>")
                     if word == "" then return end
@@ -123,8 +123,9 @@ require("lazy").setup({
                             end)
                             return "<Ignore>"
                         end, { expr = true, desc = "前のhunkへ移動" })
-                        -- 設定によっては行単位でstage することもできる
+                        -- 行単位でstage することもできる
                         map('n', '<leader>hs', gitsigns.stage_hunk, { desc = "Hunk Stage" })
+                        -- reset は変更をなかったことにする。unstage とは違う
                         map('n', '<leader>hr', gitsigns.reset_hunk, { desc = "Hunk Reset" })
 
                         map('v', '<leader>hs', function()
@@ -136,6 +137,7 @@ require("lazy").setup({
                         end, { desc = "Reset hunk" })
 
                         map('n', '<leader>hS', gitsigns.stage_buffer, { desc = "Stage buffer" })
+                        -- Gread origin:%と同様
                         map('n', '<leader>hR', gitsigns.reset_buffer, { desc = "Reset buffer" })
                         map('n', '<leader>hp', gitsigns.preview_hunk, { desc = "Preview hunk" })
                         map('n', '<leader>hi', gitsigns.preview_hunk_inline, { desc = "Preview hunk inline" })
@@ -213,17 +215,7 @@ require("lazy").setup({
             -- available after the first executing of it or after a keymap of text-case.nvim has been used.
             lazy = false,
         },
-        {
-            "amitds1997/remote-nvim.nvim",
-            version = "*", -- Pin to GitHub releases
-            dependencies = {
-                "nvim-lua/plenary.nvim", -- For standard functions
-                "MunifTanjim/nui.nvim", -- To build the plugin UI
-                "nvim-telescope/telescope.nvim", -- For picking b/w different remote methods
-            },
-            config = true,
-        },
-        {
+        { -- leader+tで日本語に翻訳
             "uga-rosa/translate.nvim",
             config = function()
                 require("translate").setup({
@@ -305,23 +297,18 @@ require("lazy").setup({
         },
         { -- 囲む
             "kylechui/nvim-surround",
-            init = function()
-                -- v4でデフォルトキーマップを無効化（プラグインロード前に設定が必要）
-                vim.g.nvim_surround_no_mappings = true
-            end,
             config = function()
                 require("nvim-surround").setup({})
                 -- v4からは <Plug> マッピングを直接設定する
-                vim.keymap.set("i", "<C-s>s", "<Plug>(nvim-surround-insert)", { desc = "カーソル位置を囲む" })
-                vim.keymap.set("i", "<C-s>S", "<Plug>(nvim-surround-insert-line)", { desc = "カーソル位置を改行ありで囲む" })
-                vim.keymap.set("n", "e", "<Plug>(nvim-surround-normal)", { desc = "モーション範囲を囲む（ee\" で囲む）" })
-                vim.keymap.set("n", "es", "<Plug>(nvim-surround-normal-cur)", { desc = "現在行を囲む" })
-                vim.keymap.set("n", "yS", "<Plug>(nvim-surround-normal-line)", { desc = "モーション範囲を改行ありで囲む" })
-                vim.keymap.set("n", "ySS", "<Plug>(nvim-surround-normal-cur-line)", { desc = "現在行を改行ありで囲む" })
+                -- vim.keymap.set("i", "<C-s>s", "<Plug>(nvim-surround-insert)", { desc = "カーソル位置を囲む" })
+                -- vim.keymap.set("i", "<C-s>S", "<Plug>(nvim-surround-insert-line)", { desc = "カーソル位置を改行ありで囲む" })
+                -- vim.keymap.set("n", "es", "<Plug>(nvim-surround-normal-cur)", { desc = "現在行を囲む" })
+                -- vim.keymap.set("n", "yS", "<Plug>(nvim-surround-normal-line)", { desc = "モーション範囲を改行ありで囲む" })
+                -- vim.keymap.set("n", "ySS", "<Plug>(nvim-surround-normal-cur-line)", { desc = "現在行を改行ありで囲む" })
                 vim.keymap.set("x", "S", "<Plug>(nvim-surround-visual)", { desc = "選択範囲を囲む" })
-                vim.keymap.set("x", "gS", "<Plug>(nvim-surround-visual-line)", { desc = "選択範囲を改行ありで囲む" })
-                vim.keymap.set("n", "ds", "<Plug>(nvim-surround-delete)", { desc = "囲みを削除" })
-                vim.keymap.set("n", "cs", "<Plug>(nvim-surround-change)", { desc = "囲みを変更" })
+                -- vim.keymap.set("x", "gS", "<Plug>(nvim-surround-visual-line)", { desc = "選択範囲を改行ありで囲む" })
+                -- vim.keymap.set("n", "ds", "<Plug>(nvim-surround-delete)", { desc = "囲みを削除" })
+                -- vim.keymap.set("n", "cs", "<Plug>(nvim-surround-change)", { desc = "囲みを変更" })
             end,
         },
         {
@@ -337,6 +324,101 @@ require("lazy").setup({
             init = function()
                 vim.g.BufferListMaxWidth = 100
             end,
+        },
+        {  -- マルチカーソル
+            "jake-stewart/multicursor.nvim",
+            branch = "1.0",
+            config = function()
+                local mc = require("multicursor-nvim")
+                mc.setup()
+
+                -- 以下をjson化する手順
+                -- 1. matchで\v\S+で検索してすべての単語を選択し、S'してすべての単語を'で囲む
+                -- 2. matchで\v\S+'で検索してすべての単語'を選択して、S,で、すべての単語を,で区切る
+                -- 3. []をつけたあと、up down で複数行にカーソルをつけて、{ と }, をつけて、後は空白を置換(s/\v\s+/ /g)する
+                --   1   Alice    alice@example.com    active
+                --   2   Bob      bob@example.com      inactive
+                --   3   Carol    carol@example.com    active
+                --   4   Dave     dave@example.com     active
+                --   5   Eve      eve@example.com      banned
+                --   6   Frank    frank@example.com    active
+                --   7   Grace    grace@example.com    inactive
+                --   8   Heidi    heidi@example.com    active
+                --   9   Ivan     ivan@example.com     active
+                --  10   Judy     judy@example.com     banned
+                --  11   Karl     karl@example.com     active
+                --  12   Liam     liam@example.com     active
+                --  13   Mona     mona@example.com     inactive
+                --  14   Nina     nina@example.com     active
+                --  15   Oscar    oscar@example.com    active
+                --  16   Peggy    peggy@example.com    banned
+                --  17   Quinn    quinn@example.com    active
+                --  18   Ruth     ruth@example.com     active
+                --  19   Sybil    sybil@example.com    inactive
+                --  20   Trent    trent@example.com    active
+
+                local set = vim.keymap.set
+                -- 元からあるneovim便利コマンド
+                -- f( で次の(にカーソル移動 F( で前の(にカーソル移動
+                -- df( で次の(まで削除 dF( で前の(まで削除
+                -- cf( で次の(まで変更 cF( で前の(まで変更
+
+                -- Add or skip cursor above/below the main cursor.
+                set({"n", "x"}, "<up>", function() mc.lineAddCursor(-1) end)
+                set({"n", "x"}, "<down>", function() mc.lineAddCursor(1) end)
+                -- set({"n", "x"}, "<C-up>", function() mc.lineSkipCursor(-1) end)
+                -- set({"n", "x"}, "<C-down>", function() mc.lineSkipCursor(1) end)
+
+                -- Add or skip adding a new cursor by matching word/selection
+                set({"n", "x"}, "<leader>n", function() mc.matchAddCursor(1) end)
+                -- set({"n", "x"}, "<leader>s", function() mc.matchSkipCursor(1) end)
+                -- set({"n", "x"}, "<leader>N", function() mc.matchAddCursor(-1) end)
+                -- set({"n", "x"}, "<leader>S", function() mc.matchSkipCursor(-1) end)
+
+                -- Add and remove cursors with control + left click.
+                -- set("n", "<c-leftmouse>", mc.handleMouse)
+                -- set("n", "<c-leftdrag>", mc.handleMouseDrag)
+                -- set("n", "<c-leftrelease>", mc.handleMouseRelease)
+
+                -- Cursor Split
+                set("x", "|", mc.splitCursors)   -- | は分割っぽい記号
+                -- Cursor Match
+                -- \v\d+とかやれば数字にカーソルつけたりもできる
+                set("x", "/", mc.matchCursors)   -- / は検索っぽい記号
+
+                -- Disable and enable cursors.
+                -- set({"n", "x"}, "<c-q>", mc.toggleCursor)
+
+                -- Mappings defined in a keymap layer only apply when there are
+                -- multiple cursors. This lets you have overlapping mappings.
+                mc.addKeymapLayer(function(layerSet)
+                    -- Select a different cursor as the main one.
+                    -- layerSet({"n", "x"}, "<left>", mc.prevCursor)
+                    -- layerSet({"n", "x"}, "<right>", mc.nextCursor)
+
+                    -- -- Delete the main cursor.
+                    -- layerSet({"n", "x"}, "<leader>x", mc.deleteCursor)
+
+                    -- Enable and clear cursors using escape.
+                    layerSet("n", "<esc>", function()
+                        if not mc.cursorsEnabled() then
+                            mc.enableCursors()
+                        else
+                            mc.clearCursors()
+                        end
+                    end)
+                end)
+
+                -- Customize how cursors look.
+                local hl = vim.api.nvim_set_hl
+                hl(0, "MultiCursorCursor", { reverse = true })
+                hl(0, "MultiCursorVisual", { link = "Visual" })
+                hl(0, "MultiCursorSign", { link = "SignColumn"})
+                hl(0, "MultiCursorMatchPreview", { link = "Search" })
+                hl(0, "MultiCursorDisabledCursor", { reverse = true })
+                hl(0, "MultiCursorDisabledVisual", { link = "Visual" })
+                hl(0, "MultiCursorDisabledSign", { link = "SignColumn"})
+            end
         },
         { -- align
             "echasnovski/mini.align",
@@ -1019,34 +1101,55 @@ require("lazy").setup({
         },
         { -- メッセージやcmdlineなどおしゃれに、lualine でも使用
             "folke/noice.nvim",
-            event = "VeryLazy",
-            dependencies = {
-                -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
-                "MunifTanjim/nui.nvim",
-                -- OPTIONAL:
-                --   `nvim-notify` is only needed, if you want to use the notification view.
-                --   If not available, we use `mini` as the fallback
-                "rcarriga/nvim-notify",
-            },
             config = function()
                 require("noice").setup({
-                  lsp = {
-                    -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
-                    override = {
-                      ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
-                      ["vim.lsp.util.stylize_markdown"] = true,
+                    lsp = {
+                        override = {
+                            ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+                            ["vim.lsp.util.stylize_markdown"] = true,
+                        },
                     },
-                  },
-                  -- you can enable a preset for easier configuration
-                  presets = {
-                    bottom_search = true, -- use a classic bottom cmdline for search
-                    command_palette = true, -- position the cmdline and popupmenu together
-                    long_message_to_split = true, -- long messages will be sent to a split
-                    inc_rename = false, -- enables an input dialog for inc-rename.nvim
-                    lsp_doc_border = false, -- add a border to hover docs and signature help
-                  },
+                    presets = {
+                        bottom_search = true,
+                        command_palette = true,
+                        long_message_to_split = true,
+                        inc_rename = false,
+                        lsp_doc_border = false,
+                    },
+                    views = {
+                        cmdline_popup = {
+                            position = {
+                                row = "50%",
+                                col = "50%",
+                            },
+                            size = {
+                                width = 60,
+                                height = "auto",
+                            },
+                            border = {
+                                style = "rounded",
+                            },
+                            win_options = {
+                                winhighlight = { Normal = "Normal", FloatBorder = "FloatBorder" },
+                            },
+                        },
+                        popupmenu = {
+                            relative = "editor",
+                            position = {
+                                row = "60%",
+                                col = "50%",
+                            },
+                            size = {
+                                width = 60,
+                                height = 10,
+                            },
+                            border = {
+                                style = "rounded",
+                            },
+                        },
+                    },
                 })
-            end
+            end,
         },
         { -- 最初の画面
             "nvimdev/dashboard-nvim",
