@@ -266,33 +266,14 @@ require("lazy").setup({
             end,
             enabled = false,
         },
-        {
+        { -- バッファをディレクトリ毎に色分けして表示、C-sでソート切替
             "enoatu/buffer-scope.nvim",
-            enabled = false,
-            -- dir = "~/MyDevelopment/buffer-scope.nvim",
-            dependencies = { "nvim-telescope/telescope.nvim" },
+            dependencies = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" },
+            keys = {
+                { "<C-p>", "<cmd>Telescope buffer_scope buffers<cr>", mode = "n", desc = "Buffer Scope" },
+            },
             config = function()
-                -- require("buffer-scope").setup({
-                --     telescope = {
-                --         buffers = {
-                --             mappings = {
-                --                 i = {
-                --                     ["<C-k>"] = "close",  -- インサートモードでC-kで閉じる
-                --                 },
-                --                 n = {
-                --                     ["<C-k>"] = "close",  -- ノーマルモードでC-kで閉じる
-                --                 },
-                --             },
-                --         },
-                --     },
-                -- })
-                -- require("telescope").load_extension("buffer_scope")
-                -- vim.api.nvim_set_keymap(
-                --     "n",
-                --     "<C-k>",
-                --     "<cmd>Telescope buffer_scope buffers<cr>",
-                --     { noremap = true, silent = true, desc = "Buffer Scope" }
-                -- )
+                require("buffer-scope").setup({})
             end,
         },
         { -- 囲む
@@ -671,6 +652,22 @@ require("lazy").setup({
                 local telescope = require("telescope")
                 local actions = require("telescope.actions")
                 telescope.setup({
+                    defaults = {
+                        -- picker 全体を Neovim 画面いっぱいに広げる
+                        layout_strategy = "vertical",
+                        layout_config = {
+                            width = function(_, max_columns, _)
+                                return max_columns
+                            end,
+                            height = function(_, _, max_lines)
+                                return max_lines
+                            end,
+                            preview_cutoff = 1,
+                        },
+                        -- ファイル名の左に空白を入れない
+                        entry_prefix = "",
+                        selection_caret = "",
+                    },
                     pickers = {
                         buffers = {
                             mappings = {

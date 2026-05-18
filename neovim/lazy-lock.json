@@ -1,6 +1,7 @@
 {
   "CopilotChat.nvim": { "branch": "main", "commit": "bddda2aaf66d34bf6dbae8af26166187a4343cca" },
   "TT2-syntax": { "branch": "master", "commit": "ac4cb506b581c90316e2f33898242035409013a7" },
+  "buffer-scope.nvim": { "branch": "main", "commit": "8e154d7da240e5702c40ee69add6b43f2d51ca7c" },
   "bufferline.nvim": { "branch": "main", "commit": "655133c3b4c3e5e05ec549b9f8cc2894ac6f51b3" },
   "coc.nvim": { "branch": "master", "commit": "fab97c7db68f24e5cc3c1cf753d3bd1819beef8f" },
   "copilot.vim": { "branch": "release", "commit": "a12fd5672110c8aa7e3c8419e28c96943ca179be" },
