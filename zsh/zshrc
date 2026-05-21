@@ -289,15 +289,15 @@ dr() {
 ### dr: dotfilesのディレクトリ履歴から移動 dw と組み合わせて使う
   local dirs=$HOME/dotfiles/.dirs
   arg=$1
+  local reverse='{a[NR]=$0} END{for(i=NR;i>0;i--) print a[i]}'
   if [ -z "$arg" ]; then
-    # fzf でディレクトリを選択 プレビューは表示しない
-    target_dir=$(tac $dirs | fzf --height 40% --reverse --border --preview-window=hidden | awk -F"\t" '{print $2}' | head -n1)
+    target_dir=$(awk "$reverse" $dirs | fzf --height 40% --reverse --border --preview-window=hidden | awk -F"\t" '{print $2}' | head -n1)
     [ -z $target_dir ] && return 1
     cd $target_dir
   elif [ "$arg" = '-l' ]; then
     cat $dirs
   else
-    target_dir=$(tac $dirs | awk -F"\t" -v arg=$arg '$1 == arg {print $2}' | head -n1)
+    target_dir=$(awk "$reverse" $dirs | awk -F"\t" -v arg=$arg '$1 == arg {print $2}' | head -n1)
     [ -z $target_dir ] && return 1
     cd $target_dir
   fi
@@ -312,6 +312,8 @@ dw() {
   elif [ "$arg" = '-l' ]; then
     cat $dirs
   else
+    local tmp=$(mktemp)
+    awk -F"\t" -v arg=$arg '$1 != arg' $dirs > $tmp && mv $tmp $dirs
     echo "$arg\t`pwd`" >> $dirs
   fi
 }
