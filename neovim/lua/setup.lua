@@ -322,21 +322,6 @@ require("lazy").setup({
                 --   3   Carol    carol@example.com    active
                 --   4   Dave     dave@example.com     active
                 --   5   Eve      eve@example.com      banned
-                --   6   Frank    frank@example.com    active
-                --   7   Grace    grace@example.com    inactive
-                --   8   Heidi    heidi@example.com    active
-                --   9   Ivan     ivan@example.com     active
-                --  10   Judy     judy@example.com     banned
-                --  11   Karl     karl@example.com     active
-                --  12   Liam     liam@example.com     active
-                --  13   Mona     mona@example.com     inactive
-                --  14   Nina     nina@example.com     active
-                --  15   Oscar    oscar@example.com    active
-                --  16   Peggy    peggy@example.com    banned
-                --  17   Quinn    quinn@example.com    active
-                --  18   Ruth     ruth@example.com     active
-                --  19   Sybil    sybil@example.com    inactive
-                --  20   Trent    trent@example.com    active
 
                 local set = vim.keymap.set
                 -- 元からあるneovim便利コマンド
@@ -345,13 +330,13 @@ require("lazy").setup({
                 -- cf( で次の(まで変更 cF( で前の(まで変更
 
                 -- Add or skip cursor above/below the main cursor.
-                set({"n", "x"}, "<up>", function() mc.lineAddCursor(-1) end)
-                set({"n", "x"}, "<down>", function() mc.lineAddCursor(1) end)
+                set({"n", "x"}, "<leader><up>", function() mc.lineAddCursor(-1) end)
+                set({"n", "x"}, "<leader><down>", function() mc.lineAddCursor(1) end)
                 -- set({"n", "x"}, "<C-up>", function() mc.lineSkipCursor(-1) end)
                 -- set({"n", "x"}, "<C-down>", function() mc.lineSkipCursor(1) end)
 
                 -- Add or skip adding a new cursor by matching word/selection
-                set({"n", "x"}, "<leader>n", function() mc.matchAddCursor(1) end)
+                -- set({"n", "x"}, "<leader>n", function() mc.matchAddCursor(1) end)
                 -- set({"n", "x"}, "<leader>s", function() mc.matchSkipCursor(1) end)
                 -- set({"n", "x"}, "<leader>N", function() mc.matchAddCursor(-1) end)
                 -- set({"n", "x"}, "<leader>S", function() mc.matchSkipCursor(-1) end)

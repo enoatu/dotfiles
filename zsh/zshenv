@@ -8,3 +8,6 @@ export PERL_MM_OPT="INSTALL_BASE=$HOME/perl5"
 export DOCKER_UID=$(id -u)
 export DOCKER_GID=$(id -g)
 export DOCKER_USER=$(id -un)
+
+# Claude Code 2.1.89 以降の alternate screen 化で tmux scrollback が欠ける問題の回避
+export CLAUDE_CODE_DISABLE_ALTERNATE_SCREEN=1
