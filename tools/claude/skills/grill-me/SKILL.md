@@ -1,13 +1,26 @@
 ---
 name: grill-me
-description: Interview the user relentlessly about a plan or design until reaching shared understanding, resolving each branch of the decision tree. Use when user wants to stress-test a plan, get grilled on their design, or mentions "grill me".
+description: プランや設計について、共通認識に到達するまで徹底的にユーザーへ問いかけ、意思決定ツリーの各分岐を順に詰めていきます。
+ユーザーがプランを厳しく検証したいとき、設計を徹底的に詰めてもらいたいとき、あるいは「grill me」といった表現を使ったときに利用します。
 ---
 
-Interview me relentlessly about every aspect of this plan until
-we reach a shared understanding. Walk down each branch of the design
-tree resolving dependencies between decisions one by one.
+このプランのあらゆる側面について、容赦なく徹底的に質問してください。
+そして、共通の理解に到達するまで掘り下げてください。
 
-If a question can be answered by exploring the codebase, explore
-the codebase instead.
+設計のツリーを分岐ごとにたどりながら、意思決定同士の依存関係を一つずつ解消していってください。
 
-For each question, provide your recommended answer.
+もし質問がコードベースを調べることで答えられるなら、実際にコードを調べてください。
+
+それぞれの質問について、あなたの推奨する回答も提示してください。
+
+調査の際はサブエージェントを用い、本コンテキストには調査のための不要な情報を入れないようにしてください。
+
+AskUserQuestionTool を用いて、ユーザーに質問を行ってください。
+依存性がなく同時に答えても関係のない質問については、まとめて行ってください。
+質問を行う時には、質問総数(予定)と今回の質問数を表示してください。
+
+根本にはシンプル、理解しやすい設計があるべきです。
+
+また、以下のようなファイルを作成して、質問と回答を記録してください。
+プロジェクトルート/enotiru-my-box/grill-me/2024-06-01T12:00:00Z_サンプルサンプル.md
+※プロジェクトがない場合は /tmp/grill-me/2024-06-01T12:00:00Z_サンプルサンプル.md
