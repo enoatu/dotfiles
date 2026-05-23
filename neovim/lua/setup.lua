@@ -541,6 +541,95 @@ require("lazy").setup({
             end,
         },
         {
+            -- VSCode の Next Edit Suggestion (NES) 相当機能
+            -- copilot.vim はインライン補完 (<C-l>) 担当、こちらは NES (<Tab>) 担当
+            -- enoatu/copilot-lsp の perf/dedup-inflight-requests ブランチ
+            -- (dedup + supersession + speculative prefetch + skip_cursor_line) を使用。
+            -- upstream にマージされたら "copilotlsp-nvim/copilot-lsp" に戻す。
+            "enoatu/copilot-lsp",
+            branch = "perf/dedup-inflight-requests",
+            event = "VeryLazy",
+            dependencies = { "github/copilot.vim" },
+            init = function()
+                -- NES 確定 ロジック (1回目: ジャンプ、2回目: 適用)
+                -- copilot-lsp の walk_cursor_start_edit は内部で show_document を pcall せず呼び
+                -- E348 (No string under cursor) を漏らすため、自前で範囲先頭ジャンプを行う
+                local function nes_confirm()
+                    local bufnr = vim.api.nvim_get_current_buf()
+                    local state = vim.b[bufnr].nes_state
+                    if not state then return false end
+                    local cur_row = vim.api.nvim_win_get_cursor(0)[1] - 1
+                    if cur_row ~= state.range.start.line then
+                        pcall(vim.api.nvim_win_set_cursor, 0,
+                            { state.range.start.line + 1, state.range.start.character })
+                        return true
+                    end
+                    local nes = require("copilot-lsp.nes")
+                    nes.apply_pending_nes()
+                    nes.walk_cursor_end_edit()
+                    return true
+                end
+                -- NES 確定 (normal/insert 共通): <C-n>。NES が無ければ何もしない
+                vim.keymap.set({ "n", "i" }, "<C-n>", nes_confirm,
+                    { desc = "Copilot NES 確定" })
+            end,
+            config = function(_, opts)
+                require("copilot-lsp").setup(opts)
+                -- copilot-language-server は Node 22+ 必須なので mise の新しい node を優先
+                local node_bin = vim.fn.expand("~/.local/share/mise/installs/node/23.10.0/bin/node")
+                if vim.fn.executable(node_bin) == 0 then
+                    node_bin = vim.fn.expand(node_path)
+                end
+                -- copilot.vim 1.50 以降は copilot-language-server/ サブディレクトリ配下
+                vim.lsp.config("copilot_ls", {
+                    cmd = {
+                        node_bin,
+                        vim.fn.stdpath("data") .. "/lazy/copilot.vim/copilot-language-server/dist/language-server.js",
+                        "--stdio",
+                    },
+                })
+                -- 全ての通常バッファで NES を有効にするため自前 autocmd で start
+                -- (vim.lsp.enable は filetypes 必須で全 filetype に対応できないため)
+                local function start_for(bufnr)
+                    if vim.bo[bufnr].buftype ~= "" then
+                        return
+                    end
+                    -- 名無しバッファ ([No Name] や scratch) は uri が空 (file://) になり
+                    -- サーバーで `An unexpected error occurred {"type":"unknown"...}` を引き起こすので除外
+                    if vim.api.nvim_buf_get_name(bufnr) == "" then
+                        return
+                    end
+                    if #vim.lsp.get_clients({ bufnr = bufnr, name = "copilot_ls" }) > 0 then
+                        return
+                    end
+                    vim.lsp.start(vim.lsp.config["copilot_ls"], { bufnr = bufnr })
+                end
+                local group = vim.api.nvim_create_augroup("copilot-lsp-attach", { clear = true })
+                vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile" }, {
+                    group = group,
+                    callback = function(args) start_for(args.buf) end,
+                })
+                -- 既に開いているバッファにも attach
+                for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+                    if vim.api.nvim_buf_is_loaded(buf) then start_for(buf) end
+                end
+            end,
+            opts = {
+                nes = {
+                    -- VSCode の NES は debounce=0 だが、 サーバー負荷増を避けつつ
+                    -- 体感速度を VSCode 並みに寄せるため 150ms に短縮 (upstream default 500ms)
+                    debounce_ms = 150,
+                    move_count_threshold = 3,
+                    -- 現在カーソル行を範囲に含む提案を捨てる (手動修正済みの行への
+                    -- 古い提案を抑制)
+                    skip_cursor_line = true,
+                    -- speculative prefetch (shadow URI + 履歴 replay) は再現条件不明の
+                    -- "An unexpected error occurred {type:unknown}" が出るため一旦 OFF
+                    speculative = { enabled = false },
+                },
+            },
+        },
+        {
             "neoclide/coc.nvim",
             -- 最新版だとcoc-tsserverが動かない
             commit = "fab97c7db68f24e5cc3c1cf753d3bd1819beef8f",

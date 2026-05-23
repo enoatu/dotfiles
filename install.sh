@@ -306,6 +306,7 @@ setup_tools() {
     if [ -f ${DOTFILES}/tools/claude/settings.json ]; then
       mkdir -p ${HOME}/.claude
       ln -sf ${DOTFILES}/tools/claude/settings.json ${HOME}/.claude/settings.json
+      ln -sf ${DOTFILES}/tools/claude/skills ${HOME}/.claude/skills
     fi
 
     npm install -g zx
