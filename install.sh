@@ -307,6 +307,7 @@ setup_tools() {
       mkdir -p ${HOME}/.claude
       ln -sf ${DOTFILES}/tools/claude/settings.json ${HOME}/.claude/settings.json
       ln -sf ${DOTFILES}/tools/claude/skills ${HOME}/.claude/skills
+      ln -sf ${DOTFILES}/tools/claude/CLAUDE.md ${HOME}/.claude/CLAUDE.md
     fi
 
     npm install -g zx
