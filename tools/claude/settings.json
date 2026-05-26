@@ -58,7 +58,17 @@
     "defaultMode": "auto"
   },
   "hooks": {
-    "PreToolUse": []
+    "PreToolUse": [],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/notify-on-stop.sh"
+          }
+        ]
+      }
+    ]
   },
   "extraKnownMarketplaces": {
     "claude-code-plugins": {
@@ -67,6 +77,10 @@
         "repo": "anthropics/claude-code"
       }
     }
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "python3 ~/.claude/statusline.py"
   },
   "effortLevel": "high",
   "theme": "dark",

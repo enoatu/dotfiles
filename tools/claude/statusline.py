@@ -38,16 +38,22 @@ def fmt(label, pct):
     p = round(pct)
     return f'{DIM}{label}{R} {gradient(pct)}{braille_bar(pct)}{R} {p}%'
 
+def spawn_usage_updater():
+    try:
+        subprocess.Popen([GET_USAGE_SCRIPT], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    except Exception:
+        pass
+
 def get_usage_cache():
     try:
         with open(CACHE_FILE, 'r') as f:
             cache = json.load(f)
         updated = cache.get('updated', 0)
         if time.time() - updated > CACHE_MAX_AGE:
-            subprocess.Popen([GET_USAGE_SCRIPT], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            spawn_usage_updater()
         return cache
-    except:
-        subprocess.Popen([GET_USAGE_SCRIPT], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    except Exception:
+        spawn_usage_updater()
         return {}
 
 cwd = data.get('cwd', os.getcwd())
