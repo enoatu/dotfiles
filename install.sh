@@ -305,9 +305,14 @@ setup_tools() {
     # claude設定ファイルのリンク作成
     if [ -f ${DOTFILES}/tools/claude/settings.json ]; then
       mkdir -p ${HOME}/.claude
-      ln -sf ${DOTFILES}/tools/claude/settings.json ${HOME}/.claude/settings.json
-      ln -sf ${DOTFILES}/tools/claude/skills ${HOME}/.claude/skills
-      ln -sf ${DOTFILES}/tools/claude/CLAUDE.md ${HOME}/.claude/CLAUDE.md
+      # 通常ディレクトリで存在しているとln -sfがリンクを内側に作ってしまうので剥がす
+      [[ -L ${HOME}/.claude/skills ]] || rm -rf ${HOME}/.claude/skills
+      [[ -L ${HOME}/.claude/hooks ]]  || rm -rf ${HOME}/.claude/hooks
+      ln -sf  ${DOTFILES}/tools/claude/CLAUDE.md     ${HOME}/.claude/CLAUDE.md
+      ln -sf  ${DOTFILES}/tools/claude/settings.json ${HOME}/.claude/settings.json
+      ln -sf  ${DOTFILES}/tools/claude/statusline.py ${HOME}/.claude/statusline.py
+      ln -sfn ${DOTFILES}/tools/claude/skills        ${HOME}/.claude/skills
+      ln -sfn ${DOTFILES}/tools/claude/hooks         ${HOME}/.claude/hooks
     fi
 
     npm install -g zx
@@ -338,7 +343,6 @@ main() {
   setup_tmux
   setup_neovim
   setup_tools
-  setup_ai_clients
   setup_additional_dotfiles
   echo "done"
 }
