@@ -3,10 +3,12 @@ local switchGutterBranches = {
     "HEAD",
     "origin/main",
     "origin/dev",
+    "origin/develop",
     "origin/master",
     "origin/staging",
     "main",
     "dev",
+    "develop",
     "master",
     "staging",
 }

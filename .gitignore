@@ -3,7 +3,7 @@
 .current_dir
 /zsh/installs/*
 !/zsh/installs/.gitkeep
-.dirs
+.dirs_recent
 bin/setlocalgit
 /installs/*
 !/installs/.gitkeep

@@ -1,12 +1,22 @@
 #!/usr/bin/env bash
 # windowにclaudeがあれば状態を表示
-# npx経由だとpane_current_commandがnpmeになる
-PANES=$(tmux list-panes -t "$1" -F "#{pane_current_command} #{pane_id}" 2>/dev/null | awk '/^(claude|npm) /{print $2}')
+# 完了行は「✻ Cogitated for 2m 9s」のように "for Ns" 形式
+# 実行中行は「✻ Researching… (4m 2s · ↓ 8.9k tokens · thought for 51s)」のように "… (Ns" 形式
+# 過去の実行中スピナー行が画面に残るケースを誤検出しないよう、入力プロンプト ❯ の直前の領域だけ見る
+PANES=$(tmux list-panes -t "$1" -F "#{pane_current_command} #{pane_id}" 2>/dev/null | awk '/^(claude|npm|node) /{print $2}')
 [ -z "$PANES" ] && exit 0
 
 RUNNING=0
 for PANE in $PANES; do
-    tmux capture-pane -t "$PANE" -p 2>/dev/null | tail -n20 | grep -qE "esc to interrupt|background tasks still running|· ↓ to manage| · thought for| · thinking|· ↓ [0-9]" && RUNNING=1
+    CAP=$(tmux capture-pane -t "$PANE" -p 2>/dev/null)
+    PROMPT_LINE=$(printf '%s\n' "$CAP" | grep -n '^❯' | tail -1 | cut -d: -f1)
+    if [ -z "$PROMPT_LINE" ]; then
+        # 入力プロンプトが見当たらない（起動中、modal表示中など）は判定保留
+        continue
+    fi
+    # 入力プロンプトの直前15行 = スピナー行＋タスクリストが収まる範囲
+    AREA=$(printf '%s\n' "$CAP" | sed -n "1,$((PROMPT_LINE - 1))p" | tail -n15)
+    printf '%s\n' "$AREA" | grep -qE "… \(([0-9]+m )?[0-9]+s|background tasks still running|Press Ctrl-C again|esc to interrupt" && RUNNING=1
 done
 
 if [ "$RUNNING" -eq 1 ]; then

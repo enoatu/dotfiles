@@ -42,8 +42,14 @@ require("lazy").setup({
             "folke/tokyonight.nvim",
             lazy = false,
             priority = 1000,
-            opts = {},
-            config = function()
+            opts = {
+                -- コメントを少し明るくして読みやすくする (既定 #636DA6 → #9AA5CE)
+                on_highlights = function(highlights, _)
+                    highlights.Comment = { fg = "#9AA5CE", italic = true }
+                end,
+            },
+            config = function(_, opts)
+                require("tokyonight").setup(opts)
                 vim.cmd('colorscheme tokyonight-moon')
             end
         },
@@ -96,7 +102,7 @@ require("lazy").setup({
                     linehl = false, -- Toggle with `:Gitsigns toggle_linehl` coc-spell-checker とハイライトがぶつかる
                     --  word_diff = true, -- Toggle with `:Gitsigns toggle_word_diff`
                     current_line_blame = true,
-                    attach_to_untracked = false,
+                    attach_to_untracked = true,
                     on_attach = function(bufnr)
                         local gitsigns = package.loaded.gitsigns
                         local function map(mode, l, r, opts)
@@ -520,6 +526,7 @@ require("lazy").setup({
         },
         {
             "github/copilot.vim",
+            enabled = false,
             build = ":lua print('need exec Copilot auth')",
             init = function()
                 vim.g.copilot_node_command = node_path
@@ -547,6 +554,7 @@ require("lazy").setup({
             -- (dedup + supersession + speculative prefetch + skip_cursor_line) を使用。
             -- upstream にマージされたら "copilotlsp-nvim/copilot-lsp" に戻す。
             "enoatu/copilot-lsp",
+            enabled = false,
             branch = "perf/dedup-inflight-requests",
             event = "VeryLazy",
             dependencies = { "github/copilot.vim" },
@@ -1020,6 +1028,35 @@ require("lazy").setup({
                 theme = 'tokyonight'
             },
             opts = function()
+                -- gitsigns の base にファイルが存在しない（=今回新規作成）かを判定
+                local function is_new_file()
+                    local bufnr = vim.api.nvim_get_current_buf()
+                    if vim.b[bufnr].is_new_file_cache ~= nil then
+                        return vim.b[bufnr].is_new_file_cache
+                    end
+                    local file = vim.api.nvim_buf_get_name(bufnr)
+                    if file == "" then return false end
+                    local dir = vim.fn.fnamemodify(file, ":h")
+                    local toplevel = vim.fn.systemlist({ "git", "-C", dir, "rev-parse", "--show-toplevel" })[1]
+                    if vim.v.shell_error ~= 0 or not toplevel or toplevel == "" then
+                        vim.b[bufnr].is_new_file_cache = false
+                        return false
+                    end
+                    local rel = file:sub(#toplevel + 2)
+                    local dict = vim.b[bufnr].gitsigns_status_dict
+                    local base = (dict and dict.base) or "HEAD"
+                    vim.fn.system({ "git", "-C", toplevel, "cat-file", "-e", base .. ":" .. rel })
+                    local is_new = vim.v.shell_error ~= 0
+                    vim.b[bufnr].is_new_file_cache = is_new
+                    return is_new
+                end
+                -- 状態が変わるタイミングでキャッシュを無効化
+                vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "User" }, {
+                    pattern = { "*", "GitSignsUpdate", "GitSignsChanged" },
+                    callback = function(args)
+                        vim.b[args.buf].is_new_file_cache = nil
+                    end,
+                })
                 return {
                     options = {
                         theme = "auto",
@@ -1041,6 +1078,11 @@ require("lazy").setup({
                             },
                             { "filetype", icon_only = true, separator = "", padding = { left = 1, right = 0 } },
                             { "filename", path = 1, symbols = { modified = " + ", readonly = "", unnamed = "" } },
+                            {
+                                function() return "NEW" end,
+                                cond = is_new_file,
+                                color = { fg = "#000000", bg = "#ffaa00", gui = "bold" },
+                            },
                             { "buffer" },
                             -- stylua: ignore
                             {
