@@ -60,9 +60,11 @@ best_current=""
 best_loaded=""
 
 for sock in "${candidates[@]}"; do
+  # nvim の --remote-expr は版によって結果を stderr に出す (v0.7.x 等) ため
+  # 2>&1 で取り込む。接続失敗時はエラー文字列が入るが target と一致しないので無害
   info="$(nvim --server "$sock" --remote-expr \
     'json_encode({"current": expand("%:p"), "bufs": map(getbufinfo({"buflisted":1}), "v:val.name")})' \
-    2>/dev/null || true)"
+    2>&1 || true)"
   [[ -z "$info" ]] && continue
 
   # JSON のスペース有無に依存しないよう、current の値だけ抜き取って文字列比較

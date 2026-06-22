@@ -52,11 +52,13 @@ description: ほぼ1行ベースで「なぜそのコードを書いたか」を
 
 ### 3. lua 出力
 
-```bash
-mkdir -p /tmp/nvim-annotate && rm -f /tmp/nvim-annotate/inject_<basename>.lua
-```
+lua の出力先は `/tmp/nvim-annotate/inject_<basename>_<YYYYmmdd-HHMMSS>.lua`
+（毎回タイムスタンプ付きの新規ファイル名）にして、いきなり `Write` する。
 
-を 1 回流してから `Write`（既存 lua があると Write tool が Read 必須エラーを返すため、先に消す）。
+- 常に新規名なので既存ファイルへの上書きにならず、Write の Read 必須エラーを踏まない
+- 親ディレクトリ `/tmp/nvim-annotate/` は Write が自動作成するので `mkdir` 不要
+- これにより事前の `mkdir` / `rm` の Bash 呼び出し（および rm の権限 deny）が丸ごと消える
+- タイムスタンプは注入直前の Bash で 1 度だけ取得して使い回す（step 4 参照）
 
 ファイル構造（**フッタ部は以下をそのまま貼る。別ファイル参照はしない**）:
 
@@ -103,9 +105,12 @@ end
 
 ### 4. 注入
 
+step 1 の `find_socket.sh` 呼び出しと同じ Bash でタイムスタンプも取得しておき
+（例: `TS=$(date +%Y%m%d-%H%M%S)`）、step 3 の Write 名と下記 `<ts>` に使い回す。
+
 ```bash
-SOCK="$(bash /Users/enotiru/.claude/skills/nvim-annotate/scripts/find_socket.sh <abs>)" \
-  && bash /Users/enotiru/.claude/skills/nvim-annotate/scripts/inject.sh "$SOCK" /tmp/nvim-annotate/inject_<basename>.lua
+SOCK="$(bash /home/enotiru/.claude/skills/nvim-annotate/scripts/find_socket.sh <abs>)" \
+  && bash /home/enotiru/.claude/skills/nvim-annotate/scripts/inject.sh "$SOCK" /tmp/nvim-annotate/inject_<basename>_<ts>.lua
 ```
 
 extmark 件数が annotations 件数と一致すれば成功。
@@ -118,7 +123,7 @@ extmark 件数が annotations 件数と一致すれば成功。
 注入件数と操作 Tip を簡潔に:
 
 - 消す: `:lua vim.api.nvim_buf_clear_namespace(0, vim.api.nvim_create_namespace('nvim_annotate'), 0, -1)`
-- 再注入: `:luafile /tmp/nvim-annotate/inject_<basename>.lua`
+- 再注入: `:luafile /tmp/nvim-annotate/inject_<basename>_<ts>.lua`（実際に書いた lua パスを報告に出す）
 
 ## 注意
 

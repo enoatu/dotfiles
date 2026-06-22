@@ -368,7 +368,6 @@ require("lazy").setup({
                     -- layerSet({"n", "x"}, "<left>", mc.prevCursor)
                     -- layerSet({"n", "x"}, "<right>", mc.nextCursor)
 
-                    -- -- Delete the main cursor.
                     -- layerSet({"n", "x"}, "<leader>x", mc.deleteCursor)
 
                     -- Enable and clear cursors using escape.
@@ -526,7 +525,7 @@ require("lazy").setup({
         },
         {
             "github/copilot.vim",
-            enabled = false,
+            enabled = true,
             build = ":lua print('need exec Copilot auth')",
             init = function()
                 vim.g.copilot_node_command = node_path

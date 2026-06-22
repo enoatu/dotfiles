@@ -1,6 +1,6 @@
 /zsh/zshrc.local*
 .project_root
-.current_dir
+.dirs_cache
 /zsh/installs/*
 !/zsh/installs/.gitkeep
 .dirs_recent

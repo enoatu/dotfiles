@@ -1,14 +1,12 @@
 #!/usr/bin/env python3
-import json, os, subprocess, sys, time
+import json, os, subprocess, sys
+from datetime import datetime
 
 data = json.load(sys.stdin)
 
 BRAILLE = ' ⣀⣄⣤⣦⣶⣷⣿'
 R = '\033[0m'
 DIM = '\033[2m'
-CACHE_FILE = '/tmp/claude_usage.json'
-CACHE_MAX_AGE = 60
-GET_USAGE_SCRIPT = os.path.expanduser('~/dotfiles/tools/claude/get_usage.sh')
 
 def gradient(pct):
     if pct < 50:
@@ -34,27 +32,19 @@ def braille_bar(pct, width=8):
             bar += BRAILLE[min(int(frac * 7), 7)]
     return bar
 
-def fmt(label, pct):
+def reset_label(resets_at):
+    if resets_at is None:
+        return ''
+    reset_dt = datetime.fromtimestamp(resets_at)
+    if reset_dt.date() == datetime.now().date():
+        text = reset_dt.strftime('%H:%M')
+    else:
+        text = reset_dt.strftime('%Y-%m-%d %H:%M')
+    return f' (～{text})'
+
+def fmt(label, pct, resets_at=None):
     p = round(pct)
-    return f'{DIM}{label}{R} {gradient(pct)}{braille_bar(pct)}{R} {p}%'
-
-def spawn_usage_updater():
-    try:
-        subprocess.Popen([GET_USAGE_SCRIPT], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    except Exception:
-        pass
-
-def get_usage_cache():
-    try:
-        with open(CACHE_FILE, 'r') as f:
-            cache = json.load(f)
-        updated = cache.get('updated', 0)
-        if time.time() - updated > CACHE_MAX_AGE:
-            spawn_usage_updater()
-        return cache
-    except Exception:
-        spawn_usage_updater()
-        return {}
+    return f'{label}{R} {gradient(pct)}{braille_bar(pct)}{R} {p}%{reset_label(resets_at)}'
 
 cwd = data.get('cwd', os.getcwd())
 project_name = os.path.basename(cwd)
@@ -63,7 +53,7 @@ try:
         ['git', 'rev-parse', '--abbrev-ref', 'HEAD'],
         cwd=cwd, stderr=subprocess.DEVNULL
     ).decode().strip()
-except Exception:
+except (subprocess.CalledProcessError, FileNotFoundError):
     branch = ''
 
 model = data.get('model', {}).get('display_name', 'Claude')
@@ -72,31 +62,22 @@ info_parts = [f'📁 {cwd}', f'📦 {project_name}']
 if branch:
     info_parts.append(f'🌿 {branch}')
 info_parts.append(f'🤖 {model}')
-info_line = f' {DIM}|{R} '.join(info_parts)
+info_line = f' | '.join(info_parts)
 
 parts = []
 
-ctx_data = data.get('context_window', {})
-ctx = ctx_data.get('used_percentage')
-if ctx is None:
-    usage = ctx_data.get('current_usage', {})
-    size = ctx_data.get('context_window_size', 0)
-    if size > 0:
-        used = usage.get('input_tokens', 0) + usage.get('cache_creation_input_tokens', 0) + usage.get('cache_read_input_tokens', 0)
-        ctx = used / size * 100
+ctx = data.get('context_window', {}).get('used_percentage')
 if ctx is not None:
-    parts.append(fmt('ctx', ctx))
+    parts.append(fmt('CTX', ctx))
 
-usage_cache = get_usage_cache()
-session = usage_cache.get('session')
-if session is not None:
-    parts.append(fmt('ses', session))
-week = usage_cache.get('week')
-if week is not None:
-    parts.append(fmt('week', week))
+rate_limits = data.get('rate_limits', {})
+for label, key in (('5H', 'five_hour'), ('7D', 'seven_day')):
+    rl = rate_limits.get(key, {})
+    if rl.get('used_percentage') is not None:
+        parts.append(fmt(label, rl['used_percentage'], rl.get('resets_at')))
 
-rate_line = f' {DIM}│{R} '.join(parts)
+rate_line = f' | '.join(parts)
 output = info_line
 if rate_line:
-    output += f' {DIM}│{R} ' + rate_line
+    output += f'\n' + rate_line
 print(output, end='')

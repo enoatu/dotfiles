@@ -58,7 +58,6 @@
     ],
     "defaultMode": "auto"
   },
-  "model": "claude-fable-5[1m]",
   "hooks": {
     "PreToolUse": [],
     "Stop": [
@@ -114,5 +113,6 @@
   "theme": "dark",
   "preferredNotifChannel": "iterm2",
   "agentPushNotifEnabled": true,
-  "skipAutoPermissionPrompt": true
+  "skipAutoPermissionPrompt": true,
+  "model": "opus"
 }

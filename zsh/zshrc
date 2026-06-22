@@ -52,7 +52,7 @@ setopt correct
 # エイリアス
 alias sudo='sudo ' # sudo ll など、sudo してもaliasを引き継げる
 alias vi='vim'
-alias d='devbox'
+alias db='devbox'
 
 # alias l='ls -ltr'
 # alias ll='ls -l'
@@ -63,8 +63,6 @@ alias ...='cd ../..'
 alias ....='cd ../../..'
 alias .....='cd ../../../..'
 
-# cat
-alias cat='bat'
 alias rg='rg -i --color=always --line-number --smart-case -.'
 
 # zellij
@@ -285,37 +283,80 @@ gr() {
   fi
 }
 
-dr() {
-### dr: dotfilesのディレクトリ履歴から移動 dw と組み合わせて使う
-  local dirs=$HOME/dotfiles/.dirs
-  arg=$1
-  local reverse='{a[NR]=$0} END{for(i=NR;i>0;i--) print a[i]}'
-  if [ -z "$arg" ]; then
-    target_dir=$(awk "$reverse" $dirs | fzf --height 40% --reverse --border --preview-window=hidden | awk -F"\t" '{print $2}' | head -n1)
-    [ -z $target_dir ] && return 1
-    cd $target_dir
-  elif [ "$arg" = '-l' ]; then
-    cat $dirs
-  else
-    target_dir=$(awk "$reverse" $dirs | awk -F"\t" -v arg=$arg '$1 == arg {print $2}' | head -n1)
-    [ -z $target_dir ] && return 1
-    cd $target_dir
-  fi
+_d_record() {
+  local recent=$HOME/dotfiles/.dirs_recent
+  local top
+  top=$(git rev-parse --show-toplevel 2>/dev/null) || return
+  [ "$top" = "$HOME" ] && return
+  case $top in /tmp/*|/var/tmp/*) return ;; esac
+  local tmp=$(mktemp)
+  {
+    echo "$top"
+    [ -f $recent ] && grep -Fxv -- "$top" $recent
+  } > $tmp
+  mv $tmp $recent
+}
+add-zsh-hook chpwd _d_record
+
+_d_scan() {
+  # .git は dir(通常リポジトリ) と file(submodule/worktree) の両方を対象にする
+  # 深いネスト(app/portal/src など)も拾うため maxdepth=10、代わりに重い/不要ディレクトリを prune
+  # gdrive(FUSE) など IO が遅いマウントは絶対に除外しないと find が止まる
+  local cache=$1
+  find $HOME -maxdepth 10 \
+    \( -type d \( \
+      -name node_modules -o -name .cache -o -name .npm -o -name .pnpm-store -o \
+      -name target -o -name vendor -o -name .venv -o -name venv -o \
+      -name __pycache__ -o -name .terraform -o -name .rustup -o -name .cargo -o \
+      -name snap -o -name gdrive -o -name Downloads -o -name Documents -o \
+      -name Pictures -o -name Music -o -name Videos -o -name Desktop -o \
+      -path "$HOME/.local/share" -o -path "$HOME/.config" -o -path "$HOME/.asdf" -o \
+      -path "$HOME/.gradle" -o -path "$HOME/.m2" -o -path "$HOME/go" \
+    \) -prune \) -o \
+    \( -type d -name .git -prune -print \) -o \
+    \( -type f -name .git -print \) 2>/dev/null \
+    | sed 's|/\.git$||' > $cache.tmp && mv $cache.tmp $cache
 }
 
-dw() {
-### dw: 現在のディレクトリをdotfilesのディレクトリ履歴に追加 dr と組み合わせて使う
-  local dirs=$HOME/dotfiles/.dirs
-  arg=$1
-  if [ -z "$arg" ]; then
-    return;
-  elif [ "$arg" = '-l' ]; then
-    cat $dirs
-  else
-    local tmp=$(mktemp)
-    awk -F"\t" -v arg=$arg '$1 != arg' $dirs > $tmp && mv $tmp $dirs
-    echo "$arg\t`pwd`" >> $dirs
+d() {
+### d 最近移動した git ディレクトリへ jump (頭文字タグ対応, -r で再スキャン)
+  local recent=$HOME/dotfiles/.dirs_recent
+  local cache=$HOME/dotfiles/.dirs_cache
+  local ttl=3600
+  local arg=$1
+
+  # 初回(キャッシュなし) or -r は同期で再スキャン、TTL切れはバックグラウンドで更新
+  local now=$(date +%s)
+  local mtime=0
+  [ -f $cache ] && mtime=$(stat -c %Y $cache 2>/dev/null || stat -f %m $cache 2>/dev/null)
+  if [ "$arg" = '-r' ] || [ ! -f $cache ]; then
+    _d_scan $cache
+    [ "$arg" = '-r' ] && return
+  elif [ $((now - mtime)) -gt $ttl ]; then
+    ( _d_scan $cache ) &!
   fi
+
+  local list
+  list=$({ [ -f $recent ] && cat $recent; [ -f $cache ] && cat $cache; } | awk '!seen[$0]++')
+
+  if [ "$arg" = '-l' ]; then
+    echo "$list"
+    return
+  fi
+  local target
+  if [ -n "$arg" ]; then
+    target=$(echo "$list" | awk -F/ -v head="${arg:l}" 'tolower(substr($NF, 1, 1)) == head {print; exit}')
+    [ -z "$target" ] && return 1
+    cd "$target"
+    return
+  fi
+  target=$(echo "$list" | awk -F/ '{
+    name = $NF
+    initial = tolower(substr(name, 1, 1))
+    printf "%s  %-20s  %s\n", initial, name, $0
+  }' | fzf --height 40% --reverse --border | awk '{print $NF}')
+  [ -z "$target" ] && return 1
+  cd "$target"
 }
 
 help() {
