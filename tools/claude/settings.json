@@ -14,10 +14,12 @@
       "Bash(mkdir:*)",
       "Bash(mv:*)",
       "Bash(mysql:*)",
+      "Bash(node:*)",
       "Bash(npx:*)",
       "Bash(pkill:*)",
       "Bash(python3:*)",
       "Bash(sed:*)",
+      "Bash(timeout:*)",
       "Bash(touch:*)",
       "mcp__playwright__browser_click",
       "mcp__playwright__browser_close",
@@ -75,6 +77,9 @@
     "type": "command",
     "command": "python3 ~/.claude/statusline.py"
   },
+  "enabledPlugins": {
+    "superpowers@claude-plugins-official": true
+  },
   "extraKnownMarketplaces": {
     "claude-code-plugins": {
       "source": {
@@ -109,10 +114,9 @@
       ]
     }
   },
-  "effortLevel": "high",
+  "tui": "fullscreen",
   "theme": "dark",
   "preferredNotifChannel": "iterm2",
   "agentPushNotifEnabled": true,
-  "skipAutoPermissionPrompt": true,
-  "model": "opus"
+  "skipAutoPermissionPrompt": true
 }
