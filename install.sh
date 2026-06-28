@@ -12,7 +12,9 @@ BAT_VERSION="0.24.0"
 YARN_VERSION="1.22.22"
 DELTA_VERSION="0.18.2"
 FD_VERSION="8.7.0"
-NEOVIM_VERSION="0.11.6"
+NEOVIM_VERSION="0.12.3"
+# tree-sitter CLI は GLIBC 2.36 で動く最新の 0.24.7 に固定(0.26 系は GLIBC 2.39 要求)
+TREE_SITTER_VERSION="0.24.7"
 NODE_VERSION="20.20.1"
 NODE_VERSION_FOR_COC="18.16.0"
 RIPGREP_VERSION="15.1.0"
@@ -24,7 +26,7 @@ BUN_VERSION="1.1.8"
 # runtime
 GCLOUD_VERSION="latest"
 GO_VERSION="latest"
-PYTHON_VERSION="3.12.2"
+PYTHON_VERSION="3.12.11"
 RUBY_VERSION="3.2.1"
 PERL_VERSION="5.30.0"
 RUST_VERSION="1.84.0"
@@ -228,6 +230,7 @@ setup_neovim() {
 
   installs=(
     "neovim@${NEOVIM_VERSION}@CMD:nvim"
+    "tree-sitter@${TREE_SITTER_VERSION}@CMD:tree-sitter"
     "nodejs@${NODE_VERSION}@CMD:node"
     "yarn@${YARN_VERSION}@CMD:yarn"
     "ripgrep@${RIPGREP_VERSION}@CMD:rg"
@@ -250,7 +253,9 @@ setup_neovim() {
   )
 
   _install_pip
-  pip install pynvim # neovim パッケージは古いので、pynvimを使う
+  # neovim が参照する mise の python に直接入れる(rye の pip だと別 site-packages になる)
+  eval "$($HOME/.local/bin/mise activate)"
+  python -m pip install pynvim # neovim パッケージは古いので、pynvimを使う
 
   # Perl::Critic / Perl::Tidy (PerlNavigator の perlcritic, エディタ整形で使用)
   type cpanm >/dev/null 2>&1 || curl -L https://cpanmin.us | perl - --local-lib=~/perl5 App::cpanminus

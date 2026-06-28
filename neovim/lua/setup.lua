@@ -53,12 +53,6 @@ require("lazy").setup({
                 vim.cmd('colorscheme tokyonight-moon')
             end
         },
-        { -- #A32B26 等の文字列に色をつける
-            "norcalli/nvim-colorizer.lua",
-            config = function()
-                require("colorizer").setup()
-            end,
-        },
         { -- カーソル下の単語を他の出現箇所でもハイライト
             "RRethy/vim-illuminate",
             event = { "BufReadPost", "BufNewFile" },
@@ -399,6 +393,10 @@ require("lazy").setup({
                 { "gA", mode = { "n", "x" }, desc = "Align with preview" },
             },
             opts = {},
+        },
+        { -- 依存ライブラリ 最新タグ(v0.1.4)は古く 0.12 で deprecated な API を使うため master 追従にする
+            "nvim-lua/plenary.nvim",
+            version = false,
         },
         { -- コメント の補完
             "CopilotC-Nvim/CopilotChat.nvim",
@@ -861,82 +859,36 @@ require("lazy").setup({
                 },
             },
         },
-        -- TreeSitter
-        -- Need A C compiler in your path and libstdc++ installed
         {
-            "nvim-treesitter/nvim-treesitter",
+            "romus204/tree-sitter-manager.nvim",
+            lazy = false,
             config = function()
-                -- @キーでTreesitterの賢い選択
-                vim.keymap.set('n', '@', '<cmd>lua require("nvim-treesitter.incremental_selection").init_selection()<cr>')
-                vim.keymap.set('x', '@', '<cmd>lua require("nvim-treesitter.incremental_selection").scope_incremental()<cr>')
-                -- vim.g.matchup_matchparen_enabled = 1
-                -- vim.g.matchup_matchparen_offscreen = { method = 'popup' } -- カーソル外のタグも表示
+                require("tree-sitter-manager").setup({
+                    ensure_installed = {
+                        "bash", "html", "javascript", "jsdoc", "json",
+                        "lua", "luadoc", "luap", "markdown", "markdown_inline",
+                        "php", "htmldjango", "python", "query", "regex",
+                        "vue", "tsx", "typescript", "vim", "vimdoc", "yaml",
+                    },
+                    highlight = true,
+                })
+                -- 大きいファイルでは treesitter highlight を止める
                 vim.api.nvim_create_autocmd("BufReadPost", {
-                    callback = function()
-                        vim.defer_fn(function()
-                           --  print("Enable treesitter highlight")
-                            vim.cmd("TSEnable highlight")
-                        end, 200)
+                    callback = function(args)
+                        local max_filesize = 1000 * 1024
+                        local ok, stats = pcall((vim.uv or vim.loop).fs_stat, vim.api.nvim_buf_get_name(args.buf))
+                        if ok and stats and stats.size > max_filesize then
+                            vim.schedule(function()
+                                pcall(vim.treesitter.stop, args.buf)
+                            end)
+                        end
                     end,
                 })
-
+                -- @ で構文ノード選択を開始/拡大 S-TAB で縮小 (0.12 ネイティブ)
+                vim.keymap.set("n", "@", function() vim.treesitter.select("parent") end, { desc = "選択を構文ノードで開始" })
+                vim.keymap.set("x", "@", function() vim.treesitter.select("parent") end, { desc = "選択を親ノードへ拡大" })
+                vim.keymap.set("x", "<S-TAB>", function() vim.treesitter.select("child") end, { desc = "選択を子ノードへ縮小" })
             end,
-            -- lazy = true, -- filetype が後から設定される時があるため場合は遅延読み込み
-            -- lazy = false, -- lazyはfalseでないと動作しないけど...
-            lazy = false,
-            opts = {
-                highlight = {
-                    enable = true,
-                    disable = function(lang, buf)
-                        if lang == "htmldjango" then
-                            -- return true
-                        end
-                        -- 1000 KB 超えのファイルでは tree-sitter によるシンタックスハイライトを行わない
-                        local max_filesize = 1000 * 1024
-                        local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
-                        if ok and stats and stats.size > max_filesize then
-                            print("File too large, disabling treesitter highlight for " .. lang)
-                            return true
-                        end
-                    end,
-                    -- additional_vim_regex_highlighting = false,
-                },
-                indent = { enable = true },
-                ensure_installed = {
-                    "bash",
-                    "html",
-                    "javascript",
-                    "jsdoc",
-                    "json",
-                    "lua",
-                    "luadoc",
-                    "luap",
-                    "markdown",
-                    "markdown_inline",
-                    "php",
-                    "htmldjango",
-                    "python",
-                    "query",
-                    "regex",
-                    "vue",
-                    "tsx",
-                    "typescript",
-                    "vim",
-                    "vimdoc",
-                    "yaml",
-                },
-                auto_install = true, -- 上記にないものは自動でインストール
-                -- 文法理解を利用して選択範囲を自動で見つけてくれる
-                incremental_selection = {
-                    enable = true,
-                    keymaps = {
-                        init_selection = '@',
-                        scope_incremental = '@',
-                        node_incremental = '<TAB>',
-                        node_decremental = '<S-TAB>',
-                    },
-                },
-            },
         },
         { -- 画面上部に現在のインデントを表示
             "nvim-treesitter/nvim-treesitter-context",
@@ -965,7 +917,6 @@ require("lazy").setup({
             opts = {
                 use_default_keymaps = false,
             },
-            dependencies = { "nvim-treesitter/nvim-treesitter" }, -- if you install parsers with `nvim-treesitter`
             config = function()
                 require("treesj").setup()
             end,
