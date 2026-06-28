@@ -402,6 +402,7 @@ require("lazy").setup({
             "CopilotC-Nvim/CopilotChat.nvim",
             config = function()
                 require("CopilotChat").setup({
+                    model = "claude-haiku-4.5",
                     window = {
                         layout = "float",
                         relative = "cursor",
@@ -448,21 +449,19 @@ require("lazy").setup({
                             prompt = "コードの診断結果に従って問題を修正してください。",
                             mapping = "<leader>cd",
                             description = "AIにコードの静的解析結果に基づいた修正をお願いする",
-                            selection = require("CopilotChat.select").diagnostics,
+                            resources = { "diagnostics" },
                         },
                         Commit = {
                             prompt = "コメントのルールに従って変更に対するコミットメッセージを日本語で記述してください。",
                             mapping = "<leader>cc",
                             description = "AIにコミットメッセージの作成をお願いする",
-                            selection = require("CopilotChat.select").buffer,
+                            resources = { "gitdiff:staged" },
                         },
                         CommitStaged = {
                             prompt = "commitize の規則に従って、ステージ済みの変更に対するコミットメッセージを記述してください。 タイトルは最大50文字で、メッセージは72文字で折り返されるようにしてください。 メッセージ全体を gitcommit 言語のコード ブロックでラップしてください。メッセージは日本語でお願いします。",
                             mapping = "<leader>cs",
                             description = "AIにステージ済みのコミットメッセージの作成をお願いする",
-                            selection = function(source)
-                                return require("CopilotChat.select").gitdiff(source, true)
-                            end,
+                            resources = { "gitdiff:staged" },
                         },
                     },
                 })
@@ -470,9 +469,9 @@ require("lazy").setup({
                 chat = require("CopilotChat")
                 vim.api.nvim_create_user_command("CopilotCommit", function()
                     chat.ask(
-                        "コメントのメッセージルールに従い、変更に対するコミットメッセージを本文含めて日本語で記述してください。1ファイルだけの変更なら「xxxx.php に対して~」のような形式で。形式は体現止めでお願いします。出力は結果だけでお願いします",
+                        "このコミットバッファのテンプレートと差分をもとに、端的な日本語のコミットメッセージを記述してください。全体を必ず20文字以内に厳守し、超えそうなら助詞やファイル名を削って短くしてください。タイトル1行のみとし本文は付けないでください。形式は体現止め。コメント行(#)や diff、コードブロック記号は出力せず、コミットメッセージ本文だけを出力してください",
                         {
-                            selection = require("CopilotChat.select").buffer,
+                            resources = { "buffer" },
                             window = {
                                 layout = "float",
                                 relative = "cursor",
@@ -483,26 +482,29 @@ require("lazy").setup({
                             show_help = false,
                             auto_follow_cursor = true,
                             callback = function(response)
+                                -- response は { content, reasoning, role } の table で来るため本文を取り出す
+                                local text = response.content
                                 vim.schedule(function()
-                                    -- 改行含むresponseをコードに挿入する
-                                    response = response:gsub("```", "")
+                                    -- コードブロック記号を除去する
+                                    text = text:gsub("```", "")
                                     -- 前後の改行を削除する
-                                    response = response.gsub(response, "^\n*", "")
-                                    response = response.gsub(response, "\n*$", "")
+                                    text = text:gsub("^\n*", "")
+                                    text = text:gsub("\n*$", "")
                                     -- レジスタに格納する
-                                    vim.fn.setreg('"', response)
+                                    vim.fn.setreg('"', text)
                                     -- windowを閉じる
                                     vim.cmd('normal q')
                                     vim.cmd('normal o')
                                     vim.cmd('normal! ""p')
                                 end)
+                                return response
                             end,
                         }
                     )
                 end, {})
                 vim.api.nvim_create_user_command("CopilotChatInline", function(args)
                     chat.ask(args.args, {
-                        selection = require("CopilotChat.select").visual,
+                        resources = { "selection" },
                         window = {
                             layout = "float",
                             relative = "cursor",
