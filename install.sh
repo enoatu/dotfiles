@@ -8,7 +8,6 @@ ADDITIONAL_REPO_GITHUB_TOKEN=${ADDITIONAL_REPO_GITHUB_TOKEN:-""}
 ADDITIONAL_REPO_URL=${ADDITIONAL_REPO_URL:-"https://${ADDITIONAL_REPO_GITHUB_TOKEN}@github.com/enoatu/private-dotfiles.git"}
 
 # tool
-BAT_VERSION="0.24.0"
 YARN_VERSION="1.22.22"
 DELTA_VERSION="0.18.2"
 FD_VERSION="8.7.0"
@@ -291,7 +290,6 @@ setup_tools() {
       "go@${GO_VERSION}@CMD:go"
       "gcloud@${GCLOUD_VERSION}@CMD:gcloud"
       "eza@${EZA_VERSION}@CMD:eza"
-      "bat@${BAT_VERSION}@CMD:bat"
       "delta@${DELTA_VERSION}@CMD:delta"
       "fd@${FD_VERSION}@CMD:fd"
       "nodejs@${NODE_VERSION}@CMD:node"
