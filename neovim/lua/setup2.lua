@@ -278,7 +278,7 @@ require("lazy").setup({
                 function CocShowDocumentation()
                     if vim.fn.index({ "vim", "help" }, vim.bo.filetype) >= 0 then
                         vim.cmd('execute "h " . expand("<cword>")')
-                    elseif vim.fn["coc#rpc#ready"]() then
+                    elseif vim.fn["coc#rpc#ready"]() and vim.fn.CocAction("hasProvider", "hover") then
                         vim.fn.CocActionAsync("doHover")
                     else
                         vim.cmd('execute "!" . &keywordprg . " " . expand("<cword>")')

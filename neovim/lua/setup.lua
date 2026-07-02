@@ -76,6 +76,61 @@ require("lazy").setup({
             end,
         },
         {
+            "nvim-neo-tree/neo-tree.nvim",
+            branch = "v3.x",
+            dependencies = {
+                "nvim-lua/plenary.nvim",
+                "nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
+                "MunifTanjim/nui.nvim",
+            },
+            config = function()
+                -- ディレクトリを飛ばして次/前のファイルへ移動する
+                local function jump_to_file(state, step)
+                    local win = vim.api.nvim_get_current_win()
+                    local last_line = vim.api.nvim_buf_line_count(0)
+                    local line = vim.api.nvim_win_get_cursor(win)[1]
+                    while true do
+                        line = line + step
+                        if line < 1 or line > last_line then return end
+                        vim.api.nvim_win_set_cursor(win, { line, 0 })
+                        local node = state.tree:get_node(line)
+                        if node and node.type == "file" then return end
+                    end
+                end
+                require("neo-tree").setup({
+                    close_if_last_window = true,
+                    window = {
+                        width = 70,
+                        mappings = {
+                            ["j"] = function(state) jump_to_file(state, 1) end,
+                            ["k"] = function(state) jump_to_file(state, -1) end,
+                        },
+                    },
+                    default_component_configs = {
+                        file_size = { enabled = false },
+                    },
+                    event_handlers = {
+                        {
+                            event = "file_opened",
+                            handler = function()
+                                require("neo-tree.command").execute({ action = "close" })
+                            end,
+                        },
+                    },
+                    filesystem = {
+                        follow_current_file = { enabled = true },
+                        filtered_items = {
+                            hide_dotfiles = false,
+                            hide_gitignored = false,
+                        },
+                    },
+                })
+                vim.keymap.set("n", "<leader>e", "<cmd>Neotree toggle<CR>", { desc = "NeoTree Toggle", silent = true })
+                vim.keymap.set("n", "<C-k>", "<cmd>Neotree toggle buffers reveal<CR>", { desc = "NeoTree Buffers Toggle", silent = true })
+                vim.keymap.set("n", "<leader>b", "<cmd>Neotree buffers reveal<CR>", { desc = "NeoTree Buffers", silent = true })
+            end,
+        },
+        {
             "lewis6991/gitsigns.nvim",
             -- :help ibl.config.scope とすると | などの一覧が表示される
             config = function()
@@ -302,6 +357,7 @@ require("lazy").setup({
         { -- バッファ管理
             "enoatu/vim-bufferlist", -- vimscript
             -- dir = "~/MyDevelopment/vim-bufferlist",
+            enabled = false,
             init = function()
                 vim.g.BufferListMaxWidth = 100
             end,
@@ -482,8 +538,11 @@ require("lazy").setup({
                             show_help = false,
                             auto_follow_cursor = true,
                             callback = function(response)
-                                -- response は { content, reasoning, role } の table で来るため本文を取り出す
-                                local text = response.content
+                                -- 新しめの CopilotChat は table、古い版は文字列で渡してくる
+                                local text = type(response) == "table" and response.content or response
+                                if type(text) ~= "string" then
+                                    return response
+                                end
                                 vim.schedule(function()
                                     -- コードブロック記号を除去する
                                     text = text:gsub("```", "")
@@ -662,7 +721,7 @@ require("lazy").setup({
                 function CocShowDocumentation()
                     if vim.fn.index({ "vim", "help" }, vim.bo.filetype) >= 0 then
                         vim.cmd('execute "h " . expand("<cword>")')
-                    elseif vim.fn["coc#rpc#ready"]() then
+                    elseif vim.fn["coc#rpc#ready"]() and vim.fn.CocAction("hasProvider", "hover") then
                         vim.fn.CocActionAsync("doHover")
                     else
                         vim.cmd('execute "!" . &keywordprg . " " . expand("<cword>")')
@@ -1013,7 +1072,10 @@ require("lazy").setup({
                     options = {
                         theme = "auto",
                         globalstatus = true,
-                        disabled_filetypes = { statusline = { "dashboard", "alpha" } },
+                        disabled_filetypes = {
+                            statusline = { "dashboard", "alpha" },
+                            winbar = { "dashboard", "alpha", "neo-tree", "neo-tree-popup", "Trouble", "help", "lazy", "mason" },
+                        },
                     },
                     sections = {
                         lualine_a = { "mode" },
@@ -1039,7 +1101,11 @@ require("lazy").setup({
                             -- stylua: ignore
                             {
                                 function() return require("nvim-navic").get_location() end,
-                                cond = function() return package.loaded["nvim-navic"] and require("nvim-navic").is_available() end,
+                                cond = function()
+                                    return vim.o.columns > 120
+                                        and package.loaded["nvim-navic"]
+                                        and require("nvim-navic").is_available()
+                                end,
                             },
                         },
                         lualine_x = {
@@ -1084,6 +1150,16 @@ require("lazy").setup({
                             function()
                                 return " " .. os.date("%R")
                             end,
+                        },
+                    },
+                    winbar = {
+                        lualine_c = {
+                            { "filename", path = 3, shorting_target = 0, symbols = { modified = " + ", readonly = "", unnamed = "" } },
+                        },
+                    },
+                    inactive_winbar = {
+                        lualine_c = {
+                            { "filename", path = 3, shorting_target = 0, symbols = { modified = " + ", readonly = "", unnamed = "" } },
                         },
                     },
                     extensions = { "neo-tree", "lazy" },

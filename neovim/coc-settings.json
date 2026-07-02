@@ -2,7 +2,7 @@
   // --- 全般 ---
   "coc.preferences.extensionUpdateCheck": "daily",
   "suggest.floatConfig": {
-    "border": true
+    "border": false
   },
 
   // --- 診断 ---
