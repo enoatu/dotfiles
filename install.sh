@@ -305,18 +305,7 @@ setup_tools() {
     pip install trash-cli
     _test_exists_commands trash-put trash-empty trash-list trash-put trash-restore trash-rm
 
-    # claude設定ファイルのリンク作成
-    if [ -f ${DOTFILES}/tools/claude/settings.json ]; then
-      mkdir -p ${HOME}/.claude
-      # 通常ディレクトリで存在しているとln -sfがリンクを内側に作ってしまうので剥がす
-      [[ -L ${HOME}/.claude/skills ]] || rm -rf ${HOME}/.claude/skills
-      [[ -L ${HOME}/.claude/hooks ]]  || rm -rf ${HOME}/.claude/hooks
-      ln -sf  ${DOTFILES}/tools/claude/CLAUDE.md     ${HOME}/.claude/CLAUDE.md
-      ln -sf  ${DOTFILES}/tools/claude/settings.json ${HOME}/.claude/settings.json
-      ln -sf  ${DOTFILES}/tools/claude/statusline.py ${HOME}/.claude/statusline.py
-      ln -sfn ${DOTFILES}/tools/claude/skills        ${HOME}/.claude/skills
-      ln -sfn ${DOTFILES}/tools/claude/hooks         ${HOME}/.claude/hooks
-    fi
+    # claude 設定は private-dotfiles 側で ~/.claude 以下を張る
 
     npm install -g zx
     _test_exists_commands zx

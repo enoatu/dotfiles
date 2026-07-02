@@ -12,58 +12,27 @@ local switchGutterBranches = {
     "master",
     "staging",
 }
-local selfGutter = require("self-gutter")
 vim.keymap.set("n", "m", ":lua SwitchGutter()<CR>", { noremap = true, silent = true })
 local isSwitchGutter = false
-local selfOnly = false
-
--- 比較ブランチを反映する。自分のみモードなら独自描画、通常は gitsigns
-local function applyBase(branch)
-    if selfOnly then
-        selfGutter.activate(branch)
-    else
-        if selfGutter.active then
-            selfGutter.deactivate()
-        end
-        package.loaded.gitsigns.change_base(branch, true)
-    end
-end
-
 function SwitchGutter()
     if isSwitchGutter then
         return
     end
     isSwitchGutter = true
-    local toggleLabel = "[自分のみ: " .. (selfOnly and "ON" or "OFF") .. "]"
-    local items = { toggleLabel }
-    for _, branch in ipairs(switchGutterBranches) do
-        items[#items + 1] = branch
-    end
-    vim.ui.select(items, {
+    vim.ui.select(switchGutterBranches, {
         prompt = "Select the branch for comparison",
-    }, function(item)
-        isSwitchGutter = false
-        if not item then
-            return
-        end
-        -- 自分のみモードのトグル
-        if item == toggleLabel then
-            selfOnly = not selfOnly
-            if not selfOnly and selfGutter.active then
-                selfGutter.deactivate()
-            end
-            SwitchGutter()
-            return
-        end
+    }, function(item, lnum)
         -- 手動入力
         if item == "<input>" then
             vim.ui.input({ prompt = "Enter the branch for comparison: " }, function(input)
-                if input and input ~= "" then
-                    applyBase(input)
-                end
+                package.loaded.gitsigns.change_base(input, true)
             end)
+            isSwitchGutter = false
             return
         end
-        applyBase(item)
+        if item and lnum then
+            package.loaded.gitsigns.change_base(item, true)
+        end
+        isSwitchGutter = false
     end)
 end
