@@ -19,6 +19,7 @@ NODE_VERSION_FOR_COC="18.16.0"
 RIPGREP_VERSION="15.1.0"
 RYE_VERSION="0.38.0"
 ZELLIJ="0.43.1"
+HERDR_VERSION="0.7.1"
 EZA_VERSION="0.23.4"
 BUN_VERSION="1.1.8"
 
@@ -207,6 +208,16 @@ setup_zellij() {
   _print_complete
 }
 
+setup_herdr() {
+  _print_start
+
+  rm -rf ${HOME}/.config/herdr
+  ln -sf ${DOTFILES}/herdr ${HOME}/.config/herdr
+  _test_exists_files ${HOME}/.config/herdr
+
+  _print_complete
+}
+
 setup_tmux() {
   _print_start
 
@@ -297,6 +308,7 @@ setup_tools() {
       "rye@${RYE_VERSION}@CMD:rye"
       "bun@${BUN_VERSION}@CMD:bun"
       "zellij@${ZELLIJ}@CMD:zellij"
+      "herdr@${HERDR_VERSION}@CMD:herdr"
       # "tmux@${TMUX_VERSION}@CMD:tmux,IF_NOT_EXISTS_COMMAND:tmux" alcolなどでtmuxが使われているので、tmuxはインストールしない
     )
     _mise_install $installs || fail 'install failed'
@@ -332,6 +344,7 @@ main() {
   setup_zsh
   setup_git
   setup_zellij
+  setup_herdr
   setup_tmux
   setup_neovim
   setup_tools
@@ -348,6 +361,9 @@ if [ $# -ne 0 ]; then
         ;;
       git)
         setup_git
+        ;;
+      herdr)
+        setup_herdr
         ;;
       tmux)
         setup_tmux

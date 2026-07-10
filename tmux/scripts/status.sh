@@ -3,6 +3,8 @@
 # 完了行は「✻ Cogitated for 2m 9s」のように "for Ns" 形式
 # 実行中行は「✻ Researching… (4m 2s · ↓ 8.9k tokens · thought for 51s)」のように "… (Ns" 形式
 # 過去の実行中スピナー行が画面に残るケースを誤検出しないよう、入力プロンプト ❯ の直前の領域だけ見る
+# 完了(✅)のまま放置されたらアイコンを消すまでの秒数
+DONE_ICON_HIDE_SEC=600
 PANES=$(tmux list-panes -t "$1" -F "#{pane_current_command} #{pane_id}" 2>/dev/null | awk '/^(claude|npm|node) /{print $2}')
 [ -z "$PANES" ] && exit 0
 
@@ -32,8 +34,20 @@ if printf '%s' "$FORKSIG" | grep -q '◯' && [ "$FORKSIG" != "$PREV" ]; then
     RUNNING=1
 fi
 
+NOW=$(date +%s)
+STAMP="/tmp/tmux_claude_active_$(printf '%s' "${TMUX}_$1" | tr -c 'A-Za-z0-9' '_')"
 if [ "$RUNNING" -eq 1 ]; then
+    echo "$NOW" > "$STAMP"
     echo "🏃"
-else
+    exit 0
+fi
+
+# 完了状態。最後に稼働した時刻から DONE_ICON_HIDE_SEC を超えて放置なら ✅ を消す
+LAST_ACTIVE=$(cat "$STAMP" 2>/dev/null)
+if [ -z "$LAST_ACTIVE" ]; then
+    echo "$NOW" > "$STAMP"
+    LAST_ACTIVE=$NOW
+fi
+if [ $((NOW - LAST_ACTIVE)) -le "$DONE_ICON_HIDE_SEC" ]; then
     echo "✅"
 fi

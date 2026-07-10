@@ -12,5 +12,9 @@ private-dotfiles
 nerd-fonts
 /neovim/install/*
 /neovim/lua/env.lua
+/herdr/*.log
+/herdr/*.sock
+/herdr/session.json
+/herdr/release-notes.json
 *.tool-versions
 .DS_Store

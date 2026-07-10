@@ -1,0 +1,45 @@
+onboarding = false
+# herdr 設定 tmux の操作感にそろえる
+# 配置先 ~/.config/herdr/config.toml
+
+[keys]
+prefix = "ctrl+f"
+
+# ペイン移動 vim 風の hjkl
+focus_pane_left = "prefix+h"
+focus_pane_down = "prefix+j"
+focus_pane_up = "prefix+k"
+focus_pane_right = "prefix+l"
+
+# 分割 \ で左右 - で上下 (| はshift併用でherdrが受理しないため \ を使う)
+split_vertical = "prefix+backslash"
+split_horizontal = "prefix+minus"
+
+# ワークスペース移動 vim 風の kj (navigate mode 中 矢印上下は使わない)
+navigate_workspace_up = "k"
+navigate_workspace_down = "j"
+
+# ワークスペース名変更 tmux の prefix+, にそろえる
+rename_workspace = "prefix+comma"
+
+# agent 移動 vim 風の kj (shift 併用 k=前 j=次)
+previous_agent = "prefix+shift+k"
+next_agent = "prefix+shift+j"
+
+# ワークスペース前後切替 vim 風の HL (agent の kj と対 左右=workspace 上下=agent)
+previous_workspace = "prefix+shift+h"
+next_workspace = "prefix+shift+l"
+
+[terminal]
+# 分割時に元ペインの作業ディレクトリを引き継ぐ
+new_cwd = "follow"
+
+[ui]
+mouse_capture = true
+# フォーカス復帰時の全画面再描画を止めてペイン切替の点滅を抑える
+redraw_on_focus_gained = false
+
+[theme]
+name = "dracula"
+auto_switch = false
+

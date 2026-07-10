@@ -124,7 +124,11 @@ require("lazy").setup({
                             hide_gitignored = false,
                         },
                     },
+                    buffers = {
+                        show_unloaded = false,
+                    },
                 })
+
                 vim.keymap.set("n", "<leader>e", "<cmd>Neotree toggle<CR>", { desc = "NeoTree Toggle", silent = true })
                 vim.keymap.set("n", "<C-k>", "<cmd>Neotree toggle buffers reveal<CR>", { desc = "NeoTree Buffers Toggle", silent = true })
                 vim.keymap.set("n", "<leader>b", "<cmd>Neotree buffers reveal<CR>", { desc = "NeoTree Buffers", silent = true })
@@ -707,6 +711,21 @@ require("lazy").setup({
                 -- call coc#util#install()
                 -- coc-snippets を使用する場合は以下実行
                 -- pip install pynvim
+                -- pin留めした旧cocはnvim0.12でwinnr('$')にfloatが含まれず、補完のドキュメント
+                -- (pumdetail/pad)を閉じ損ねて画面に残す。pum非表示時に取り残しを掃除する
+                local function close_orphan_coc_floats()
+                    if vim.fn["coc#pum#visible"]() == 1 then return end
+                    for _, win in ipairs(vim.api.nvim_list_wins()) do
+                        local kind = vim.fn.getwinvar(win, "kind", "")
+                        if kind == "pumdetail" or kind == "pad" then
+                            pcall(vim.api.nvim_win_close, win, true)
+                        end
+                    end
+                end
+                vim.api.nvim_create_autocmd({ "InsertLeave", "CursorMovedI", "TextChangedI" }, {
+                    group = vim.api.nvim_create_augroup("coc-close-orphan-floats", { clear = true }),
+                    callback = close_orphan_coc_floats,
+                })
                 -- 定義ジャンプ
                 vim.keymap.set("n", "gd", "<Plug>(coc-definition)", { silent = true })
                 -- 型定義ジャンプ
