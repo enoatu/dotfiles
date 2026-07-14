@@ -1,0 +1,19 @@
+[tasks.setup]
+depends = ["setup-zsh", "setup-neovim"]
+
+[tasks.setup-zsh]
+run = [
+  'mise completion zsh > "$HOME/dotfiles/zsh/installs/mise.zsh"',
+  'SHELDON_CONFIG_DIR="$HOME/dotfiles/zsh/sheldon" sheldon lock',
+]
+
+# coc.nvim 用の node は 18.16.0 を使う
+[tasks.setup-neovim]
+run = [
+  'cp "$HOME/dotfiles/neovim/lua/env.lua.sample" "$HOME/dotfiles/neovim/lua/env.lua"',
+  'cd "$HOME/dotfiles/neovim" && mise use nodejs@18.16.0 && npm install -g neovim yarn@1',
+  'rye config --set-bool behavior.global-python=true && rye config --set-bool behavior.use-uv=true && (rye install pip || true)',
+  'python -m pip install pynvim',
+  'type cpanm >/dev/null 2>&1 || (curl -L https://cpanmin.us | perl - --local-lib=~/perl5 App::cpanminus)',
+  'PATH="$HOME/perl5/bin:$PATH" cpanm --notest --local-lib=~/perl5 local::lib Perl::Critic Perl::Critic::StricterSubs Perl::Tidy',
+]

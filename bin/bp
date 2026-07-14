@@ -1,4 +1,0 @@
-#!/bin/bash
-
-# example) sleep 3 && bp
-echo $'\a'

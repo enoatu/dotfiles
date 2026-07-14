@@ -1,20 +1,18 @@
 source-file ~/dotfiles/tmux/tmux.common.conf
 
-# C-bのキーバインドを解除
 unbind C-b
 
-#prefixキーをC-qに変更
-set -g prefix C-g
-
-# 左パネル
-#'#S'はセッション名
 set -g status-left-length 60
+{% if os() == "macos" %}
+set -g prefix C-g
 set -g status-left-style fg="colour0",bg="colour49"
 set -g status-left "local: #S"
 set -g mouse on
 set -g set-clipboard on
-
-# nvim advance
 set-option -sg escape-time 10
 set-option -g focus-events on
-
+{% else %}
+set -g prefix C-f
+set -g status-left-style fg="colour0",bg="colour156"
+set -g status-left "remote: #S"
+{% endif %}

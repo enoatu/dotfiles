@@ -148,17 +148,17 @@ setopt hist_reduce_blanks    # 余分な空白は詰めて記録する
 
 ## ZSHプラグイン
 [ -f $HOME/dotfiles/zsh/installs/fzf.zsh ] && source $HOME/dotfiles/zsh/installs/fzf.zsh
-#[ -f $HOME/dotfiles/zsh/installs/fzf-tab/fzf-tab.plugin.zsh ] && source $HOME/dotfiles/zsh/installs/fzf-tab/fzf-tab.plugin.zsh
 [ -f $HOME/dotfiles/zsh/installs/mise.zsh ] && source $HOME/dotfiles/zsh/installs/mise.zsh
 # コマンドを途中まで入力後、historyから絞り込み
 # 例 ls まで打ってCtrl+pでlsコマンドをさかのぼる、Ctrl+bで逆順
 autoload -Uz history-search-end
-# zsh-autosuggestions 灰色の補完
-[ -f $HOME/dotfiles/zsh/installs/zsh-autosuggestions.zsh ] && source $HOME/dotfiles/zsh/installs/zsh-autosuggestions.zsh
+# zsh-autosuggestions 灰色の補完。sheldon 管理
+export SHELDON_CONFIG_DIR="$HOME/dotfiles/zsh/sheldon"
+eval "$(sheldon source)"
 bindkey '^l' autosuggest-accept
 bindkey '^]' autosuggest-execute
 
-[ -f $HOME/dotfiles/zsh/installs/starship ] && eval "$($HOME/dotfiles/zsh/installs/starship init zsh)"
+command -v starship >/dev/null && eval "$(starship init zsh)"
 
 ## ZSHプラグイン
 
@@ -369,8 +369,6 @@ fpath=(${HOME}/.docker/completions $fpath)
 autoload -Uz compinit
 compinit
 # End of Docker CLI completions
-
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 if [[ -n "$SSH_CONNECTION" ]]; then
   export ZELLIJ_CONFIG_FILE="$HOME/.config/zellij/remote.kdl"

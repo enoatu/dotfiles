@@ -1,0 +1,15 @@
+[dotfiles]
+"~/.zshrc" = { source = "~/dotfiles/zsh/zshrc" }
+"~/.zshenv" = { source = "~/dotfiles/zsh/zshenv" }
+"~/.gitconfig" = { source = "~/dotfiles/git/gitconfig" }
+"~/.editorconfig" = { source = "~/dotfiles/neovim/.editorconfig" }
+"~/.perlcriticrc" = { source = "~/dotfiles/.perlcriticrc" }
+"~/.perltidyrc" = { source = "~/dotfiles/.perltidyrc" }
+"~/.config/starship.toml" = { source = "~/dotfiles/zsh/starship.toml" }
+"~/.config/zellij" = { source = "~/dotfiles/zellij" }
+"~/.config/herdr" = { source = "~/dotfiles/herdr" }
+"~/.config/nvim/init.lua" = { source = "~/dotfiles/neovim/init.lua" }
+"~/.config/nvim/lua" = { source = "~/dotfiles/neovim/lua" }
+"~/.config/nvim/coc-settings.json" = { source = "~/dotfiles/neovim/coc-settings.json" }
+"~/.config/nvim/lazy-lock.json" = { source = "~/dotfiles/neovim/lazy-lock.json" }
+"~/.tmux.conf" = { source = "~/dotfiles/tmux/tmux.conf.tmpl", mode = "template" }
