@@ -39,6 +39,14 @@ mouse_capture = true
 # フォーカス復帰時の全画面再描画を止めてペイン切替の点滅を抑える
 redraw_on_focus_gained = false
 
+# 通知は herdr 画面内トーストで出す (SSH 先の system 通知は手元に届かないため)
+[ui.toast]
+delivery = "herdr"
+
+# トーストは左下に固定
+[ui.toast.herdr]
+position = "bottom-left"
+
 [theme]
 name = "dracula"
 auto_switch = false
