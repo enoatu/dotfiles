@@ -1,53 +1,84 @@
 #!/usr/bin/env bash
-# windowにclaudeがあれば状態を表示
-# 完了行は「✻ Cogitated for 2m 9s」のように "for Ns" 形式
-# 実行中行は「✻ Researching… (4m 2s · ↓ 8.9k tokens · thought for 51s)」のように "… (Ns" 形式
-# 過去の実行中スピナー行が画面に残るケースを誤検出しないよう、入力プロンプト ❯ の直前の領域だけ見る
-# 完了(✅)のまま放置されたらアイコンを消すまでの秒数
-DONE_ICON_HIDE_SEC=600
-PANES=$(tmux list-panes -t "$1" -F "#{pane_current_command} #{pane_id}" 2>/dev/null | awk '/^(claude|npm|node) /{print $2}')
-[ -z "$PANES" ] && exit 0
+# windowにclaudeがあれば状態を色ドットで表示する
+# 状態はClaude Codeのhookが /tmp/claude_state_<pane_id> に書く
+# モデル略号は statusline.py が /tmp/claude_model_<pane_id> に書く
+# 第2引数はそのウィンドウを今見ているか(1=選択中)。見たら未読を既読にする
+set -u
+export LC_ALL=C
+window_id=$1
+window_active=${2:-0}
 
-RUNNING=0
-# fork(サブエージェント)行の署名。プロンプト下の ◯ で始まる行を集める
-FORKSIG=""
-for PANE in $PANES; do
-    CAP=$(tmux capture-pane -t "$PANE" -p 2>/dev/null)
-    PROMPT_LINE=$(printf '%s\n' "$CAP" | grep -n '^❯' | tail -1 | cut -d: -f1)
-    if [ -z "$PROMPT_LINE" ]; then
-        # 入力プロンプトが見当たらない（起動中、modal表示中など）は判定保留
-        continue
+color_working='#f1fa8c'
+color_blocked='#ff5555'
+color_done='#8be9fd'
+color_idle='#50fa7b'
+color_unknown='#6272a4'
+
+# 稼働中はpane_titleの先頭がブライユ点字スピナー
+# UTF-8で E2 A0..A3 xx なので先頭バイト226かつ2バイト目160..163で判別する
+is_spinner_title() {
+    local title=$1
+    printf -v first_byte '%d' "'${title:0:1}" 2>/dev/null || first_byte=0
+    printf -v second_byte '%d' "'${title:1:1}" 2>/dev/null || second_byte=0
+    [ "$first_byte" = 226 ] && [ "$second_byte" -ge 160 ] && [ "$second_byte" -le 163 ]
+}
+
+segments=""
+while IFS="$(printf '\t')" read -r command pane title; do
+    case "$command" in
+        claude|npm|node) ;;
+        *) continue ;;
+    esac
+
+    key=$(printf '%s' "$pane" | tr -c 'A-Za-z0-9' '_')
+    state_file="/tmp/claude_state_$key"
+    model_file="/tmp/claude_model_$key"
+
+    state=unknown
+    seen=1
+    if [ -f "$state_file" ]; then
+        read -r state seen < "$state_file"
     fi
-    # 入力プロンプトの直前15行 = スピナー行＋タスクリストが収まる範囲
-    AREA=$(printf '%s\n' "$CAP" | sed -n "1,$((PROMPT_LINE - 1))p" | tail -n15)
-    printf '%s\n' "$AREA" | grep -qE "… \(([0-9]+m )?[0-9]+s|background tasks still running|Press Ctrl-C again|esc to interrupt" && RUNNING=1
-    # プロンプト下の fork ツリーは稼働中だけ経過時間が増える。行をそのまま署名に足す
-    FORK_LINES=$(printf '%s\n' "$CAP" | sed -n "$((PROMPT_LINE + 1)),\$p" | grep '◯')
-    FORKSIG="$FORKSIG|$PANE:$FORK_LINES"
-done
 
-# fork のカウンタが前回(約1秒前)から変化していれば実行中とみなす
-SNAP="/tmp/tmux_claude_fork_$(printf '%s' "${TMUX}_$1" | tr -c 'A-Za-z0-9' '_')"
-PREV=$(cat "$SNAP" 2>/dev/null)
-printf '%s' "$FORKSIG" > "$SNAP"
-if printf '%s' "$FORKSIG" | grep -q '◯' && [ "$FORKSIG" != "$PREV" ]; then
-    RUNNING=1
-fi
+    # workingのままStopフックが来なかった時の保険
+    # スピナーが消えていれば完了とみなす
+    if [ "$state" = working ] && ! is_spinner_title "$title"; then
+        state=idle
+        seen=1
+        [ "$window_active" = 1 ] || seen=0
+        printf 'idle %s\n' "$seen" > "$state_file"
+    fi
 
-NOW=$(date +%s)
-STAMP="/tmp/tmux_claude_active_$(printf '%s' "${TMUX}_$1" | tr -c 'A-Za-z0-9' '_')"
-if [ "$RUNNING" -eq 1 ]; then
-    echo "$NOW" > "$STAMP"
-    echo "🏃"
-    exit 0
-fi
+    # 選択中のウィンドウを見たら未読(ティール)を既読(緑)にする
+    if [ "$window_active" = 1 ] && [ "$state" = idle ] && [ "$seen" = 0 ]; then
+        printf 'idle 1\n' > "$state_file"
+        seen=1
+    fi
 
-# 完了状態。最後に稼働した時刻から DONE_ICON_HIDE_SEC を超えて放置なら ✅ を消す
-LAST_ACTIVE=$(cat "$STAMP" 2>/dev/null)
-if [ -z "$LAST_ACTIVE" ]; then
-    echo "$NOW" > "$STAMP"
-    LAST_ACTIVE=$NOW
-fi
-if [ $((NOW - LAST_ACTIVE)) -le "$DONE_ICON_HIDE_SEC" ]; then
-    echo "✅"
-fi
+    # 未読(青)とblocked(赤)だけ大きい丸で目立たせる
+    glyph=●
+    case "$state" in
+        working) color=$color_working ;;
+        blocked) color=$color_blocked; glyph=⬤ ;;
+        idle)
+            if [ "$seen" = 0 ]; then
+                color=$color_done; glyph=⬤
+            else
+                color=$color_idle
+            fi
+            ;;
+        *) color=$color_unknown ;;
+    esac
+
+    model=""
+    [ -f "$model_file" ] && model=$(cat "$model_file")
+
+    dot="#[fg=$color]$glyph#[fg=default]"
+    if [ -n "$model" ]; then
+        segments="$segments $dot $model"
+    else
+        segments="$segments $dot"
+    fi
+done < <(tmux list-panes -t "$window_id" -F "#{pane_current_command}$(printf '\t')#{pane_id}$(printf '\t')#{pane_title}" 2>/dev/null)
+
+printf '%s' "${segments# }"
