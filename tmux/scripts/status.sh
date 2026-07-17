@@ -14,13 +14,22 @@ color_done='#8be9fd'
 color_idle='#50fa7b'
 color_unknown='#6272a4'
 
-# 稼働中はpane_titleの先頭がブライユ点字スピナー
-# UTF-8で E2 A0..A3 xx なので先頭バイト226かつ2バイト目160..163で判別する
-is_spinner_title() {
+# pane_titleの先頭2バイトで実状態を推定する
+# ブライユ点字(E2 A0..A3)=稼働中スピナー、記号(E2 9C xx)=完了や待機の印✳✻✽
+# 空やその他は不明として返し、保存状態を保つ
+title_kind() {
     local title=$1
     printf -v first_byte '%d' "'${title:0:1}" 2>/dev/null || first_byte=0
     printf -v second_byte '%d' "'${title:1:1}" 2>/dev/null || second_byte=0
-    [ "$first_byte" = 226 ] && [ "$second_byte" -ge 160 ] && [ "$second_byte" -le 163 ]
+    if [ "$first_byte" != 226 ]; then
+        echo unknown
+    elif [ "$second_byte" -ge 160 ] && [ "$second_byte" -le 163 ]; then
+        echo spinner
+    elif [ "$second_byte" = 156 ]; then
+        echo symbol
+    else
+        echo unknown
+    fi
 }
 
 segments=""
@@ -40,9 +49,17 @@ while IFS="$(printf '\t')" read -r command pane title; do
         read -r state seen < "$state_file"
     fi
 
-    # workingのままStopフックが来なかった時の保険
-    # スピナーが消えていれば完了とみなす
-    if [ "$state" = working ] && ! is_spinner_title "$title"; then
+    # pane_titleで実際の稼働を判断しフックの取りこぼしに勝たせる
+    kind=$(title_kind "$title")
+    if [ "$kind" = spinner ]; then
+        # スピナーが出れば稼働中。赤や古いworkingの固着はここで解除する
+        if [ "$state" != working ]; then
+            state=working
+            seen=1
+            printf 'working 1\n' > "$state_file"
+        fi
+    elif [ "$kind" = symbol ] && [ "$state" = working ]; then
+        # 完了印が出たworkingは完了とみなす
         state=idle
         seen=1
         [ "$window_active" = 1 ] || seen=0
