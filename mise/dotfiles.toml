@@ -2,6 +2,7 @@
 "~/.zshrc" = { source = "~/dotfiles/zsh/zshrc" }
 "~/.zshenv" = { source = "~/dotfiles/zsh/zshenv" }
 "~/.gitconfig" = { source = "~/dotfiles/git/gitconfig" }
+"~/.gitignore_global" = { source = "~/dotfiles/git/gitignore" }
 "~/.editorconfig" = { source = "~/dotfiles/neovim/.editorconfig" }
 "~/.perlcriticrc" = { source = "~/dotfiles/.perlcriticrc" }
 "~/.perltidyrc" = { source = "~/dotfiles/.perltidyrc" }
