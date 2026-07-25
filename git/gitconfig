@@ -37,6 +37,11 @@
     colorMoved = default #移動されたコード ブロックを検出
     histogram = true
 
+[pull]
+  rebase = true
+[rebase]
+  autoStash = true
+
 [credential]
   helper = cache --timeout=3600
 
