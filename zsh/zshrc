@@ -387,3 +387,6 @@ else
 fi
 
 alias personal-claude='CLAUDE_CONFIG_DIR=~/.claude-personal claude'
+
+# Claude Code via LiteLLM (Vertex AI)
+alias claude-litellm='ANTHROPIC_BASE_URL=http://localhost:4000 ANTHROPIC_AUTH_TOKEN=sk-local-dummy ANTHROPIC_MODEL=gemini-pro ANTHROPIC_SMALL_FAST_MODEL=gemini-flash claude'

@@ -32,7 +32,6 @@ if [ -e "${ADDITIONAL_DOTFILES}/mise/dotfiles.toml" ]; then
   git -C "${ADDITIONAL_DOTFILES}" pull || true
   ln -sf "${ADDITIONAL_DOTFILES}/mise/dotfiles.toml" "${HOME}/.config/mise/conf.d/01_private.toml"
   mise dotfiles apply --force --yes
-  "${ADDITIONAL_DOTFILES}/install.sh"
 fi
 
 echo done
