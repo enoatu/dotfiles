@@ -1,5 +1,4 @@
 #!/usr/bin/env zsh
-set -eu
 
 DOTFILES="${DOTFILES:-${HOME}/dotfiles}"
 ADDITIONAL_DOTFILES="${ADDITIONAL_DOTFILES:-${DOTFILES}/private-dotfiles}"
@@ -21,7 +20,7 @@ ln -sf "${DOTFILES}/mise/tasks.toml"    "${HOME}/.config/mise/conf.d/03_tasks.to
 mise plugins add neovim https://github.com/richin13/asdf-neovim.git 2>/dev/null || true
 mise install
 mise run setup
-mise dotfiles apply --force
+mise dotfiles apply --force --yes
 
 # private-dotfiles は token がある時だけ取得する。既にあれば反映する
 if [ ! -e "${ADDITIONAL_DOTFILES}" ] && [ -n "$ADDITIONAL_REPO_GITHUB_TOKEN" ]; then
@@ -32,7 +31,7 @@ fi
 if [ -e "${ADDITIONAL_DOTFILES}/mise/dotfiles.toml" ]; then
   git -C "${ADDITIONAL_DOTFILES}" pull || true
   ln -sf "${ADDITIONAL_DOTFILES}/mise/dotfiles.toml" "${HOME}/.config/mise/conf.d/01_private.toml"
-  mise dotfiles apply --force
+  mise dotfiles apply --force --yes
   "${ADDITIONAL_DOTFILES}/install.sh"
 fi
 
