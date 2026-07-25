@@ -525,46 +525,7 @@ require("lazy").setup({
                         },
                     },
                 })
-                -- git commit -v で開いた内容をもとにコミットメッセージを生成するコマンドを作成する
                 chat = require("CopilotChat")
-                vim.api.nvim_create_user_command("CopilotCommit", function()
-                    chat.ask(
-                        "このコミットバッファのテンプレートと差分をもとに、端的な日本語のコミットメッセージを記述してください。全体を必ず20文字以内に厳守し、超えそうなら助詞やファイル名を削って短くしてください。タイトル1行のみとし本文は付けないでください。形式は体現止め。コメント行(#)や diff、コードブロック記号は出力せず、コミットメッセージ本文だけを出力してください",
-                        {
-                            resources = { "buffer" },
-                            window = {
-                                layout = "float",
-                                relative = "cursor",
-                                width = 1,
-                                height = 0.8,
-                                row = 1,
-                            },
-                            show_help = false,
-                            auto_follow_cursor = true,
-                            callback = function(response)
-                                -- 新しめの CopilotChat は table、古い版は文字列で渡してくる
-                                local text = type(response) == "table" and response.content or response
-                                if type(text) ~= "string" then
-                                    return response
-                                end
-                                vim.schedule(function()
-                                    -- コードブロック記号を除去する
-                                    text = text:gsub("```", "")
-                                    -- 前後の改行を削除する
-                                    text = text:gsub("^\n*", "")
-                                    text = text:gsub("\n*$", "")
-                                    -- レジスタに格納する
-                                    vim.fn.setreg('"', text)
-                                    -- windowを閉じる
-                                    vim.cmd('normal q')
-                                    vim.cmd('normal o')
-                                    vim.cmd('normal! ""p')
-                                end)
-                                return response
-                            end,
-                        }
-                    )
-                end, {})
                 vim.api.nvim_create_user_command("CopilotChatInline", function(args)
                     chat.ask(args.args, {
                         resources = { "selection" },
@@ -1331,3 +1292,41 @@ require("lazy").setup({
         }
     },
 })
+
+-- git commit -v で開いたバッファの差分をもとに claude(haiku) でコミットメッセージを生成する
+vim.api.nvim_create_user_command("ClaudeCommit", function()
+    local buf = vim.api.nvim_get_current_buf()
+    local input = table.concat(vim.api.nvim_buf_get_lines(buf, 0, -1, false), "\n")
+    local prompt = table.concat({
+        "標準入力は git commit -v のバッファです。",
+        "テンプレートと差分をもとに、端的な日本語のコミットメッセージを記述してください。",
+        "全体を必ず20文字以内に厳守し、超えそうなら助詞やファイル名を削って短くしてください。",
+        "タイトル1行のみとし本文は付けないでください。形式は体言止め。",
+        "コメント行(#)や diff、コードブロック記号は出力せず、コミットメッセージ本文だけを出力してください。",
+    }, "")
+    vim.notify("コミットメッセージを生成中...")
+    vim.system(
+        { "claude", "-p", "--model", "haiku", prompt },
+        { stdin = input, text = true },
+        function(res)
+            vim.schedule(function()
+                if res.code ~= 0 then
+                    vim.notify("claude の実行に失敗しました\n" .. (res.stderr or ""), vim.log.levels.ERROR)
+                    return
+                end
+                local text = (res.stdout or ""):gsub("```", ""):gsub("^%s+", ""):gsub("%s+$", "")
+                if text == "" then
+                    vim.notify("コミットメッセージを取得できませんでした", vim.log.levels.WARN)
+                    return
+                end
+                if not vim.api.nvim_buf_is_valid(buf) then
+                    return
+                end
+                -- 1行目が空ならそこへ、そうでなければ先頭に挿入する
+                local first = vim.api.nvim_buf_get_lines(buf, 0, 1, false)[1] or ""
+                local last = first:match("^%s*$") and 1 or 0
+                vim.api.nvim_buf_set_lines(buf, 0, last, false, vim.split(text, "\n"))
+            end)
+        end
+    )
+end, {})
