@@ -1,5 +1,4 @@
 # moove コーディング規約に基づく perltidy 設定
-# 参照: moovibe/rules/perl.md, 実コード: work/Moove2, work/Tamerume
 
 # インデント
 -i=4              # 本体 4 スペース

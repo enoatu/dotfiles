@@ -4,16 +4,6 @@ setopt no_beep
 setopt COMPLETE_IN_WORD
 
 setopt IGNOREEOF
-export EDITOR=nvim
-
-# 日本語を使用
-export LANG=ja_JP.UTF-8
-
-# パスを追加したい場合
-export PATH="$HOME/bin:$PATH"
-
-# 環境によっては$SHELLがない時があるので設定
-export SHELL=`which zsh`
 
 # 隠しファイルも表示
 setopt globdots
@@ -111,7 +101,6 @@ alias vim='nvim'
 # tmux でvimの色おかしい時はこちらを使う
 alias xtmux='TERM=xterm-256color tmux'
 # ta c => company セッション、ta p => private セッション
-# 対象セッションが無ければ新規作成して attach する
 ta() {
   local session_name=$1
   case "$1" in
@@ -183,15 +172,6 @@ zstyle ":chpwd:*" recent-dirs-default true
 # 複数ファイルのmv 例 zmv *.txt *.txt.bk
 autoload -Uz zmv
 alias zmv='noglob zmv -W'
-export PERL5LIB=$HOME/work/Moove/lib:$HOME/work/moove/lib:$PERL5LIB
-export PATH="$HOME/dotfiles/bin:$PATH"
-export PATH="$HOME/dotfiles/installs:$PATH"
-export PATH="$HOME/dotfiles/neovim/install/nvim/bin:$PATH"
-# test
-# [ -d ../node/.nodenv ] && export PATH="$HOME/dotfiles/zsh/nodenv/bin:$PATH"
-# [ -d ../node/.nodenv ] && eval "$(nodenv init -)"
-# [ -f ../node/node_modules/zx/zx.mjs ] && export PATH="
-export PATH="/usr/local/bin:$PATH"
 
 # get_git_branch_description() {
 #   # git-branch-descriptions がない場合return
@@ -242,7 +222,6 @@ export PATH="/usr/local/bin:$PATH"
 # python rye
 # [ -s "$HOME/.rye/env" ] && source "$HOME/.rye/env"
 # export PYTHONPATH=$HOME/.rye/tools/pip/lib/python3.12/site-packages:$PYTHONPATH
-# export PATH="$HOME/.rye/tools/pip/bin:$PATH"
 
 # bun completions
 [ -s "~/.bun/_bun" ] && source "~/.bun/_bun"
@@ -389,4 +368,6 @@ fi
 alias personal-claude='CLAUDE_CONFIG_DIR=~/.claude-personal claude'
 
 # Claude Code via LiteLLM (Vertex AI)
-alias claude-litellm='ANTHROPIC_BASE_URL=http://localhost:4000 ANTHROPIC_AUTH_TOKEN=sk-local-dummy ANTHROPIC_MODEL=gemini-pro ANTHROPIC_SMALL_FAST_MODEL=gemini-flash claude'
+if [ -f "$HOME/dotfiles/private-dotfiles/zsh/zshrc_private" ]; then
+  source "$HOME/dotfiles/private-dotfiles/zsh/zshrc_private"
+fi

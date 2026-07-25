@@ -1,6 +1,5 @@
 /zsh/zshrc.local*
 .project_root
-.dirs_cache*
 /zsh/installs/*
 !/zsh/installs/.gitkeep
 .dirs_recent
@@ -18,3 +17,5 @@ nerd-fonts
 /herdr/release-notes.json
 *.tool-versions
 .DS_Store
+.dirs_cache
+.dirs_cache*

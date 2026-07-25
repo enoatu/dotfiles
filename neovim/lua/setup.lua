@@ -118,6 +118,7 @@ require("lazy").setup({
                         },
                     },
                     filesystem = {
+                        hijack_netrw_behavior = "disabled",
                         follow_current_file = { enabled = true },
                         filtered_items = {
                             hide_dotfiles = false,
@@ -825,6 +826,7 @@ require("lazy").setup({
             "stevearc/oil.nvim",
             config = function()
                 require("oil").setup({
+                    default_file_explorer = true,
                     view_options = {
                         show_hidden = true,
                     },
