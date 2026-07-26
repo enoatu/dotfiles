@@ -31,6 +31,8 @@ fi
 if [ -e "${ADDITIONAL_DOTFILES}/mise/dotfiles.toml" ]; then
   git -C "${ADDITIONAL_DOTFILES}" pull || true
   ln -sf "${ADDITIONAL_DOTFILES}/mise/dotfiles.toml" "${HOME}/.config/mise/conf.d/01_private.toml"
+  ln -sf "${ADDITIONAL_DOTFILES}/mise/tasks.toml"    "${HOME}/.config/mise/conf.d/04_private_tasks.toml"
+  mise run setup-private
   mise dotfiles apply --force --yes
 fi
 

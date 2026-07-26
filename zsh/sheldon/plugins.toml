@@ -1,4 +1,14 @@
 shell = "zsh"
 
+# 補完定義を足すだけなので fpath に入れる。あとの compinit が拾う
+[plugins.zsh-completions]
+github = "zsh-users/zsh-completions"
+dir = "src"
+apply = ["fpath"]
+
 [plugins.zsh-autosuggestions]
 github = "zsh-users/zsh-autosuggestions"
+
+# 打ったコマンドを色づけする。ZLE を包むので最後に読む
+[plugins.fast-syntax-highlighting]
+github = "zdharma-continuum/fast-syntax-highlighting"

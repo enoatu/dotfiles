@@ -146,12 +146,12 @@ setopt hist_no_store         # historyコマンドは登録しない
 setopt hist_reduce_blanks    # 余分な空白は詰めて記録する
 
 ## ZSHプラグイン
-[ -f $HOME/dotfiles/zsh/installs/fzf.zsh ] && source $HOME/dotfiles/zsh/installs/fzf.zsh
+command -v fzf >/dev/null && source <(fzf --zsh)
 [ -f $HOME/dotfiles/zsh/installs/mise.zsh ] && source $HOME/dotfiles/zsh/installs/mise.zsh
 # コマンドを途中まで入力後、historyから絞り込み
 # 例 ls まで打ってCtrl+pでlsコマンドをさかのぼる、Ctrl+bで逆順
 autoload -Uz history-search-end
-# zsh-autosuggestions 灰色の補完。sheldon 管理
+# 灰色の補完と色づけと補完定義。plugins.toml で管理し、fpath は後ろの compinit が拾う
 export SHELDON_CONFIG_DIR="$HOME/dotfiles/zsh/sheldon"
 eval "$(sheldon source)"
 bindkey '^l' autosuggest-accept
