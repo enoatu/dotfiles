@@ -5,6 +5,8 @@ depends = ["setup-zsh", "setup-neovim"]
 run = '''
 mise completion zsh > "$HOME/dotfiles/zsh/installs/mise.zsh"
 SHELDON_CONFIG_DIR="$HOME/dotfiles/zsh/sheldon" sheldon lock
+# 2回 import すると履歴が二重に入るので、まだ DB が無い時だけ取り込む
+[ -f "$HOME/.local/share/atuin/history.db" ] || atuin import zsh
 '''
 
 # coc.nvim 用の node は 18.16.0 を使う

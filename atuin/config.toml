@@ -1,0 +1,10 @@
+enter_accept = true
+
+# 全画面にせず、プロンプトの下に20行だけ出す
+style = "compact"
+inline_height = 20
+inline_height_shell_up_key_binding = 20
+invert = true
+
+[sync]
+records = true
