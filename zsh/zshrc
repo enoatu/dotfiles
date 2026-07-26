@@ -52,8 +52,8 @@ alias .....='cd ../../../..'
 alias rg='rg -i --color=always --line-number --smart-case -.'
 
 # zellij
-alias z='zellij'
-alias zr='zellij run --'
+# alias z='zellij'
+# alias zr='zellij run --'
 
 alias la="ls -A"
 alias ll="ls -ahl"
@@ -157,9 +157,16 @@ bindkey '^l' autosuggest-accept
 bindkey '^]' autosuggest-execute
 
 [ -f $HOME/dotfiles/zsh/installs/mise.zsh ] && source $HOME/dotfiles/zsh/installs/mise.zsh
+
 # コマンドを途中まで入力後、historyから絞り込み
 # 例 ls まで打ってCtrl+pでlsコマンドをさかのぼる、Ctrl+bで逆順
 autoload -Uz history-search-end
+zle -N history-beginning-search-backward-end history-search-end
+zle -N history-beginning-search-forward-end history-search-end
+bindkey "^P" history-beginning-search-backward-end
+bindkey "^N" history-beginning-search-forward-end
+bindkey "^[OA" history-beginning-search-backward-end
+bindkey "^[OB" history-beginning-search-forward-end
 
 
 command -v starship >/dev/null && eval "$(starship init zsh)"
@@ -358,11 +365,11 @@ help() {
   grep '^### ' ~/.zshrc | sed 's/^### //g' | fzf --height 40% --reverse --border --preview="grep -A5 -w {} ~/.zshrc"
 }
 
-if [[ -n "$SSH_CONNECTION" ]]; then
-  export ZELLIJ_CONFIG_FILE="$HOME/.config/zellij/remote.kdl"
-else
-  export ZELLIJ_CONFIG_FILE="$HOME/.config/zellij/local.kdl"
-fi
+# if [[ -n "$SSH_CONNECTION" ]]; then
+#   export ZELLIJ_CONFIG_FILE="$HOME/.config/zellij/remote.kdl"
+# else
+#   export ZELLIJ_CONFIG_FILE="$HOME/.config/zellij/local.kdl"
+# fi
 
 alias personal-claude='CLAUDE_CONFIG_DIR=~/.claude-personal claude'
 

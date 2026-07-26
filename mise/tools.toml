@@ -29,3 +29,6 @@ yarn = "1.22.22"
 # zellij = "0.43.1"
 "npm:zx" = "latest"
 "pipx:trash-cli" = "latest"
+
+[settings]
+experimental = true

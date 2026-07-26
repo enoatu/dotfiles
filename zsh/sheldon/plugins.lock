@@ -1,0 +1,38 @@
+version = "0.8.5"
+home = "/home/cl"
+config_dir = "/home/cl/dotfiles/zsh/sheldon"
+data_dir = "/home/cl/.local/share/sheldon"
+config_file = "/home/cl/dotfiles/zsh/sheldon/plugins.toml"
+
+[[plugins]]
+name = "zsh-completions"
+source_dir = "/home/cl/.local/share/sheldon/repos/github.com/zsh-users/zsh-completions"
+plugin_dir = "/home/cl/.local/share/sheldon/repos/github.com/zsh-users/zsh-completions/src"
+files = []
+apply = ["fpath"]
+
+[plugins.hooks]
+
+[[plugins]]
+name = "zsh-autosuggestions"
+source_dir = "/home/cl/.local/share/sheldon/repos/github.com/zsh-users/zsh-autosuggestions"
+files = ["/home/cl/.local/share/sheldon/repos/github.com/zsh-users/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh"]
+apply = ["source"]
+
+[plugins.hooks]
+
+[[plugins]]
+name = "fast-syntax-highlighting"
+source_dir = "/home/cl/.local/share/sheldon/repos/github.com/zdharma-continuum/fast-syntax-highlighting"
+files = ["/home/cl/.local/share/sheldon/repos/github.com/zdharma-continuum/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"]
+apply = ["source"]
+
+[plugins.hooks]
+
+[templates]
+PATH = 'export PATH="{{ dir }}:$PATH"'
+path = 'path=( "{{ dir }}" $path )'
+fpath = 'fpath=( "{{ dir }}" $fpath )'
+source = """
+{{ hooks?.pre | nl }}{% for file in files %}source "{{ file }}"
+{% endfor %}{{ hooks?.post | nl }}"""

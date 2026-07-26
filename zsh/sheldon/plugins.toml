@@ -12,8 +12,3 @@ github = "zsh-users/zsh-autosuggestions"
 # 打ったコマンドを色づけする。ZLE を包む
 [plugins.fast-syntax-highlighting]
 github = "zdharma-continuum/fast-syntax-highlighting"
-
-# Tab を押す前から候補を出す。自前で compinit を呼ぶので zshrc 側では呼ばない
-# 色づけより後に読む。先に読むと色づけ側が menu-search を知らずに警告を出す
-[plugins.zsh-autocomplete]
-github = "marlonrichert/zsh-autocomplete"
