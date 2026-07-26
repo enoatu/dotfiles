@@ -142,10 +142,14 @@ setopt hist_no_store         # historyコマンドは登録しない
 setopt hist_reduce_blanks    # 余分な空白は詰めて記録する
 
 ## ZSHプラグイン
+command -v fzf >/dev/null && source <(fzf --zsh)
 # Docker CLI の補完。sheldon より前に足さないと compinit に拾われない
 fpath=(${HOME}/.docker/completions $fpath)
 
-autoload -Uz compinit && compinit
+# 補完
+autoload -Uz compinit
+compinit
+
 # 補完と灰色の補完と色づけ。plugins.toml で管理する
 export SHELDON_CONFIG_DIR="$HOME/dotfiles/zsh/sheldon"
 eval "$(sheldon source)"
@@ -153,6 +157,9 @@ bindkey '^l' autosuggest-accept
 bindkey '^]' autosuggest-execute
 
 [ -f $HOME/dotfiles/zsh/installs/mise.zsh ] && source $HOME/dotfiles/zsh/installs/mise.zsh
+# コマンドを途中まで入力後、historyから絞り込み
+# 例 ls まで打ってCtrl+pでlsコマンドをさかのぼる、Ctrl+bで逆順
+autoload -Uz history-search-end
 
 
 command -v starship >/dev/null && eval "$(starship init zsh)"
