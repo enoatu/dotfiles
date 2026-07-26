@@ -908,7 +908,7 @@ require("lazy").setup({
             config = function()
                 require("tree-sitter-manager").setup({
                     ensure_installed = {
-                        "bash", "html", "javascript", "jsdoc", "json",
+                        "bash", "diff", "html", "javascript", "jsdoc", "json",
                         "lua", "luadoc", "luap", "markdown", "markdown_inline",
                         "php", "htmldjango", "python", "query", "regex",
                         "vue", "tsx", "typescript", "vim", "vimdoc", "yaml",
@@ -982,12 +982,6 @@ require("lazy").setup({
                 },
             },
         },
-        {
-            "folke/snacks.nvim", -- lualine で使用
-            opts = {
-                scroll = { enabled = false },
-            },
-        },
         { -- 上部のbufferタブ
             "akinsho/bufferline.nvim",
             config = function()
@@ -1050,6 +1044,13 @@ require("lazy").setup({
                         vim.b[args.buf].is_new_file_cache = nil
                     end,
                 })
+                local function get_hl_color(group)
+                    local hl = vim.api.nvim_get_hl(0, { name = group, link = false })
+                    if hl.fg then
+                        return string.format("#%06x", hl.fg)
+                    end
+                    return nil
+                end
                 return {
                     options = {
                         theme = "auto",
@@ -1095,25 +1096,25 @@ require("lazy").setup({
                             {
                                 function() return require("noice").api.status.command.get() end,
                                 cond = function() return package.loaded["noice"] and require("noice").api.status.command.has() end,
-                                color = { fg = Snacks.util.color("Statement") },
+                                color = { fg = get_hl_color("Statement") },
                             },
                             -- stylua: ignore
                             {
                                 function() return require("noice").api.status.mode.get() end,
                                 cond = function() return package.loaded["noice"] and require("noice").api.status.mode.has() end,
-                                color = { fg = Snacks.util.color("Constant") },
+                                color = { fg = get_hl_color("Constant") },
                             },
                             -- stylua: ignore
                             {
                                 function() return "  " .. require("dap").status() end,
                                 cond = function () return package.loaded["dap"] and require("dap").status() ~= "" end,
-                                color = { fg = Snacks.util.color("Debug") },
+                                color = { fg = get_hl_color("Debug") },
                             },
                             "copilot",
                             {
                                 require("lazy.status").updates,
                                 cond = require("lazy.status").has_updates,
-                                color = { fg = Snacks.util.color("Special") },
+                                color = { fg = get_hl_color("Special") },
                             },
                             {
                                 "diff",

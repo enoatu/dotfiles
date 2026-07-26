@@ -1,13 +1,13 @@
 version = "0.8.5"
-home = "/home/cl"
-config_dir = "/home/cl/dotfiles/zsh/sheldon"
-data_dir = "/home/cl/.local/share/sheldon"
-config_file = "/home/cl/dotfiles/zsh/sheldon/plugins.toml"
+home = "/home/enotiru"
+config_dir = "/home/enotiru/dotfiles/zsh/sheldon"
+data_dir = "/home/enotiru/.local/share/sheldon"
+config_file = "/home/enotiru/dotfiles/zsh/sheldon/plugins.toml"
 
 [[plugins]]
 name = "zsh-completions"
-source_dir = "/home/cl/.local/share/sheldon/repos/github.com/zsh-users/zsh-completions"
-plugin_dir = "/home/cl/.local/share/sheldon/repos/github.com/zsh-users/zsh-completions/src"
+source_dir = "/home/enotiru/.local/share/sheldon/repos/github.com/zsh-users/zsh-completions"
+plugin_dir = "/home/enotiru/.local/share/sheldon/repos/github.com/zsh-users/zsh-completions/src"
 files = []
 apply = ["fpath"]
 
@@ -15,16 +15,16 @@ apply = ["fpath"]
 
 [[plugins]]
 name = "zsh-autosuggestions"
-source_dir = "/home/cl/.local/share/sheldon/repos/github.com/zsh-users/zsh-autosuggestions"
-files = ["/home/cl/.local/share/sheldon/repos/github.com/zsh-users/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh"]
+source_dir = "/home/enotiru/.local/share/sheldon/repos/github.com/zsh-users/zsh-autosuggestions"
+files = ["/home/enotiru/.local/share/sheldon/repos/github.com/zsh-users/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh"]
 apply = ["source"]
 
 [plugins.hooks]
 
 [[plugins]]
 name = "fast-syntax-highlighting"
-source_dir = "/home/cl/.local/share/sheldon/repos/github.com/zdharma-continuum/fast-syntax-highlighting"
-files = ["/home/cl/.local/share/sheldon/repos/github.com/zdharma-continuum/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"]
+source_dir = "/home/enotiru/.local/share/sheldon/repos/github.com/zdharma-continuum/fast-syntax-highlighting"
+files = ["/home/enotiru/.local/share/sheldon/repos/github.com/zdharma-continuum/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"]
 apply = ["source"]
 
 [plugins.hooks]
