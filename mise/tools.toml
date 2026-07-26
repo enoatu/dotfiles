@@ -1,5 +1,4 @@
 [tools]
-atuin = "latest"
 aws-cli = "latest"
 bun = "1.1.8"
 delta = "0.18.2"

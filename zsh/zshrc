@@ -145,8 +145,8 @@ setopt hist_reduce_blanks    # 余分な空白は詰めて記録する
 # Docker CLI の補完。sheldon より前に足さないと compinit に拾われない
 fpath=(${HOME}/.docker/completions $fpath)
 
+autoload -Uz compinit && compinit
 # 補完と灰色の補完と色づけ。plugins.toml で管理する
-# zsh-autocomplete が compinit を内部で呼ぶので、自前の compinit は書かない
 export SHELDON_CONFIG_DIR="$HOME/dotfiles/zsh/sheldon"
 eval "$(sheldon source)"
 bindkey '^l' autosuggest-accept
@@ -154,9 +154,6 @@ bindkey '^]' autosuggest-execute
 
 [ -f $HOME/dotfiles/zsh/installs/mise.zsh ] && source $HOME/dotfiles/zsh/installs/mise.zsh
 
-# 履歴を SQLite に置き換えて Ctrl+r と 上キー を検索にする
-# zsh-autocomplete より後に書かないと Ctrl+r を取られる
-command -v atuin >/dev/null && eval "$(atuin init zsh)"
 
 command -v starship >/dev/null && eval "$(starship init zsh)"
 

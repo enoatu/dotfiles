@@ -6,7 +6,6 @@
 "~/.editorconfig" = { source = "~/dotfiles/neovim/.editorconfig" }
 "~/.perlcriticrc" = { source = "~/dotfiles/.perlcriticrc" }
 "~/.perltidyrc" = { source = "~/dotfiles/.perltidyrc" }
-"~/.config/atuin/config.toml" = { source = "~/dotfiles/atuin/config.toml" }
 "~/.config/starship.toml" = { source = "~/dotfiles/zsh/starship.toml" }
 "~/.config/zellij" = { source = "~/dotfiles/zellij" }
 # "~/.config/herdr" = { source = "~/dotfiles/herdr" }  # herdr 停止中
