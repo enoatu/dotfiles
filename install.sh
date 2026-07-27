@@ -36,4 +36,8 @@ if [ -e "${ADDITIONAL_DOTFILES}/mise/dotfiles.toml" ]; then
   mise dotfiles apply --force --yes
 fi
 
+if command -v crit >/dev/null 2>&1; then
+  crit install claude-code
+fi
+
 echo done
