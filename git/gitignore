@@ -1,5 +1,8 @@
 enotiru-my-box
 .precommit-exec*
 .claude
+CLAUDE.md
+AGENTS.md
+GEMINI.md
 .vim
 .serena/
