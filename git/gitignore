@@ -2,6 +2,7 @@ enotiru-my-box
 .precommit-exec*
 .claude
 CLAUDE.md
+CLAUDE.local.md
 AGENTS.md
 GEMINI.md
 .vim
