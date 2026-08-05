@@ -1,0 +1,6 @@
+theme = "custom"
+
+[custom_theme]
+base = "github-dark-default"
+addedContentBg = "#1f6f35"
+removedContentBg = "#8b2028"
