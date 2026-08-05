@@ -1,17 +1,25 @@
 #!/usr/bin/env zx
 $.verbose = true
 
+const script_args = process.argv.slice(3)
+const separator_index = script_args.indexOf('--')
+const paths = separator_index === -1 ? [] : script_args.slice(separator_index + 1)
+const pathspec = paths.length ? ['--', ...paths] : []
+const options = separator_index === -1 ? script_args : script_args.slice(0, separator_index)
+
 if (argv.staged || argv.s) {
   // show diff staging files
-  const result = await $`git diff --name-only --staged | sort`
+  const result = await $`git diff --name-only --staged ${pathspec} | sort`
   console.log(result.stdout)
   process.exit()
 }
 
+const target_branch = options.find((option) => !option.startsWith('-'))
+
 let arg = ''
-if (argv._[0]) {
+if (target_branch) {
   // show diff branch etc..
-  arg = argv._[0]
+  arg = target_branch
 } else if (argv.default || argv.d) {
   // show diff default remote branch
   const defaultRemoteBranch = await $`git remote show origin | grep 'HEAD branch' | awk '{print $NF}'`
@@ -24,7 +32,6 @@ if (argv._[0]) {
 const is_untracked = argv.untracked || argv.u
 
 const result = is_untracked
-  ? await $`cat <(git status -u --short | grep "^\?\?" | cut -d' ' -f 2) <(git diff --name-only ${arg}) | sort`
-  :
-   await $`git diff --name-only ${arg} | sort`
+  ? await $`cat <(git status -u --short ${pathspec} | grep "^\?\?" | cut -d' ' -f 2) <(git diff --name-only ${arg} ${pathspec}) | sort`
+  : await $`git diff --name-only ${arg} ${pathspec} | sort`
 console.log(result.stdout)
