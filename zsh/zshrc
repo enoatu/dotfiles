@@ -117,7 +117,9 @@ gitstashpopreset() {
   git checkout --ours . && git reset && git checkout .
 }
 
-alias v='(){vim $(gitdiffls $1)}'
+v() {
+  vim $(gitdiffls "$@")
+}
 
 # mise
 eval "$(${HOME}/.local/bin/mise activate zsh)"
