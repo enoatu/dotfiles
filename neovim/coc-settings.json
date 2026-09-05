@@ -1,6 +1,8 @@
 {
   // --- 全般 ---
   "coc.preferences.extensionUpdateCheck": "daily",
+  "codeLens.enable": true,
+  "codeLens.position": "top",
   "suggest.floatConfig": {
     "border": false
   },
@@ -33,6 +35,10 @@
 
   // --- TypeScript ---
   "typescript.preferGoToSourceDefinition": true,
+  "typescript.referencesCodeLens.enabled": true,
+  "typescript.implementationsCodeLens.enabled": true,
+  "javascript.referencesCodeLens.enabled": true,
+  "javascript.implementationsCodeLens.enabled": true,
   "tsserver.experimental.enableProjectDiagnostics": true,
   "volar.useWorkspaceTsdk": false,
 
@@ -109,5 +115,9 @@
   ],
   "cSpell.userWords": [
     "eyecatch"
-  ]
+  ],
+  "json.schemaDownload.trustedDomains": {
+    "https://www.schemastore.org": true,
+    "https://raw.githubusercontent.com": true
+  }
 }

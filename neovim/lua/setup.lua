@@ -126,13 +126,14 @@ require("lazy").setup({
                         },
                     },
                     buffers = {
-                        show_unloaded = false,
+                        bind_to_cwd = false,
+                        show_unloaded = true,
                     },
                 })
 
                 vim.keymap.set("n", "<leader>e", "<cmd>Neotree toggle<CR>", { desc = "NeoTree Toggle", silent = true })
-                vim.keymap.set("n", "<C-k>", "<cmd>Neotree toggle buffers reveal<CR>", { desc = "NeoTree Buffers Toggle", silent = true })
-                vim.keymap.set("n", "<leader>b", "<cmd>Neotree buffers reveal<CR>", { desc = "NeoTree Buffers", silent = true })
+                vim.keymap.set("n", "<C-k>", "<cmd>Neotree toggle buffers reveal dir=/<CR>", { desc = "NeoTree Buffers Toggle", silent = true })
+                vim.keymap.set("n", "<leader>b", "<cmd>Neotree buffers reveal dir=/<CR>", { desc = "NeoTree Buffers", silent = true })
             end,
         },
         {
@@ -143,7 +144,22 @@ require("lazy").setup({
                 vim.api.nvim_set_hl(0, "GitSignsChangeInline", { bg = "#013369" })
                 vim.api.nvim_set_hl(0, "GitSignsDeleteInline", { bg = "#802B26" })
 
+                local function default_branch()
+                    local head = vim.fn.systemlist({ "git", "symbolic-ref", "--short", "refs/remotes/origin/HEAD" })[1]
+                    if vim.v.shell_error == 0 and head and head ~= "" then
+                        return head
+                    end
+                    for _, branch in ipairs({ "origin/main", "origin/master", "main", "master" }) do
+                        vim.fn.system({ "git", "rev-parse", "--verify", "--quiet", branch })
+                        if vim.v.shell_error == 0 then
+                            return branch
+                        end
+                    end
+                    return nil
+                end
+
                 require("gitsigns").setup({
+                    base = default_branch(),
                     signs = {
                         add = { text = "▌+" },
                         change = { text = "▌~" },
@@ -155,7 +171,7 @@ require("lazy").setup({
                     numhl = true, -- Toggle with `:Gitsigns toggle_numhl`
                     linehl = false, -- Toggle with `:Gitsigns toggle_linehl` coc-spell-checker とハイライトがぶつかる
                     --  word_diff = true, -- Toggle with `:Gitsigns toggle_word_diff`
-                    current_line_blame = true,
+                    current_line_blame = false,
                     attach_to_untracked = true,
                     on_attach = function(bufnr)
                         local gitsigns = package.loaded.gitsigns
@@ -359,6 +375,11 @@ require("lazy").setup({
                 vim.keymap.set("n", "dp", ":diffput<CR>")
             end,
         },
+        { -- 差分をストーリーで読む
+            dir = "~/MyDevelopment/nvim-storiff",
+            -- "enoatu/nvim-storiff",
+            opts = {},
+        },
         { -- バッファ管理
             "enoatu/vim-bufferlist", -- vimscript
             -- dir = "~/MyDevelopment/vim-bufferlist",
@@ -539,13 +560,6 @@ require("lazy").setup({
                         },
                     })
                 end, { nargs = "*", range = true })
-                -- shortcut Explain
-                vim.keymap.set(
-                  { "n", "v" },
-                  "ee",
-                  ":CopilotChatExplain<CR>",
-                  { noremap = true, silent = true, desc = "AIにコードの説明をお願いする" }
-                )
             end,
         },
         {
@@ -1220,6 +1234,21 @@ require("lazy").setup({
                 })
             end,
         },
+        {
+            "hedyhli/outline.nvim",
+            config = function()
+                -- Example mapping to toggle outline
+                vim.keymap.set("n", "<leader>o", "<cmd>Outline<CR>",
+                { desc = "Toggle Outline" })
+
+                require("outline").setup {
+                    -- Your setup opts here (leave empty to use defaults)
+                    symbol_folding = {
+                      autofold_depth = false,
+                    },
+                }
+            end,
+        },
         { -- キーマップを表示 (leader + sk)
             "folke/which-key.nvim",
         },
@@ -1296,16 +1325,84 @@ require("lazy").setup({
     },
 })
 
+-- 説明文をカーソル位置のフロート窓に表示する。q か <Esc> で閉じる
+local function open_explain_float(text)
+    local lines = vim.split(text, "\n")
+    local width = math.min(80, math.floor(vim.o.columns * 0.6))
+    local height = 0
+    for _, line in ipairs(lines) do
+        height = height + math.max(1, math.ceil(vim.fn.strdisplaywidth(line) / width))
+    end
+    local buf = vim.api.nvim_create_buf(false, true)
+    vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+    vim.bo[buf].filetype = "markdown"
+    vim.bo[buf].modifiable = false
+    local win = vim.api.nvim_open_win(buf, true, {
+        relative = "cursor",
+        row = 1,
+        col = 0,
+        width = width,
+        height = math.min(height, math.floor(vim.o.lines * 0.5)),
+        border = "rounded",
+        style = "minimal",
+    })
+    vim.wo[win].wrap = true
+    vim.wo[win].linebreak = true
+    vim.keymap.set("n", "q", "<cmd>close<CR>", { buffer = buf, nowait = true, silent = true })
+    vim.keymap.set("n", "<Esc>", "<cmd>close<CR>", { buffer = buf, nowait = true, silent = true })
+end
+
+-- 選択範囲(なければバッファ全体)のコードを claude(haiku) で説明する
+vim.api.nvim_create_user_command("ClaudeExplain", function(args)
+    local buf = vim.api.nvim_get_current_buf()
+    local first = args.range > 0 and args.line1 - 1 or 0
+    local last = args.range > 0 and args.line2 or -1
+    local code = table.concat(vim.api.nvim_buf_get_lines(buf, first, last, false), "\n")
+    local prompt = table.concat({
+        "標準入力は " .. (vim.bo[buf].filetype ~= "" and vim.bo[buf].filetype or "テキスト") .. " のコードです。",
+        "何をしているコードなのかを日本語でわかりやすく説明してください。",
+        "前置きや締めの文は書かず、説明だけを出力してください。",
+    }, "")
+    vim.notify("コードの説明を生成中...")
+    vim.system(
+        { "claude", "-p", "--model", "haiku", prompt },
+        { stdin = code, text = true },
+        function(res)
+            vim.schedule(function()
+                if res.code ~= 0 then
+                    vim.notify("claude の実行に失敗しました\n" .. (res.stderr or ""), vim.log.levels.ERROR)
+                    return
+                end
+                local text = (res.stdout or ""):gsub("^%s+", ""):gsub("%s+$", "")
+                if text == "" then
+                    vim.notify("説明を取得できませんでした", vim.log.levels.WARN)
+                    return
+                end
+                open_explain_float(text)
+            end)
+        end
+    )
+end, { range = true })
+
+vim.keymap.set(
+  { "n", "v" },
+  "ee",
+  ":ClaudeExplain<CR>",
+  { noremap = true, silent = true, desc = "AIにコードの説明をお願いする" }
+)
+
 -- git commit -v で開いたバッファの差分をもとに claude(haiku) でコミットメッセージを生成する
 vim.api.nvim_create_user_command("ClaudeCommit", function()
     local buf = vim.api.nvim_get_current_buf()
     local input = table.concat(vim.api.nvim_buf_get_lines(buf, 0, -1, false), "\n")
     local prompt = table.concat({
         "標準入力は git commit -v のバッファです。",
-        "テンプレートと差分をもとに、端的な日本語のコミットメッセージを記述してください。",
-        "全体を必ず20文字以内に厳守し、超えそうなら助詞やファイル名を削って短くしてください。",
-        "タイトル1行のみとし本文は付けないでください。形式は体言止め。",
-        "コメント行(#)や diff、コードブロック記号は出力せず、コミットメッセージ本文だけを出力してください。",
+        "scissors 行より下の diff が実際の変更内容なので、必ず diff を読んで何を変えたのかを記述してください。",
+        "ファイル名や「変更」「修正」だけで終わらせず、追加した機能や変わった挙動が読み取れる日本語にしてください。",
+        "変更が複数あるときは主要なものを1つ選んでください。",
+        "バッファ冒頭のテンプレートに絵文字の一覧があるときだけ、その一覧の中から変更内容に合うものを先頭に付けてください。一覧にない絵文字は使わないでください。",
+        "出力はコミットメッセージ1行だけとし、30文字以内に収めてください。形式は体言止め。",
+        "前置き、説明、コメント行(#)、diff、コードブロック記号は一切出力しないでください。",
     }, "")
     vim.notify("コミットメッセージを生成中...")
     vim.system(
