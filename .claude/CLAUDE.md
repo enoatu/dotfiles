@@ -18,3 +18,7 @@ nvim --server "$SOCK" --remote-expr 'execute("luafile /tmp/x.lua") . luaeval("_G
 
 - `cmd` の `~` は展開されない → `vim.fn.expand()`
 - `vim.lsp.enable` は filetypes 必須。全ファイル対応なら自前 `BufReadPost` autocmd で `vim.lsp.start`。
+
+## 外部プラグインの install / build
+
+信頼していない外部リポジトリやプラグインで依存インストールやビルドを走らせる前に、package.json の scripts と postinstall などの lifecycle hook、依存パッケージ、registry 設定を読んで不審な点が無いか確認する。postinstall は任意コードを実行できるので、承認を得ていても無確認では走らせない。
