@@ -342,16 +342,6 @@ require("lazy").setup({
             end,
             enabled = false,
         },
-        { -- バッファをディレクトリ毎に色分けして表示、C-sでソート切替
-            "enoatu/buffer-scope.nvim",
-            dependencies = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" },
-            keys = {
-                { "<C-p>", "<cmd>Telescope buffer_scope buffers<cr>", mode = "n", desc = "Buffer Scope" },
-            },
-            config = function()
-                require("buffer-scope").setup({})
-            end,
-        },
         { -- 囲む
             "kylechui/nvim-surround",
             config = function()
