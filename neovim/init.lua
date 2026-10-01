@@ -4,6 +4,7 @@ require("lazy-ready")
 require("setup")
 require("switch-indent")
 require("switch-gutter")
+require("hover-translate")
 require("override")
 -- 例: 「=」キーに対する動作を設定
 --local smartchr2 = require("smartchr2")
