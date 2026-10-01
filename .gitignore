@@ -15,6 +15,9 @@ nerd-fonts
 /herdr/*.sock
 /herdr/session.json
 /herdr/release-notes.json
+/herdr/.plugins.lock
+/herdr/*.sock.agent
+/herdr/session-snapshots/
 *.tool-versions
 .DS_Store
 .dirs_cache

@@ -11,9 +11,15 @@ focus_pane_down = "prefix+j"
 focus_pane_up = "prefix+k"
 focus_pane_right = "prefix+l"
 
-# 分割 \ で左右 - で上下 (| はshift併用でherdrが受理しないため \ を使う)
-split_vertical = "prefix+backslash"
+# 分割 | で左右 - で上下
+split_vertical = "prefix+|"
 split_horizontal = "prefix+minus"
+
+# リサイズ方法
+# 1. prefix+r を押す
+# 2. h を続けて押すと、境界が左に動く
+# 3. Esc か Enter で抜ける。時間がたっても自動では抜けない
+resize_mode = "prefix+r"
 
 # ワークスペース移動 vim 風の kj (navigate mode 中 矢印上下は使わない)
 navigate_workspace_up = "k"
@@ -29,6 +35,19 @@ next_agent = "prefix+shift+j"
 # ワークスペース前後切替 vim 風の HL (agent の kj と対 左右=workspace 上下=agent)
 previous_workspace = "prefix+shift+h"
 next_workspace = "prefix+shift+l"
+
+# tmux の prefix+n にそろえる 右に分割して claude を起動する
+next_tab = ""
+[[keys.command]]
+key = "prefix+n"
+type = "shell"
+command = 'herdr pane run "$(herdr pane split "$HERDR_ACTIVE_PANE_ID" --direction right --cwd "$PWD" --focus | jq -r .result.pane.pane_id)" "exec claude"'
+
+# tmux の prefix+f にそろえる 右に分割して今の会話を fork した claude を起動する
+[[keys.command]]
+key = "prefix+f"
+type = "shell"
+command = "~/dotfiles/herdr/scripts/claude-fork.sh"
 
 [terminal]
 # 分割時に元ペインの作業ディレクトリを引き継ぐ
