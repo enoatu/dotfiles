@@ -368,6 +368,7 @@ require("lazy").setup({
         { -- 差分をストーリーで読む
             dir = "~/MyDevelopment/nvim-storiff",
             -- "enoatu/nvim-storiff",
+            cond = vim.fn.isdirectory(vim.fn.expand("~/MyDevelopment/nvim-storiff")) == 1,
             opts = {},
         },
         { -- バッファ管理
