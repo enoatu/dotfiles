@@ -41,7 +41,7 @@ next_tab = ""
 [[keys.command]]
 key = "prefix+n"
 type = "shell"
-command = 'herdr pane run "$(herdr pane split "$HERDR_ACTIVE_PANE_ID" --direction right --cwd "$PWD" --focus | jq -r .result.pane.pane_id)" "exec claude"'
+command = '"$HERDR_BIN_PATH" pane run "$("$HERDR_BIN_PATH" pane split "$HERDR_ACTIVE_PANE_ID" --direction right --cwd "$PWD" --focus | jq -r .result.pane.pane_id)" "exec claude"'
 
 # tmux の prefix+f にそろえる 右に分割して今の会話を fork した claude を起動する
 [[keys.command]]
