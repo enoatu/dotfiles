@@ -75,6 +75,13 @@ alias exsh='exec $SHELL -l'
 
 alias de='~/dotfiles/bin/docker_exec.sh'
 
+# CDP 操作先の Chrome(.chrome-debug プロファイル)とは別インスタンスで、普段使いのプロファイルを開く
+# open -a だと起動中の CDP 側に窓が足されるだけなので -na で新インスタンスにする
+alias chrome='open -na "Google Chrome" --args --user-data-dir="$HOME/Library/Application Support/Google/Chrome" --profile-directory=Default'
+
+# mac-browser skill が操作する Chrome を立ち上げる
+alias mac-browser='~/dotfiles/bin/mac_browser.sh'
+
 alias a='git add . && git status'
 alias ga='g a'
 alias r='git reset && git status'

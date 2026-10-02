@@ -57,6 +57,15 @@ new_cwd = "follow"
 mouse_capture = true
 # フォーカス復帰時の全画面再描画を止めてペイン切替の点滅を抑える
 redraw_on_focus_gained = false
+# ホイール1回のスクロール量を4行にする
+mouse_scroll_lines = 4
+# 対応が必要な agent を上に並べ、状態を色だけでなく記号の形でも見分ける
+agent_panel_sort = "priority"
+status_indicators = "symbols"
+
+# claude の行には claude が出しているターミナルタイトルを足す
+[ui.sidebar.agents.rows_by_agent]
+claude = [["state_icon", "machine", "workspace", "tab"], ["terminal_title_stripped"], ["agent"]]
 
 # 通知は herdr 画面内トーストで出す (SSH 先の system 通知は手元に届かないため)
 [ui.toast]

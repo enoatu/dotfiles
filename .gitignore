@@ -2,6 +2,7 @@
 .project_root
 /zsh/installs/*
 !/zsh/installs/.gitkeep
+/zsh/sheldon/plugins.lock
 .dirs_recent
 bin/setlocalgit
 /installs/*

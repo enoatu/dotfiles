@@ -15,4 +15,3 @@
 "~/.config/nvim/coc-settings.json" = { source = "~/dotfiles/neovim/coc-settings.json" }
 "~/.config/nvim/lazy-lock.json" = { source = "~/dotfiles/neovim/lazy-lock.json" }
 "~/.tmux.conf" = { source = "~/dotfiles/tmux/tmux.conf.tmpl", mode = "template" }
-"~/.local/share/sheldon/plugins.lock" = { source = "~/dotfiles/zsh/sheldon/plugins.lock" }
