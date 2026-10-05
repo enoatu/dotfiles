@@ -3,10 +3,10 @@
 # 分割元のペインで claude が開いていればその会話を fork し、なければ直近の会話を fork する
 
 session_id=$(cat "/tmp/claude_session_ids/$HERDR_ACTIVE_PANE_ID" 2>/dev/null)
-new_pane_id=$(herdr pane split "$HERDR_ACTIVE_PANE_ID" --direction right --cwd "$PWD" --focus | jq -r .result.pane.pane_id)
+new_pane_id=$("$HERDR_BIN_PATH" pane split "$HERDR_ACTIVE_PANE_ID" --direction right --cwd "$PWD" --focus | jq -r .result.pane.pane_id)
 
 if [ -n "$session_id" ]; then
-    exec herdr pane run "$new_pane_id" "exec claude --resume $session_id --fork-session"
+    exec "$HERDR_BIN_PATH" pane run "$new_pane_id" "exec claude --resume $session_id --fork-session"
 fi
 
-exec herdr pane run "$new_pane_id" "exec claude -c --fork-session"
+exec "$HERDR_BIN_PATH" pane run "$new_pane_id" "exec claude -c --fork-session"
