@@ -112,62 +112,20 @@ vim.keymap.set({ "i", "n" }, "<esc>", "<esc>", { desc = "Escape and clear hlsear
 vim.keymap.set("v", "<leader>sa", ":sort<CR>", { noremap = true, silent = true, desc = "選択範囲をabc順で並び替え" })
 vim.keymap.set("n", "<leader>sa", ":%sort<CR>", { noremap = true, silent = true, desc = "全体をabc順で並び替え" })
 
--- ec: 同じ tmux ウィンドウ内の Claude Code ペインに現在位置/選択範囲を送る
-local function is_claude_exe(cmd)
-    -- 引数 (e.g. ".claude/settings.json") に "claude" が含まれる誤検出を避けるため
-    -- コマンドの basename のみで判定する
-    local base = (cmd or ""):match("([^/]+)$") or ""
-    return base == "claude" or base:match("^claude%-")
-end
-
+-- ec: 同じ herdr タブ内の Claude Code ペインに現在位置/選択範囲を送る
 local function find_claude_pane()
-    if vim.env.TMUX == nil or vim.env.TMUX == "" then
-        return nil, "tmux 環境ではありません"
+    if vim.env.HERDR_TAB_ID == nil or vim.env.HERDR_TAB_ID == "" then
+        return nil, "herdr 環境ではありません"
     end
-    local panes = vim.fn.systemlist({
-        "tmux", "list-panes", "-F", "#{pane_id} #{pane_active} #{pane_current_command} #{pane_pid}",
-    })
+    local result = vim.fn.system({ "herdr", "pane", "list", "--workspace", vim.env.HERDR_WORKSPACE_ID })
     if vim.v.shell_error ~= 0 then
-        return nil, "tmux list-panes 失敗"
+        return nil, "herdr pane list 失敗"
     end
 
-    local need_tree = {}
-    for _, line in ipairs(panes) do
-        local pane_id, active, cmd, pid = line:match("^(%S+)%s+(%S+)%s+(%S+)%s+(%S+)$")
-        if pane_id and active ~= "1" then
-            if is_claude_exe(cmd) then
-                return pane_id
-            end
-            need_tree[#need_tree + 1] = { pane_id = pane_id, pid = tonumber(pid) }
+    for _, pane in ipairs(vim.json.decode(result).result.panes) do
+        if pane.tab_id == vim.env.HERDR_TAB_ID and pane.pane_id ~= vim.env.HERDR_PANE_ID and pane.agent == "claude" then
+            return pane.pane_id
         end
-    end
-    if #need_tree == 0 then
-        return nil, "Claude ペインが見つかりません"
-    end
-
-    -- フォールバック: pane の foreground process が claude でない場合だけ ps ツリーを走査
-    local by_ppid = {}
-    for _, line in ipairs(vim.fn.systemlist({ "ps", "-ax", "-o", "pid=,ppid=,command=" })) do
-        local pid_s, ppid_s, cmd = line:match("^%s*(%d+)%s+(%d+)%s+(.*)$")
-        if pid_s then
-            local ppid = tonumber(ppid_s)
-            by_ppid[ppid] = by_ppid[ppid] or {}
-            table.insert(by_ppid[ppid], { pid = tonumber(pid_s), command = cmd })
-        end
-    end
-    local function tree_has_claude(root)
-        local queue = { root }
-        while #queue > 0 do
-            local pid = table.remove(queue, 1)
-            for _, c in ipairs(by_ppid[pid] or {}) do
-                if is_claude_exe(c.command:match("^(%S+)")) then return true end
-                table.insert(queue, c.pid)
-            end
-        end
-        return false
-    end
-    for _, p in ipairs(need_tree) do
-        if tree_has_claude(p.pid) then return p.pane_id end
     end
     return nil, "Claude ペインが見つかりません"
 end
@@ -178,10 +136,9 @@ local function paste_to_claude(msg)
         vim.notify(err, vim.log.levels.WARN)
         return
     end
-    -- -p で bracketed paste (改行を Enter 扱いさせない)、-d で paste 後に buffer を削除
-    vim.fn.system({ "tmux", "load-buffer", "-b", "nvim_ec", "-" }, msg)
-    vim.fn.system({ "tmux", "paste-buffer", "-p", "-d", "-b", "nvim_ec", "-t", pane_id })
-    vim.fn.system({ "tmux", "select-pane", "-t", pane_id })
+    -- bracketed paste で囲み、改行を Enter 扱いさせない
+    vim.fn.system({ "herdr", "pane", "send-text", pane_id, "\27[200~" .. msg .. "\27[201~" })
+    vim.fn.system({ "herdr", "agent", "focus", pane_id })
 end
 
 local function build_message(lines, line1, line2)

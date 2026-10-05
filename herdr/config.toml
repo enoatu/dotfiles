@@ -49,6 +49,12 @@ key = "prefix+f"
 type = "shell"
 command = "~/dotfiles/herdr/scripts/claude-fork.sh"
 
+# tmux の prefix+y にそろえる claude 完了の ntfy 通知を ON と OFF で切り替える
+[[keys.command]]
+key = "prefix+y"
+type = "shell"
+command = 'flag=/tmp/claude_ntfy_enabled; if [ -f "$flag" ]; then rm -f "$flag"; herdr notification show "ntfy OFF" --sound none; else : > "$flag"; herdr notification show "ntfy ON" --sound none; fi'
+
 [terminal]
 # 分割時に元ペインの作業ディレクトリを引き継ぐ
 new_cwd = "follow"
