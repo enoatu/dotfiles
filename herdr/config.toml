@@ -28,6 +28,9 @@ navigate_workspace_down = "j"
 # ワークスペース名変更 tmux の prefix+, にそろえる
 rename_workspace = "prefix+comma"
 
+# タブ削除 tmux の prefix+& にそろえる
+close_tab = "prefix+ampersand"
+
 # agent 移動 vim 風の kj (shift 併用 k=前 j=次)
 previous_agent = "prefix+shift+k"
 next_agent = "prefix+shift+j"
