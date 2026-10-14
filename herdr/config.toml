@@ -11,9 +11,9 @@ focus_pane_down = "prefix+j"
 focus_pane_up = "prefix+k"
 focus_pane_right = "prefix+l"
 
-# 分割 | で左右 - で上下
-split_vertical = "prefix+|"
-split_horizontal = "prefix+minus"
+# 分割 | で左右 - で上下 claude のペインなら claude が作業している worktree で開く
+split_vertical = ""
+split_horizontal = ""
 
 # リサイズ方法
 # 1. prefix+r を押す
@@ -41,7 +41,17 @@ next_tab = ""
 [[keys.command]]
 key = "prefix+n"
 type = "shell"
-command = '"$HERDR_BIN_PATH" pane run "$("$HERDR_BIN_PATH" pane split "$HERDR_ACTIVE_PANE_ID" --direction right --cwd "$PWD" --focus | jq -r .result.pane.pane_id)" "claude"'
+command = '"$HERDR_BIN_PATH" pane run "$(~/dotfiles/herdr/scripts/split-pane.sh right)" "claude"'
+
+[[keys.command]]
+key = "prefix+|"
+type = "shell"
+command = "~/dotfiles/herdr/scripts/split-pane.sh right"
+
+[[keys.command]]
+key = "prefix+minus"
+type = "shell"
+command = "~/dotfiles/herdr/scripts/split-pane.sh down"
 
 # tmux の prefix+f にそろえる 右に分割して今の会話を fork した claude を起動する
 [[keys.command]]
