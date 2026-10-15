@@ -2,27 +2,25 @@ version: '3.7'
 services:
   ubuntu:
     build:
-      context: .
-      dockerfile: ./ubuntu/Dockerfile
+      context: ..
+      dockerfile: ./docker/ubuntu/Dockerfile
     tty: true
     volumes:
-      - ./enotiru-my-box:/mnt
-    # command: '/bin/bash -c "git clone https://github.com/enoatu/dotfiles --depth 1&& cd dotfiles && ADDITIONAL_REPO_GITHUB_TOKEN= ./install.sh"'
+      - ./${USER}-my-box:/mnt
   debian:
     build:
-      context: .
-      dockerfile: ./debian/Dockerfile
+      context: ..
+      dockerfile: ./docker/debian/Dockerfile
     tty: true
     volumes:
-      - ./enotiru-my-box:/mnt
+      - ./${USER}-my-box:/mnt
   bookworm:
     build:
-      context: .
-      dockerfile: ./debian/bookworm/Dockerfile
+      context: ..
+      dockerfile: ./docker/debian/bookworm/Dockerfile
     tty: true
     volumes:
-      - ./enotiru-my-box:/mnt
-    # command: '/bin/bash -c "git clone https://github.com/enoatu/dotfiles --depth 1&& cd dotfiles && ADDITIONAL_REPO_GITHUB_TOKEN= ./install.sh"'
+      - ./${USER}-my-box:/mnt
   #centos:
   #  build:
   #    context: .

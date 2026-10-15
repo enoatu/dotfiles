@@ -30,7 +30,7 @@
   "perlnavigator.logging": true,
   "perlnavigator.enableWarnings": true,
   "perlnavigator.perlcriticEnabled": true,
-  "perlnavigator.perlParams": ["-I/home/enotiru/perl5/lib/perl5"],
+  "perlnavigator.perlParams": ["-I${userHome}/perl5/lib/perl5"],
   "perlnavigator.includePaths": ["lib"],
 
   // --- TypeScript ---
@@ -53,7 +53,7 @@
   // --- Python (jedi) ---
   "jedi": {
     "workspace": {
-      "environmentPath": "/home/enotiru/.rye/shims/python"
+      "environmentPath": "${userHome}/.rye/shims/python"
     },
     "executable": {
       "command": "jedi-language-server"

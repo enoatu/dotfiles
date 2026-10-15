@@ -53,7 +53,7 @@ when = true
 require_repo = true
 command = '''
 # git-branch-descriptions がない場合return
-GIT_BRANCH_DESCRIPTIONS_PATH=enotiru-my-box/git-branch-descriptions
+GIT_BRANCH_DESCRIPTIONS_PATH=${USER}-my-box/git-branch-descriptions
 [ ! -f $GIT_BRANCH_DESCRIPTIONS_PATH ] && return
 # git-branch-descriptions にbranchname,descriptionの形式で保存されている
 local branchname=$(git rev-parse --abbrev-ref HEAD)

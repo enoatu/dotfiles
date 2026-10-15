@@ -33,7 +33,6 @@ exempt_subs = Moo::has Moose::has Object::Pad::class Object::Pad::field Object::
 [Variables::ProhibitUnusedVariables]
 severity = 4
 
-# moove コーディング規約 (moovibe/rules/perl.md)
 # リテラル文字列はシングルクォート
 [ValuesAndExpressions::ProhibitInterpolationOfLiterals]
 severity = 4
@@ -49,7 +48,7 @@ severity = 4
 [ControlStructures::ProhibitCStyleForLoops]
 severity = 4
 
-# ハードタブ禁止（moove は 4 スペース統一）
+# ハードタブ禁止（4 スペース統一）
 [CodeLayout::ProhibitHardTabs]
 severity = 4
 

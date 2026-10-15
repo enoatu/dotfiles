@@ -64,15 +64,15 @@ gb() { ## git branch 一覧を表示する
   # fzf で選択したブランチに切り替える
   # fzf の左側にはブランチ名,あればdescriptionを表示する
   # descriptionがある場合はgit-branch-descriptions のbranchname,descriptionの形式から取り出せる
-  GIT_BRANCH_DESCRIPTIONS_PATH=enotiru-my-box/git-branch-descriptions
+  GIT_BRANCH_DESCRIPTIONS_PATH=${USER}-my-box/git-branch-descriptions
   current_dir=$(pwd)
   cd $(git rev-parse --show-toplevel)
   if [ ! -d .git ]; then
     echo "not a git repository"
     return 1
   fi
-  if [ ! -d enotiru-my-box ]; then
-    mkdir enotiru-my-box
+  if [ ! -d ${USER}-my-box ]; then
+    mkdir ${USER}-my-box
   fi
   if [ ! -f $GIT_BRANCH_DESCRIPTIONS_PATH ]; then
     touch $GIT_BRANCH_DESCRIPTIONS_PATH
@@ -108,7 +108,7 @@ adddesc() { ## add-desc 現在のブランチに説明をつける
     echo "not a git repository"
     return 1
   fi
-  GIT_BRANCH_DESCRIPTIONS_PATH=enotiru-my-box/git-branch-descriptions
+  GIT_BRANCH_DESCRIPTIONS_PATH=${USER}-my-box/git-branch-descriptions
   if [ ! -f $GIT_BRANCH_DESCRIPTIONS_PATH ]; then
     touch $GIT_BRANCH_DESCRIPTIONS_PATH
   fi
@@ -128,9 +128,9 @@ gbc() { ## create|c git ブランチを作成
     echo "not a git repository"
     return 1
   fi
-  # enotiru-my-box/ がない場合は作成する
-  if [ ! -d enotiru-my-box ]; then
-    mkdir enotiru-my-box
+  # ${USER}-my-box/ がない場合は作成する
+  if [ ! -d ${USER}-my-box ]; then
+    mkdir ${USER}-my-box
   fi
   local branch_name
   local description
@@ -150,7 +150,7 @@ gbc() { ## create|c git ブランチを作成
   git checkout -b $branch_name
 
   # git-branch-descriptions がない場合は作成する
-  GIT_BRANCH_DESCRIPTIONS_PATH=enotiru-my-box/git-branch-descriptions
+  GIT_BRANCH_DESCRIPTIONS_PATH=${USER}-my-box/git-branch-descriptions
   if [ ! -f $GIT_BRANCH_DESCRIPTIONS_PATH ]; then
     touch $GIT_BRANCH_DESCRIPTIONS_PATH
   fi

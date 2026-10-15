@@ -3,7 +3,7 @@
 ### socket で操作する
 
 ```bash
-find /var/folders -path '*/nvim.enotiru/*' -name 'nvim.*' -type s
+find /var/folders -path "*/nvim.$USER/*" -name 'nvim.*' -type s
 nvim --server "$SOCK" --remote-expr 'execute("luafile /tmp/x.lua") . luaeval("_G._result")'
 ```
 

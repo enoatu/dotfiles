@@ -26,10 +26,10 @@ RUN \
     locale-gen ja_JP.UTF-8 && \
     localedef -f UTF-8 -i ja_JP ja_JP.UTF-8
 
-# dotfilesをクローンしてインストール
-RUN git clone https://github.com/enoatu/dotfiles.git && \
-    cd dotfiles && \
-    ADDITIONAL_REPO_GITHUB_TOKEN="" ./install.sh
+# 手元のdotfilesをコピーしてインストール
+COPY . dotfiles
+RUN cd dotfiles && \
+    ./install.sh
 
 # タイムゾーン設定
 RUN ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime \

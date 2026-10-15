@@ -10,7 +10,8 @@ readonly PANE_ID=${2:-$(tmux display -p '#{pane_id}')}
 readonly CHECK_INTERVAL_SEC=10
 readonly WATCH_LIMIT_SEC=1800
 readonly DONE_COUNT_TO_FINISH=2
-readonly NTFY_URL='https://ntfy.sh/enotirucommon'
+# 通知先の名前を知っていれば誰でも読めるので、名前は公開しない private-dotfiles に置く
+readonly NTFY_TOPIC_FILE="$HOME/dotfiles/private-dotfiles/tmux/ntfy-topic"
 readonly STATE_FILE="/tmp/watch_pane_notify_${PANE_ID#%}"
 readonly CONDITION_DEFAULT='処理が終わってプロンプトに戻ったか、結果が出て入力待ちになった'
 
@@ -91,13 +92,14 @@ $screen" --model haiku 2>/dev/null) || {
 }
 
 notify_done() {
+    [ -f "$NTFY_TOPIC_FILE" ] || return 0
     local window_name
     window_name=$(tmux display -t "$PANE_ID" -p '#{window_name}')
 
     curl -fsS -m 5 \
       -H "Title: $window_name" \
       -d "$CONDITION" \
-      "$NTFY_URL" >/dev/null 2>&1
+      "https://ntfy.sh/$(cat "$NTFY_TOPIC_FILE")" >/dev/null 2>&1
 }
 
 remove_own_state_file() {
