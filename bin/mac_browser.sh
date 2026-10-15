@@ -2,8 +2,13 @@
 set -eu
 
 # 普段使いのプロファイルとは別インスタンスにして CDP のポートを開ける
-PORT=9222
-PROFILE_DIR="$HOME/.chrome-debug"
+# ポートを渡すと、そのポート専用のプロファイルで別の窓を開く
+PORT=${1:-9222}
+if [ "$PORT" = 9222 ]; then
+  PROFILE_DIR="$HOME/.chrome-debug"
+else
+  PROFILE_DIR="$HOME/.chrome-debug-$PORT"
+fi
 WAIT_MAX_SEC=15
 
 if curl -s --max-time 2 "localhost:$PORT/json/version" >/dev/null; then
