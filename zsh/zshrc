@@ -51,10 +51,6 @@ alias .....='cd ../../../..'
 
 alias rg='rg -i --color=always --line-number --smart-case -.'
 
-# zellij
-# alias z='zellij'
-# alias zr='zellij run --'
-
 alias la="ls -A"
 alias ll="ls -ahl"
 alias gba='git branch --sort=-authordate'
@@ -85,7 +81,6 @@ alias mac-browser='~/dotfiles/bin/mac_browser.sh'
 alias a='git add . && git status'
 alias ga='g a'
 alias r='git reset && git status'
-alias c='git commit -m'
 alias am='git commit --amend'
 alias c='GIT_EDITOR="nvim -c \"ClaudeCommit\"" git commit -v'
 alias gs='git status'
@@ -101,8 +96,6 @@ alias dcl='docker compose logs -f --tail=3000'
 
 alias t='tmux attach'
 alias vim='nvim'
-# tmux でvimの色おかしい時はこちらを使う
-alias xtmux='TERM=xterm-256color tmux'
 # ta c => company セッション、ta p => private セッション
 ta() {
   local session_name=$1
@@ -124,11 +117,6 @@ export SSH_AUTH_SOCK="$HOME/.ssh/ssh_auth_sock"
 
 # AI
 alias claude='claude --verbose'
-
-gitstashpopreset() {
-### gitstashpopreset: git stash pop して、コンフリクトした場合は自動で解消する
-  git checkout --ours . && git reset && git checkout .
-}
 
 v() {
   vim $(gitdiffls "$@")
@@ -261,12 +249,19 @@ fcd() {
 }
 
 sg() {
-### sg: tmux でサブモジュールごとにコマンドを並列実行
+### sg: サブモジュールごとにコマンドを並列実行。herdr の中なら herdr のペイン、それ以外は tmux で開く
   COMMANDS=()
   for DIR in $(git submodule foreach -q sh -c pwd); do
     COMMANDS+=("cd $DIR && $@")
   done
-  ~/dotfiles/bin/parallel_tmux_exec.sh $COMMANDS
+  if [ -z "$HERDR_ENV" ]; then
+    ~/dotfiles/bin/parallel_tmux_exec.sh $COMMANDS
+    return
+  fi
+  for COMMAND in $COMMANDS; do
+    PANE_ID=$(herdr pane split --current --direction down --no-focus | jq -r '.result.pane.pane_id')
+    herdr pane run $PANE_ID "$COMMAND"
+  done
 }
 
 gss() {
