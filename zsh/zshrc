@@ -114,10 +114,13 @@ ta() {
   tmux attach -t "$session_name" 2>/dev/null || tmux new-session -s "$session_name"
 }
 # ssh 再ログインでエージェント転送のソケットが変わるので、固定パスに貼り直して古いペインからも使えるようにする
-if [ -S "$SSH_AUTH_SOCK" ] && [ "$SSH_AUTH_SOCK" != "$HOME/.ssh/ssh_auth_sock" ]; then
-  ln -sf "$SSH_AUTH_SOCK" "$HOME/.ssh/ssh_auth_sock"
+# herdr のペインで貼り直すと herdr のリンクとおたがいを指して鍵に届かなくなるので、herdr に選ばせる
+if [[ "$SSH_AUTH_SOCK" != */herdr.sock.agent ]]; then
+  if [ -S "$SSH_AUTH_SOCK" ] && [ "$SSH_AUTH_SOCK" != "$HOME/.ssh/ssh_auth_sock" ]; then
+    ln -sf "$SSH_AUTH_SOCK" "$HOME/.ssh/ssh_auth_sock"
+  fi
+  export SSH_AUTH_SOCK="$HOME/.ssh/ssh_auth_sock"
 fi
-export SSH_AUTH_SOCK="$HOME/.ssh/ssh_auth_sock"
 
 # AI
 alias claude='claude --verbose'
