@@ -57,6 +57,14 @@ key = "prefix+y"
 type = "shell"
 command = 'flag=/tmp/claude_ntfy_enabled; if [ -f "$flag" ]; then rm -f "$flag"; herdr notification show "ntfy OFF" --sound none; else : > "$flag"; herdr notification show "ntfy ON" --sound none; fi'
 
+# tmux の prefix+W にあたる 選んだペインを見張り、条件を満たしたら herdr と ntfy に通知する
+[[keys.command]]
+key = "prefix+m"
+type = "popup"
+command = "~/dotfiles/herdr/scripts/monitor-pane-notify.sh"
+width = "80%"
+height = "60%"
+
 [terminal]
 # 分割時に元ペインの作業ディレクトリを引き継ぐ
 new_cwd = "follow"
@@ -71,9 +79,9 @@ mouse_scroll_lines = 4
 agent_panel_sort = "priority"
 status_indicators = "symbols"
 
-# claude の行には claude が出しているターミナルタイトルを足す
+# claude の行には claude が出しているターミナルタイトルと、prefix+m で見張っているかを足す
 [ui.sidebar.agents.rows_by_agent]
-claude = [["state_icon", "machine", "workspace", "tab"], ["terminal_title_stripped"], ["agent"]]
+claude = [["state_icon", "machine", "workspace", "tab", "$monitor"], ["terminal_title_stripped"], ["agent"]]
 
 # 通知は herdr 画面内トーストで出す (SSH 先の system 通知は手元に届かないため)
 [ui.toast]

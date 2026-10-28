@@ -177,6 +177,20 @@ vim.keymap.set("x", "ec", function()
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", false)
 end, { silent = true, desc = "Claude Code ペインに選択範囲を送る" })
 
+-- Claude Code の nvim-open が同じタブの nvim を見つけられるように、ペイン id で決まる socket を作る
+if vim.env.HERDR_PANE_ID ~= nil and vim.env.HERDR_PANE_ID ~= "" then
+    local socket_dir = "/tmp/claude-nvim"
+    local socket_path = socket_dir .. "/pane-" .. vim.env.HERDR_PANE_ID:gsub("[^%w_.-]", "_") .. ".sock"
+    local connected, channel = pcall(vim.fn.sockconnect, "pipe", socket_path)
+    if connected then
+        vim.fn.chanclose(channel)
+    else
+        vim.fn.mkdir(socket_dir, "p")
+        vim.fn.delete(socket_path)
+        vim.fn.serverstart(socket_path)
+    end
+end
+
 vim.api.nvim_create_autocmd("FileType", {
     pattern = "php",
     callback = function()
