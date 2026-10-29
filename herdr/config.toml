@@ -71,6 +71,11 @@ new_cwd = "follow"
 
 [ui]
 mouse_capture = true
+# スマホで文字を小さくして横に広がっても、サイドバーではなくスマホ用の上の帯で表示する
+# PC は手元の herdr から remote でつなぐので、この設定は使われない
+mobile_width_threshold = 160
+# スマホは指でスクロールするので、スクロールバーの1マスを文字に使う
+pane_scrollbars = false
 # フォーカス復帰時の全画面再描画を止めてペイン切替の点滅を抑える
 redraw_on_focus_gained = false
 # ホイール1回のスクロール量を4行にする
