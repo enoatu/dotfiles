@@ -71,10 +71,6 @@ alias exsh='exec $SHELL -l'
 
 alias de='~/dotfiles/bin/docker_exec.sh'
 
-# CDP 操作先の Chrome(.chrome-debug-* プロファイル)とは別インスタンスで、普段使いのプロファイルを開く
-# open -a だと起動中の CDP 側に窓が足されるだけなので -na で新インスタンスにする
-alias chrome='open -na "Google Chrome" --args --user-data-dir="$HOME/Library/Application Support/Google/Chrome" --profile-directory=Default'
-
 alias a='git add . && git status'
 alias ga='g a'
 alias r='git reset && git status'
@@ -93,13 +89,8 @@ alias dcl='docker compose logs -f --tail=3000'
 
 alias t='tmux attach'
 alias vim='nvim'
-# ta c => company セッション、ta p => private セッション
 ta() {
   local session_name=$1
-  case "$1" in
-    c) session_name=company ;;
-    p) session_name=private ;;
-  esac
   if [ -z "$session_name" ]; then
     tmux attach || tmux new-session
     return

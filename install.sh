@@ -27,26 +27,23 @@ else
   mise run setup-zsh
 fi
 mise dotfiles apply --force --yes
+git -C "${DOTFILES}" config core.hooksPath git/hooks
 
-# private-dotfiles は token を貼り付けた時だけ取得と更新をする
-# token は .git/config に残さない
-read -s "ADDITIONAL_REPO_GITHUB_TOKEN?private-dotfiles の GitHub の token を貼り付ける(空なら取得と更新をしない): "
-echo
-if [ -n "$ADDITIONAL_REPO_GITHUB_TOKEN" ]; then
-  # private-dotfiles は dotfiles と同じ GitHub アカウントに置く
-  DOTFILES_REPO_URL=$(git -C "${DOTFILES}" remote get-url origin)
-  GITHUB_ACCOUNT="${${DOTFILES_REPO_URL%/*}##*[/:]}"
-  ADDITIONAL_REPO_URL="https://github.com/${GITHUB_ACCOUNT}/private-dotfiles.git"
-  GITHUB_AUTH_HEADER="Authorization: Basic $(printf 'x-access-token:%s' "$ADDITIONAL_REPO_GITHUB_TOKEN" | base64 | tr -d '\n')"
-  if [ -e "${ADDITIONAL_DOTFILES}" ]; then
-    git -C "${ADDITIONAL_DOTFILES}" -c http.extraHeader="${GITHUB_AUTH_HEADER}" pull origin "${ADDITIONAL_REPO_BRANCH}"
-  elif [ "$INSTALL_TYPE" = "full" ]; then
-    git -c http.extraHeader="${GITHUB_AUTH_HEADER}" clone -b "${ADDITIONAL_REPO_BRANCH}" "${ADDITIONAL_REPO_URL}" "${ADDITIONAL_DOTFILES}"
-  else
-    # 軽量版は他の人も見られるサーバーに入れるので、自分だけのもの(claude/)は中身をダウンロードしない
-    git -c http.extraHeader="${GITHUB_AUTH_HEADER}" clone --filter=blob:none --sparse -b "${ADDITIONAL_REPO_BRANCH}" "${ADDITIONAL_REPO_URL}" "${ADDITIONAL_DOTFILES}" \
-      && git -C "${ADDITIONAL_DOTFILES}" -c http.extraHeader="${GITHUB_AUTH_HEADER}" sparse-checkout set --no-cone '/*' '!/claude/'
-  fi
+# private-dotfiles は dotfiles と同じ GitHub アカウントに置く
+DOTFILES_REPO_URL=$(git -C "${DOTFILES}" remote get-url origin)
+GITHUB_ACCOUNT="${${DOTFILES_REPO_URL%/*}##*[/:]}"
+ADDITIONAL_REPO_URL="git@github.com:${GITHUB_ACCOUNT}/private-dotfiles.git"
+if [ -e "${ADDITIONAL_DOTFILES}" ]; then
+  git -C "${ADDITIONAL_DOTFILES}" pull origin "${ADDITIONAL_REPO_BRANCH}"
+elif ! git ls-remote "${ADDITIONAL_REPO_URL}" >/dev/null 2>&1; then
+  # private-dotfiles を読めない人は dotfiles だけで使う
+  echo "private-dotfiles を読めないので取得しない"
+elif [ "$INSTALL_TYPE" = "full" ]; then
+  git clone -b "${ADDITIONAL_REPO_BRANCH}" "${ADDITIONAL_REPO_URL}" "${ADDITIONAL_DOTFILES}"
+else
+  # 軽量版は他の人も見られるサーバーに入れるので、自分だけのもの(claude/)は中身をダウンロードしない
+  git clone --filter=blob:none --sparse -b "${ADDITIONAL_REPO_BRANCH}" "${ADDITIONAL_REPO_URL}" "${ADDITIONAL_DOTFILES}" \
+    && git -C "${ADDITIONAL_DOTFILES}" sparse-checkout set --no-cone '/*' '!/claude/'
 fi
 if [ -e "${ADDITIONAL_DOTFILES}/mise/dotfiles.toml" ]; then
   ln -sf "${ADDITIONAL_DOTFILES}/mise/tasks.toml"    "${HOME}/.config/mise/conf.d/04_private_tasks.toml"

@@ -1,3 +1,10 @@
+## dotfiles と private-dotfiles の考え方
+
+作業の前に次を読み、この考え方に合うように変更する。
+
+- @../README.md
+- @../private-dotfiles/README.md
+
 ## Neovim 検証のコツ
 
 ### socket で操作する
