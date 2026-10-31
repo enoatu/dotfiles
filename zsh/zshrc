@@ -114,10 +114,14 @@ ta() {
   tmux attach -t "$session_name" 2>/dev/null || tmux new-session -s "$session_name"
 }
 # ssh 再ログインでエージェント転送のソケットが変わるので、固定パスに貼り直して古いペインからも使えるようにする
-if [ -S "$SSH_AUTH_SOCK" ] && [ "$SSH_AUTH_SOCK" != "$HOME/.ssh/ssh_auth_sock" ]; then
+if [ -S "$SSH_AUTH_SOCK" ] && [ ! -L "$SSH_AUTH_SOCK" ]; then
   ln -sf "$SSH_AUTH_SOCK" "$HOME/.ssh/ssh_auth_sock"
 fi
 export SSH_AUTH_SOCK="$HOME/.ssh/ssh_auth_sock"
+# ログインに使わない鍵は AddKeysToAgent で入らないので、転送で渡せるように入れておく
+if [ -f "$HOME/.ssh/id_ecdsa_enoatu" ]; then
+  ssh-add -q "$HOME/.ssh/id_ecdsa_enoatu" 2>/dev/null
+fi
 
 # AI
 alias claude='claude --verbose'
