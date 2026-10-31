@@ -2,6 +2,7 @@
 delta = "0.18.2"
 fd = "8.7.0"
 fzf = "latest"
+gitleaks = "8.30.1"
 herdr = "0.9.3"
 neovim = "0.12.3"
 ripgrep = "15.1.0"

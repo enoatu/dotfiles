@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+PRIVATE_HOOK="$(git rev-parse --show-toplevel)/private-dotfiles/git/hooks/dotfiles/commit-msg"
+if [ -x "$PRIVATE_HOOK" ]; then
+  exec "$PRIVATE_HOOK" "$@"
+fi

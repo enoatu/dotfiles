@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+worktree_paths() {
+  fd -H -I -t f '^\.git$' "$HOME" -E node_modules -E .cache -E .local -E Library 2>/dev/null \
+    | xargs grep -l 'gitdir: .*/worktrees/' 2>/dev/null \
+    | xargs -n1 dirname
+}
+
+selected_worktree_paths=$(worktree_paths | fzf --multi --preview 'git -C {} status --short --branch; echo; git -C {} log --oneline -10')
+if [ -z "$selected_worktree_paths" ]; then
+  exit 0
+fi
+
+while read -r worktree_path; do
+  git_common_dir=$(git -C "$worktree_path" rev-parse --path-format=absolute --git-common-dir)
+  if git --git-dir="$git_common_dir" worktree remove "$worktree_path"; then
+    echo "削除: $worktree_path"
+    continue
+  fi
+  read -r -p "強制削除しますか? [y/N] " answer < /dev/tty
+  if [ "$answer" = y ]; then
+    git --git-dir="$git_common_dir" worktree remove --force "$worktree_path" && echo "強制削除: $worktree_path"
+  fi
+done <<< "$selected_worktree_paths"

@@ -10,8 +10,8 @@ readonly PANE_ID=${2:-$(tmux display -p '#{pane_id}')}
 readonly CHECK_INTERVAL_SEC=10
 readonly WATCH_LIMIT_SEC=1800
 readonly DONE_COUNT_TO_FINISH=2
-# 通知先の名前を知っていれば誰でも読めるので、名前は公開しない private-dotfiles に置く
-readonly NTFY_TOPIC_FILE="$HOME/dotfiles/private-dotfiles/tmux/ntfy-topic"
+# 通知先の名前を知っていれば誰でも読めるので、名前は git に入れずマシンに置く
+readonly NTFY_TOPIC_FILE="$HOME/.config/ntfy/topic"
 readonly STATE_FILE="/tmp/watch_pane_notify_${PANE_ID#%}"
 readonly CONDITION_DEFAULT='処理が終わってプロンプトに戻ったか、結果が出て入力待ちになった'
 

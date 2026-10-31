@@ -144,13 +144,13 @@ require("lazy").setup({
                 vim.api.nvim_set_hl(0, "GitSignsChangeInline", { bg = "#013369" })
                 vim.api.nvim_set_hl(0, "GitSignsDeleteInline", { bg = "#802B26" })
 
-                local function default_branch()
-                    local head = vim.fn.systemlist({ "git", "symbolic-ref", "--short", "refs/remotes/origin/HEAD" })[1]
+                local function default_branch(dir)
+                    local head = vim.fn.systemlist({ "git", "-C", dir, "symbolic-ref", "--short", "refs/remotes/origin/HEAD" })[1]
                     if vim.v.shell_error == 0 and head and head ~= "" then
                         return head
                     end
                     for _, branch in ipairs({ "origin/main", "origin/master", "main", "master" }) do
-                        vim.fn.system({ "git", "rev-parse", "--verify", "--quiet", branch })
+                        vim.fn.system({ "git", "-C", dir, "rev-parse", "--verify", "--quiet", branch })
                         if vim.v.shell_error == 0 then
                             return branch
                         end
@@ -158,8 +158,8 @@ require("lazy").setup({
                     return nil
                 end
 
+                local auto_selected_branch
                 require("gitsigns").setup({
-                    base = default_branch(),
                     signs = {
                         add = { text = "▌+" },
                         change = { text = "▌~" },
@@ -173,6 +173,15 @@ require("lazy").setup({
                     --  word_diff = true, -- Toggle with `:Gitsigns toggle_word_diff`
                     current_line_blame = false,
                     attach_to_untracked = true,
+                    _on_attach_pre = function(bufnr, callback)
+                        local config = require("gitsigns.config").config
+                        -- m で比較先を選んでいないときだけ、開いたファイルのリポジトリの main と比べる
+                        if config.base == auto_selected_branch then
+                            auto_selected_branch = default_branch(vim.fn.fnamemodify(vim.api.nvim_buf_get_name(bufnr), ":h"))
+                            config.base = auto_selected_branch
+                        end
+                        callback()
+                    end,
                     on_attach = function(bufnr)
                         local gitsigns = package.loaded.gitsigns
                         local function map(mode, l, r, opts)
