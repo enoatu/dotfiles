@@ -1155,6 +1155,14 @@ require("lazy").setup({
                                 cond = function () return package.loaded["dap"] and require("dap").status() ~= "" end,
                                 color = { fg = get_hl_color("Debug") },
                             },
+                            {
+                                function()
+                                    local quickfix = vim.fn.getqflist({ idx = 0, size = 0 })
+                                    return "QF " .. quickfix.idx .. "/" .. quickfix.size
+                                end,
+                                cond = function() return vim.fn.getqflist({ size = 0 }).size > 0 end,
+                                color = { fg = get_hl_color("DiagnosticWarn") },
+                            },
                             "copilot",
                             {
                                 require("lazy.status").updates,
