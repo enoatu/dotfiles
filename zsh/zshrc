@@ -110,9 +110,6 @@ if [ -f "$HOME/.ssh/id_ecdsa_enoatu" ]; then
   ssh-add -q "$HOME/.ssh/id_ecdsa_enoatu" 2>/dev/null
 fi
 
-# AI
-alias claude='claude --verbose'
-
 v() {
   vim $(gitdiffls "$@")
 }
