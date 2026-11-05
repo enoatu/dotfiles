@@ -4,13 +4,8 @@
 !/zsh/installs/.gitkeep
 /zsh/sheldon/plugins.lock
 .dirs_recent
-bin/setlocalgit
-/installs/*
-!/installs/.gitkeep
 *node_modules
 private-dotfiles
-nerd-fonts
-/neovim/install/*
 /neovim/lua/env.lua
 /herdr/*.log
 /herdr/*.sock

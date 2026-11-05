@@ -35,7 +35,8 @@
   - ツールは mise/tools.toml、リンクは mise/dotfiles.toml に書く
 - 入れる量を2つから選べる
   - full はすべて入れる
-  - light はシェルと neovim だけを入れる
+  - light は mise/tools.toml のツールと、mise/dotfiles.toml のリンクを入れる
+    - mise/tools-full.toml のツールと、neovim のプラグインが使う node や python は入れない
 
 ## 入れ方
 

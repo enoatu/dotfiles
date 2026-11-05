@@ -118,7 +118,6 @@ v() {
 eval "$(${HOME}/.local/bin/mise activate zsh)"
 
 # backspace,deleteキーを使えるように
-stty erase '^H'
 stty erase '^?'
 ##ctrl+sのロック, Ctrl+qのロック解除を無効にする
 setopt no_flow_control
@@ -130,24 +129,20 @@ zstyle ':completion:*:default' menu select=2
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 
 export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'
-setopt hist_ignore_all_dups  # 重複するコマンドラインは古い方を削除する
-setopt hist_ignore_dups      # 直前と同じコマンドラインはヒストリに追加しない
-setopt inc_append_history    # 実行するたびにファイルに書き込む
 setopt hist_no_store         # historyコマンドは登録しない
-setopt hist_reduce_blanks    # 余分な空白は詰めて記録する
 
 ## ZSHプラグイン
 command -v fzf >/dev/null && source <(fzf --zsh)
-# Docker CLI の補完。sheldon より前に足さないと compinit に拾われない
+# Docker CLI の補完。compinit より前に fpath に加えないと登録されないので、ここで加える
 fpath=(${HOME}/.docker/completions $fpath)
-
-# 補完
-autoload -Uz compinit
-compinit
 
 # 補完と灰色の補完と色づけ。plugins.toml で管理する
 export SHELDON_CONFIG_DIR="$HOME/dotfiles/zsh/sheldon"
 eval "$(sheldon source)"
+
+# 補完。sheldon が fpath に加えた補完の定義も登録されるように、sheldon のあとに実行する
+autoload -Uz compinit
+compinit
 bindkey '^l' autosuggest-accept
 bindkey '^]' autosuggest-execute
 
@@ -165,8 +160,6 @@ bindkey "^[OB" history-beginning-search-forward-end
 
 
 command -v starship >/dev/null && eval "$(starship init zsh)"
-
-## ZSHプラグイン
 
 # cdrコマンドを有効 ログアウトしても有効なディレクトリ履歴
 # cdr タブでリストを表示
@@ -231,7 +224,7 @@ alias zmv='noglob zmv -W'
 # export PYTHONPATH=$HOME/.rye/tools/pip/lib/python3.12/site-packages:$PYTHONPATH
 
 # bun completions
-[ -s "~/.bun/_bun" ] && source "~/.bun/_bun"
+[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 
 fcd() {
 ### fcd: fzf 使ってディレクトリ履歴から移動
@@ -242,23 +235,27 @@ fcd() {
 
 sg() {
 ### sg: サブモジュールごとにコマンドを並列実行。herdr の中なら herdr のペイン、それ以外は tmux で開く
-  COMMANDS=()
-  for DIR in $(git submodule foreach -q sh -c pwd); do
-    COMMANDS+=("cd $DIR && $@")
+  local submodule_commands=()
+  local submodule_dir
+  for submodule_dir in $(git submodule foreach -q sh -c pwd); do
+    submodule_commands+=("cd $submodule_dir && $*")
   done
   if [ -z "$HERDR_ENV" ]; then
-    ~/dotfiles/bin/parallel_tmux_exec.sh $COMMANDS
+    ~/dotfiles/bin/parallel_tmux_exec.sh $submodule_commands
     return
   fi
-  for COMMAND in $COMMANDS; do
-    PANE_ID=$(herdr pane split --current --direction down --no-focus | jq -r '.result.pane.pane_id')
-    herdr pane run $PANE_ID "$COMMAND"
+  local pane_command
+  local pane_id
+  for pane_command in $submodule_commands; do
+    pane_id=$(herdr pane split --current --direction down --no-focus | jq -r '.result.pane.pane_id')
+    herdr pane run $pane_id "$pane_command"
   done
 }
 
 gss() {
 ### gss: 選択したファイルを git stash する
   # fzfでファイルを選択
+  local selected_files
   selected_files=$(git ls-files -m | fzf -m)
 
   # 選択されたファイルをステージング
@@ -278,9 +275,10 @@ gss() {
 gr() {
 ### gr: 選択したファイルを git reset する
   # fzf を使ってステージングファイルを選択
-  files=$(git diff --name-only --cached | fzf -m)
-  if [ -n "$files" ]; then
-    echo "$files" | xargs git reset
+  local selected_files
+  selected_files=$(git diff --name-only --cached | fzf -m)
+  if [ -n "$selected_files" ]; then
+    echo "$selected_files" | xargs git reset
   else
     echo "No files selected"
   fi

@@ -3,11 +3,11 @@
 DOTFILES="${DOTFILES:-${HOME}/dotfiles}"
 ADDITIONAL_DOTFILES="${ADDITIONAL_DOTFILES:-${DOTFILES}/private-dotfiles}"
 ADDITIONAL_REPO_BRANCH="${ADDITIONAL_REPO_BRANCH:-main}"
-# light はシェルと neovim だけ入れる軽量版
+# light は mise/tools.toml のツールと mise/dotfiles.toml のリンクを入れる軽量版
 INSTALL_TYPE="${INSTALL_TYPE:-full}"
 
 # mise を入れて有効化する
-[ -e "${HOME}/.local/bin/mise" ] || curl https://mise.run | sh
+[ -e "${HOME}/.local/bin/mise" ] || curl -fsSL https://mise.run | sh
 eval "$(${HOME}/.local/bin/mise activate)"
 
 # 公開設定を conf.d に置いてツールとタスクと symlink を反映する
@@ -24,7 +24,7 @@ mise install
 if [ "$INSTALL_TYPE" = "full" ]; then
   mise run setup
 else
-  mise run setup-zsh
+  mise run setup-light
 fi
 mise dotfiles apply --force --yes
 git -C "${DOTFILES}" config core.hooksPath git/hooks

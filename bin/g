@@ -1,5 +1,15 @@
 #!/usr/bin/env bash
 
+prepare_branch_descriptions_path() {
+  local toplevel_dir
+  toplevel_dir=$(git rev-parse --show-toplevel) || return 1
+  local my_box_dir="$toplevel_dir/$USER-my-box"
+  local branch_descriptions_path="$my_box_dir/git-branch-descriptions"
+  mkdir -p "$my_box_dir" || return 1
+  touch "$branch_descriptions_path" || return 1
+  echo "$branch_descriptions_path"
+}
+
 main() {
   local action
   action=$1
@@ -26,11 +36,9 @@ main() {
       adddesc "${@:2}"
       ;;
     "c")
-      echo "${@:2}"
       gbc "${@:2}"
       ;;
     "gbc")
-      echo "${@:2}"
       gbc "${@:2}"
       ;;
     "git-new-branch-via-stash")
@@ -64,39 +72,25 @@ gb() { ## git branch 一覧を表示する
   # fzf で選択したブランチに切り替える
   # fzf の左側にはブランチ名,あればdescriptionを表示する
   # descriptionがある場合はgit-branch-descriptions のbranchname,descriptionの形式から取り出せる
-  GIT_BRANCH_DESCRIPTIONS_PATH=${USER}-my-box/git-branch-descriptions
-  current_dir=$(pwd)
-  cd $(git rev-parse --show-toplevel)
-  if [ ! -d .git ]; then
-    echo "not a git repository"
-    return 1
-  fi
-  if [ ! -d ${USER}-my-box ]; then
-    mkdir ${USER}-my-box
-  fi
-  if [ ! -f $GIT_BRANCH_DESCRIPTIONS_PATH ]; then
-    touch $GIT_BRANCH_DESCRIPTIONS_PATH
-  fi
+  local branch_descriptions_path
+  branch_descriptions_path=$(prepare_branch_descriptions_path) || return 1
   local branches
   branches=$(git branch --format="%(refname:short)" --sort=-committerdate)
   local descriptions
-  descriptions=$(cat $GIT_BRANCH_DESCRIPTIONS_PATH)
+  descriptions=$(cat "$branch_descriptions_path")
   local branch
   local description
-  local branch_description
   for branch in $branches; do
     # ダブルクォーテーションで囲まないと改行が消える
-    branch_description=$(echo "$descriptions" | grep $branch)
-    #echo $branch_description
-    if [ -n "$branch_description" ]; then
-      description=$(echo $branch_description | awk -F, '{print $2}')
+    description=$(echo "$descriptions" | awk -F, -v branch="$branch" '$1 == branch {print $2}')
+    if [ -n "$description" ]; then
       echo "$branch $description"
     else
       echo $branch
     fi
   done | fzf | awk '{print $1}' | xargs git checkout
-  cd $current_dir
 }
+
 adddesc() { ## add-desc 現在のブランチに説明をつける
   local description="$@"
   if [ -z "$description" ]; then
@@ -108,36 +102,24 @@ adddesc() { ## add-desc 現在のブランチに説明をつける
     echo "not a git repository"
     return 1
   fi
-  GIT_BRANCH_DESCRIPTIONS_PATH=${USER}-my-box/git-branch-descriptions
-  if [ ! -f $GIT_BRANCH_DESCRIPTIONS_PATH ]; then
-    touch $GIT_BRANCH_DESCRIPTIONS_PATH
-  fi
+  local branch_descriptions_path
+  branch_descriptions_path=$(prepare_branch_descriptions_path) || return 1
   # git-branch-descriptions にbranchname,descriptionの形式で保存する
   # すでにある場合は行ごと上書きする sed で置換する
   # 必須: スラッシュが入っているのでエスケープが必要
 
-  sed -i -e "\#$current_branch#d" $GIT_BRANCH_DESCRIPTIONS_PATH
-  echo "$current_branch,$description" >> $GIT_BRANCH_DESCRIPTIONS_PATH
+  sed -i -e "\#^$current_branch,#d" "$branch_descriptions_path"
+  echo "$current_branch,$description" >> "$branch_descriptions_path"
 }
 
-gbc() { ## create|c git ブランチを作成
+gbc() { ## gbc|c git ブランチを作成
   # 第1引数にブランチ名を指定
   # 第2引数にdescriptionを指定
-  # .git がない場合はエラー
-  if [ ! -d .git ]; then
-    echo "not a git repository"
-    return 1
-  fi
-  # ${USER}-my-box/ がない場合は作成する
-  if [ ! -d ${USER}-my-box ]; then
-    mkdir ${USER}-my-box
-  fi
   local branch_name
   local description
   branch_name=$1
   # スペースを許可する
   description="${@:2}"
-  echo $2
   # base_branch がなかったら現在のブランチを取得
   if [ -z "$2" ]; then
     echo "description is required"
@@ -147,15 +129,12 @@ gbc() { ## create|c git ブランチを作成
     echo "branch name is required"
     return 1
   fi
-  git checkout -b $branch_name
+  local branch_descriptions_path
+  branch_descriptions_path=$(prepare_branch_descriptions_path) || return 1
+  git checkout -b $branch_name || return 1
 
-  # git-branch-descriptions がない場合は作成する
-  GIT_BRANCH_DESCRIPTIONS_PATH=${USER}-my-box/git-branch-descriptions
-  if [ ! -f $GIT_BRANCH_DESCRIPTIONS_PATH ]; then
-    touch $GIT_BRANCH_DESCRIPTIONS_PATH
-  fi
   # git-branch-descriptions にbranchname,descriptionの形式で保存する
-  echo "$branch_name,$description" >> $GIT_BRANCH_DESCRIPTIONS_PATH
+  echo "$branch_name,$description" >> "$branch_descriptions_path"
 }
 
 git-new-branch-via-stash() { ## n|git-new-branch-via-stash 現在のブランチを stash して新しいブランチを作成する
@@ -169,14 +148,14 @@ git-new-branch-via-stash() { ## n|git-new-branch-via-stash 現在のブランチ
   if [ -z "$base_branch_name" ]; then
     base_branch_name="main"
   fi
-  local flg_stash=false
-  if [ ! $(git diff --quiet) ]; then
-    git stash
+  local is_stashed=false
+  if ! git diff --quiet; then
+    git stash && is_stashed=true
   fi
   git checkout $base_branch_name
   git pull
   git checkout -b $branch_name
-  if [ $flg_stash ]; then
+  if [ "$is_stashed" = true ]; then
     git stash pop
   fi
 }
@@ -185,4 +164,4 @@ show_help() { ## help|h ヘルプを表示する
   grep -E '{\s*##' $0 | awk 'BEGIN {FS="## "} {print $2}'
 }
 
-main $@
+main "$@"

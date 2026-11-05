@@ -10,22 +10,41 @@
 ### socket で操作する
 
 ```bash
+# Linux
+find /run/user/$(id -u) -name 'nvim.*' -type s
+# macOS
 find /var/folders -path "*/nvim.$USER/*" -name 'nvim.*' -type s
 nvim --server "$SOCK" --remote-expr 'execute("luafile /tmp/x.lua") . luaeval("_G._result")'
 ```
 
-複数操作は luafile + `_G._result` で 1 コマンドにまとめる (1操作=数十ms)。**10秒超えたら設計を疑え**。
+複数の操作は luafile と `_G._result` で1つのコマンドにまとめる。
 
-### やるな
+1回の操作には数十 ms かかる。
 
-- `--remote-send`: insert mode 中だとキーが文字として混入。代わりに `vim.cmd(...)` を luafile 経由で。
-- `init` で `vim.lsp.config()`: lazy.nvim の runtimepath 反映前で `lsp/*.lua` の defaults と merge されない → `config` フィールドで呼べ。
+検証に10秒より長くかかったら、操作の分け方を見直す。
 
-### LSP のハマり
+### やらないこと
 
-- `cmd` の `~` は展開されない → `vim.fn.expand()`
-- `vim.lsp.enable` は filetypes 必須。全ファイル対応なら自前 `BufReadPost` autocmd で `vim.lsp.start`。
+- `--remote-send` は使わない
+  - insert mode のときに、キーが文字としてバッファに入る
+  - 代わりに luafile で `vim.cmd(...)` を実行する
+- `init` で `vim.lsp.config()` を実行しない
+  - lazy.nvim が runtimepath を追加する前なので、`lsp/*.lua` の既定値と合わさらない
+  - lazy.nvim でプラグインごとに書く `config` 関数の中で実行する
 
-## 外部プラグインの install / build
+### LSP で気をつけること
 
-信頼していない外部リポジトリやプラグインで依存インストールやビルドを走らせる前に、package.json の scripts と postinstall などの lifecycle hook、依存パッケージ、registry 設定を読んで不審な点が無いか確認する。postinstall は任意コードを実行できるので、承認を得ていても無確認では走らせない。
+- `cmd` に書いた `~` は展開されないので、`vim.fn.expand()` で展開する
+- `vim.lsp.enable` には filetypes が要る
+  - すべてのファイルで使うときは、自分で `BufReadPost` の autocmd を作り、`vim.lsp.start` を実行する
+
+## 外部プラグインの install と build
+
+信頼していない外部リポジトリやプラグインで依存のインストールやビルドを実行する前に、次のものにおかしなところがないかを確かめる。
+
+- package.json の scripts
+- postinstall などの lifecycle hook
+- 依存パッケージ
+- registry の設定
+
+postinstall は任意のコードを実行できるので、承認をもらっていても、確かめずには実行しない。

@@ -5,9 +5,9 @@ export PERL_LOCAL_LIB_ROOT="$HOME/perl5${PERL_LOCAL_LIB_ROOT:+:$PERL_LOCAL_LIB_R
 export PERL_MB_OPT="--install_base \"$HOME/perl5\""
 export PERL_MM_OPT="INSTALL_BASE=$HOME/perl5"
 
-export DOCKER_UID=$(id -u)
-export DOCKER_GID=$(id -g)
-export DOCKER_USER=$(id -un)
+export DOCKER_UID=$UID
+export DOCKER_GID=$GID
+export DOCKER_USER=$USERNAME
 
 # Claude Code 2.1.89 以降の alternate screen 化で tmux scrollback が欠ける問題の回避
 # export CLAUDE_CODE_DISABLE_ALTERNATE_SCREEN=1
@@ -20,5 +20,4 @@ export SHELL=${commands[zsh]:-/bin/zsh}
 # パス設定
 export PATH="$HOME/bin:$PATH"
 export PATH="$HOME/dotfiles/bin:$PATH"
-export PATH="$HOME/dotfiles/neovim/install/nvim/bin:$PATH"
 export PATH="/usr/local/bin:$PATH"

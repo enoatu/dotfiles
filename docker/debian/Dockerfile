@@ -1,4 +1,5 @@
-FROM debian:buster-20230703
+ARG DEBIAN_TAG=buster-20230703
+FROM debian:${DEBIAN_TAG}
 
 WORKDIR /root
 
@@ -12,12 +13,14 @@ WORKDIR /root
 
 ## -----need sudo-------
 RUN \
-    apt update && \
+    apt-get update && \
     apt-get install -y zsh tar \
     curl git \
     locales \
     tmux \
-    build-essential
+    build-essential && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # 1.change shell (rootユーザーのものが変わるため注意する
 # 2.nvim locale error fix

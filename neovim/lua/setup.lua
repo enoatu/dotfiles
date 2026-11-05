@@ -10,7 +10,7 @@ vim.opt.termguicolors = true
 vim.g.mapleader = " "
 
 local has_words_before = function()
-    if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then
+    if vim.bo[0].buftype == "prompt" then
         return false
     end
     local line, col = unpack(vim.api.nvim_win_get_cursor(0))
@@ -329,7 +329,7 @@ require("lazy").setup({
                         },
                     },
                 })
-                vim.api.nvim_set_keymap("v", "<space>t", ":Translate JA<CR>", { noremap = true, silent = true })
+                vim.keymap.set("v", "<space>t", ":Translate JA<CR>", { silent = true })
             end,
         },
         {
@@ -575,7 +575,6 @@ require("lazy").setup({
                 vim.g.copilot_assume_mapped = false
                 -- 確定キーをTABからC-lに変更
                 vim.keymap.set("i", "<C-l>", 'copilot#Accept("<CR>")', {
-                    noremap = true,
                     desc = "copilot 用エンター",
                     expr = true,
                     silent = true,

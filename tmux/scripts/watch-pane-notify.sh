@@ -17,7 +17,7 @@ readonly CONDITION_DEFAULT='処理が終わってプロンプトに戻ったか�
 
 # 消し忘れの状態ファイルで無関係なプロセスを止めないよう中身を確かめる
 is_watching() {
-    grep -q watch-pane-notify "/proc/$1/cmdline" 2>/dev/null
+    ps -p "$1" -o command= 2>/dev/null | grep -q watch-pane-notify
 }
 
 pane_exists() {
@@ -29,8 +29,11 @@ format_passed_time() {
 }
 
 start_watching() {
-    # popup を閉じても監視が残るよう切り離す
-    setsid "$0" watch "$PANE_ID" "$1" >/dev/null 2>&1 &
+    # popup を閉じても監視が残るように切り離す
+    # macOS には setsid がないので nohup を使う
+    local detach_command=nohup
+    command -v setsid >/dev/null && detach_command=setsid
+    "$detach_command" "$0" watch "$PANE_ID" "$1" >/dev/null 2>&1 &
     tmux display-message "監視ON $PANE_ID $1"
 }
 

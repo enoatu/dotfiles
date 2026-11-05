@@ -22,7 +22,7 @@ state_file_of() {
 
 # 消し忘れの状態ファイルで無関係なプロセスを止めないよう中身を確かめる
 is_monitoring() {
-    grep -q monitor-pane-notify "/proc/$1/cmdline" 2>/dev/null
+    ps -p "$1" -o command= 2>/dev/null | grep -q monitor-pane-notify
 }
 
 pane_exists() {
@@ -97,8 +97,11 @@ ask_limit_min() {
 }
 
 start_monitoring() {
-    # popup を閉じても監視が残るよう切り離す
-    setsid "$0" monitor "$PANE_ID" "$1" "$2" >/dev/null 2>&1 &
+    # popup を閉じても監視が残るように切り離す
+    # macOS には setsid がないので nohup を使う
+    local detach_command=nohup
+    command -v setsid >/dev/null && detach_command=setsid
+    "$detach_command" "$0" monitor "$PANE_ID" "$1" "$2" >/dev/null 2>&1 &
     herdr notification show "監視ON $(pane_place_of "$PANE_ID")" --body "条件 $1
 ${2}分たったら監視をやめる" --sound none >/dev/null
 }

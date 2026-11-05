@@ -19,12 +19,14 @@ WORKDIR /root
 
 ## -----need sudo-------
 RUN \
-  apt update && \
+  apt-get update && \
   apt-get install -y zsh tar \
   curl git \
   locales language-pack-ja \
   unzip wget \
-  tmux
+  tmux && \
+  apt-get clean && \
+  rm -rf /var/lib/apt/lists/*
 
 # 1.change shell (rootユーザーのものが変わるため注意する
 # 2.nvim locale error fix

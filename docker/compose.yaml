@@ -1,4 +1,3 @@
-version: '3.7'
 services:
   ubuntu:
     build:
@@ -17,17 +16,9 @@ services:
   bookworm:
     build:
       context: ..
-      dockerfile: ./docker/debian/bookworm/Dockerfile
+      dockerfile: ./docker/debian/Dockerfile
+      args:
+        DEBIAN_TAG: bookworm
     tty: true
     volumes:
       - ./${USER}-my-box:/mnt
-  #centos:
-  #  build:
-  #    context: .
-  #    dockerfile: ./centos/Dockerfile
-  #  command: /bin/bash
-  #  tty: true
-  #  volumes:
-  #    - ../:/root
-  #    # 除外
-  #    - /root/vim/neo-dein

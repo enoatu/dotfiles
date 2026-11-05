@@ -1,6 +1,4 @@
 local vim = vim
--- leader key
-vim.g.mapleader = " "
 -- バッファが編集中でもその他のファイルを開けるように
 vim.o.hidden = true
 -- 入力中のコマンドをステータスに表示する
@@ -24,8 +22,6 @@ vim.wo.cursorline = true
 vim.wo.cursorcolumn = true
 --  行末の1文字先までカーソルを移動できるように
 vim.o.virtualedit = "onemore"
--- TrueColor対応"
-vim.o.termguicolors = true
 -- ビープ音を可視化
 vim.o.visualbell = true
 -- 括弧入力時の対応する括弧を表示
@@ -42,7 +38,7 @@ vim.api.nvim_create_augroup("extra-whitespace", {})
 vim.api.nvim_create_autocmd({ "VimEnter", "WinEnter" }, {
     group = "extra-whitespace",
     pattern = { "*" },
-    command = [[call matchadd('ExtraWhitespace', '[\u200B\u3000]')]],
+    command = [[if !exists('w:extra_whitespace_match_id') | let w:extra_whitespace_match_id = matchadd('ExtraWhitespace', '[\u200B\u3000]') | endif]],
 })
 vim.api.nvim_create_autocmd({ "ColorScheme" }, {
     group = "extra-whitespace",
@@ -88,7 +84,6 @@ vim.o.mouse = "a"
 -- "ウィンドウの幅より長い行は折り返され、次の行に続けて表示される
 -- vim.wo.wrap = true プラグインにより無効化されている
 vim.o.matchtime = 1
-vim.o.hidden = true
 vim.o.whichwrap = "b,s,<,>,[,]"
 -- vnoremap <silent> <C-p> "0p<CR>
 -- vim.o.t_Co = 256
@@ -197,7 +192,3 @@ vim.api.nvim_create_autocmd("FileType", {
         vim.opt_local.autoindent = true
     end,
 })
-
--- ログを出す
-vim.cmd("set verbosefile=~/.cache/nvim/log")
-vim.cmd("set verbose=3")

@@ -6,12 +6,12 @@ const [ , input, output ] = argv._
 if (input && output) {
   if (input.includes('.png') || input.includes('.PNG')) {
     await $`vips pngsave ${input} ${output} --compression=9 --palette=true --strip=true`
-    process.exit(1)
+    process.exit(0)
   }
   if (input.includes('.jpeg') || input.includes('.JPEG') || input.includes('.jpg') || input.includes('.JPG')) {
-    await $`vips pngjpeg ${input} ${output} --strip=true --optimize-coding=true --interlace=true --optimize-scans --trellis_quant=true --quant_table=3`
-    process.exit(1)
+    await $`vips jpegsave ${input} ${output} --strip=true --optimize-coding=true --interlace=true --optimize-scans --trellis_quant=true --quant_table=3`
+    process.exit(0)
   }
 }
 console.error('invalid arguments')
-process.exit(0)
+process.exit(1)
