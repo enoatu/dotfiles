@@ -373,7 +373,7 @@ help() {
 
 alias personal-claude='CLAUDE_CONFIG_DIR=~/.claude-personal claude'
 
-# Claude Code via LiteLLM (Vertex AI)
+# 公開できない設定は private-dotfiles に置く
 if [ -f "$HOME/dotfiles/private-dotfiles/zsh/zshrc_private" ]; then
   source "$HOME/dotfiles/private-dotfiles/zsh/zshrc_private"
 fi
