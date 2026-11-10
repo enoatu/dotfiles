@@ -372,6 +372,7 @@ help() {
 # fi
 
 alias personal-claude='CLAUDE_CONFIG_DIR=~/.claude-personal claude'
+alias api-claude='ANTHROPIC_API_KEY=$(tr -d "\n" < ~/.config/claude/token) claude'
 
 # 公開できない設定は private-dotfiles に置く
 if [ -f "$HOME/dotfiles/private-dotfiles/zsh/zshrc_private" ]; then
