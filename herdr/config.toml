@@ -72,7 +72,7 @@ new_cwd = "follow"
 [ui]
 mouse_capture = true
 # スマホで文字を小さくして横に広がってもスマホ用の上の帯で表示し、PC で広げたときはサイドバーで表示する
-mobile_width_threshold = 130
+mobile_width_threshold = 110
 # スマホは指でスクロールするので、スクロールバーの1マスを文字に使う
 pane_scrollbars = false
 # フォーカス復帰時の全画面再描画を止めてペイン切替の点滅を抑える
