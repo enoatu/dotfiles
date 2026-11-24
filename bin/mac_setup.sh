@@ -1,10 +1,10 @@
 #!/bin/sh
 set -eu
 
-# マウスの速度を限界突破させる
-defaults write -g com.apple.mouse.scaling 5
-# トラックパッドの速度を限界突破させる(再起動必要)
-defaults write -g com.apple.trackpad.scaling 5
+# マウスの速度を最速にする(3より大きくしても速くならない)
+defaults write -g com.apple.mouse.scaling 3
+# トラックパッドの速度を最速にする(3より大きくしても速くならない、再起動必要)
+defaults write -g com.apple.trackpad.scaling 3
 # キーリピート速度を限界突破させる(再起動必要)
 defaults write -g KeyRepeat -int 1
 # リピート入力認識を限界突破させる(再起動必要)
