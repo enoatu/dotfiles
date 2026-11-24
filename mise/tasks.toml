@@ -1,5 +1,5 @@
 [tasks.setup]
-depends = ["setup-zsh", "setup-neovim"]
+depends = ["setup-zsh", "setup-neovim", "setup-mac"]
 
 [tasks.setup-light]
 depends = ["setup-zsh", "setup-neovim-env"]
@@ -14,6 +14,12 @@ SHELDON_CONFIG_DIR="$HOME/dotfiles/zsh/sheldon" sheldon lock
 [tasks.setup-neovim-env]
 run = '''
 [ -f "$HOME/dotfiles/neovim/lua/env.lua" ] || cp "$HOME/dotfiles/neovim/lua/env.lua.sample" "$HOME/dotfiles/neovim/lua/env.lua"
+'''
+
+[tasks.setup-mac]
+run = '''
+[ "$(uname)" = "Darwin" ] || exit 0
+sh "$HOME/dotfiles/bin/mac_setup.sh"
 '''
 
 # coc.nvim 用の node は 18.16.0 を使う

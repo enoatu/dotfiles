@@ -31,6 +31,7 @@
   - env.lua はないときだけ neovim/lua/env.lua.sample からコピーされる
 - macOS と Linux の両方で使う
   - 違いは tmux/tmux.conf.tmpl のように mise の template で分ける
+  - Mac の設定(トラックパッドの速さ、Dock など)は bin/mac_setup.sh に書き、full で入れるときに Mac だけで実行する
 - ツールとリンクは mise でそろえる
   - ツールは mise/tools.toml、リンクは mise/dotfiles.toml に書く
 - 入れる量を2つから選べる
