@@ -29,8 +29,6 @@ defaults write NSGlobalDomain AppleShowAllExtensions -bool true
 defaults write com.apple.Finder AppleShowAllFiles -bool true
 # Finderウィンドウ下部のパスバーを表示する設定
 defaults write com.apple.finder ShowPathbar -bool true
-# 未確認ファイルを開く際の警告を無効化する設定
-defaults write com.apple.LaunchServices LSQuarantine -bool false
 # ゴミ箱を空にする際の確認警告を無効化する設定
 defaults write com.apple.finder WarnOnEmptyTrash -bool false
 
